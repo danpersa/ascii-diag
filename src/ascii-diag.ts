@@ -1,3 +1,5 @@
+import ToolService = Tools.ToolService;
+
 class AsciiDiag {
     private readonly canvas: HTMLCanvasElement;
     private readonly context: CanvasRenderingContext2D;

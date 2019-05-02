@@ -7,5 +7,5 @@ class Constants {
     static readonly numberOfRows = Constants.canvasHeight / Constants.densityY + 1;
     static readonly numberOfColumns = Constants.canvasWidth / Constants.densityX;
 
-    static readonly font = 'bold 11px Courier';
+    static readonly font = '11px Courier';
 }
