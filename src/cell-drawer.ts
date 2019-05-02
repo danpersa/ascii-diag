@@ -32,7 +32,8 @@ class CellDrawer {
     }
 
     private drawValue(cell: Cell) {
-        this.context.fillStyle = `rgb(0, 0, 0, 0.5)`;
+        this.context.fillStyle = `rgb(0, 0, 0)`;
+        this.context.font = Constants.font;
         this.context.fillText(cell.value, cell.canvasX + 2, cell.canvasY + 15);
     }
 }
