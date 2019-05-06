@@ -1,8 +1,9 @@
-import Cell = Domain.Cell;
+import Constants from './constants'
+import {Domain} from './cell'
 
-type CellMatrix = Array<Array<Cell>>;
+type CellMatrix = Array<Array<Domain.Cell>>;
 
-class Grid {
+export default class Grid {
 
     private readonly cellMatrix: CellMatrix;
 
@@ -12,35 +13,35 @@ class Grid {
         for (let row = 0; row <= Constants.numberOfRows; row++) {
             this.cellMatrix.push([]);
             for (let column = 0; column <= Constants.numberOfColumns; column++) {
-                const cell = Cell.Builder.from(row, column).build();
+                const cell = Domain.Cell.Builder.from(row, column).build();
                 this.cellMatrix[row].push(cell);
             }
         }
     }
 
-    cell(row: number, column: number): Cell {
+    cell(row: number, column: number): Domain.Cell {
         return this.cellMatrix[row][column];
     }
 
-    switchCell(cell: Cell) {
+    switchCell(cell: Domain.Cell) {
         this.cellMatrix[cell.row][cell.column] = cell;
     }
 
     selectCell(row: number, column: number) {
         const currentCell = this.cellMatrix[row][column];
-        const newCell = Cell.Builder.fromCell(currentCell).selected(true).build();
+        const newCell = Domain.Cell.Builder.fromCell(currentCell).selected(true).build();
         this.cellMatrix[row][column] = newCell;
     }
 
     valueCell(row: number, column: number, value: string) {
         const currentCell = this.cellMatrix[row][column];
-        const newCell = Cell.Builder.fromCell(currentCell).value(value).build();
+        const newCell = Domain.Cell.Builder.fromCell(currentCell).value(value).build();
         this.cellMatrix[row][column] = newCell;
     }
 
     unselectCell(row: number, column: number) {
         const currentCell = this.cellMatrix[row][column];
-        const newCell = Cell.Builder.fromCell(currentCell).selected(false).build();
+        const newCell = Domain.Cell.Builder.fromCell(currentCell).selected(false).build();
         this.cellMatrix[row][column] = newCell;
     }
 }

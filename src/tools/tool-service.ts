@@ -1,33 +1,37 @@
-namespace Tools {
-    export class ToolService {
+import Grid from '../grid'
+import {Tool} from "./tool";
+import {ArrowTool} from "./arrow-tool";
+import {BoxTool} from "./box-tool";
+import {TextTool} from "./text-tool";
 
-        private readonly boxTool: Tool;
-        private readonly arrowTool: Tool;
-        private readonly textTool: Tool;
-        private tool: Tool;
+export class ToolService {
 
-        constructor(grid: Grid) {
-            this.boxTool = new BoxTool(grid);
-            this.arrowTool = new ArrowTool(grid);
-            this.textTool = new TextTool(grid);
-            this.tool = this.textTool;
-        }
+    private readonly boxTool: Tool;
+    private readonly arrowTool: Tool;
+    private readonly textTool: Tool;
+    private tool: Tool;
 
-        currentTool(): Tool {
-            return this.tool;
-        }
+    constructor(grid: Grid) {
+        this.boxTool = new BoxTool(grid);
+        this.arrowTool = new ArrowTool(grid);
+        this.textTool = new TextTool(grid);
+        this.tool = this.textTool;
+    }
 
-        selectBoxTool(): void {
-            this.tool = this.boxTool;
-        }
+    currentTool(): Tool {
+        return this.tool;
+    }
 
-        selectArrowTool(): void {
-            this.tool = this.arrowTool;
-        }
+    selectBoxTool(): void {
+        this.tool = this.boxTool;
+    }
 
-        selectTextTool(): void {
-            this.tool = this.textTool;
-        }
+    selectArrowTool(): void {
+        this.tool = this.arrowTool;
+    }
+
+    selectTextTool(): void {
+        this.tool = this.textTool;
     }
 }
 

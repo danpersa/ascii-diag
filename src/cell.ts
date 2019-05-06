@@ -1,5 +1,6 @@
-namespace Domain {
+import Constants from './constants'
 
+export module Domain {
     export class Cell {
         private readonly _value: string;
         private readonly _selected: boolean;
@@ -45,7 +46,7 @@ namespace Domain {
 
 }
 
-namespace Domain.Cell {
+export module Domain.Cell {
     export class Builder {
 
         private _value: string = "";

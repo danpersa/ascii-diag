@@ -1,13 +1,10 @@
-namespace Tools {
-    export interface Tool {
+export interface Tool {
 
+    start(row: number, column: number): void;
 
-        start(row: number, column: number): void;
+    drag(startRow: number, startColumn: number, row: number, column: number): void;
 
-        drag(startRow: number, startColumn: number, row: number, column: number): void;
+    keyDown(key: string): void;
 
-        keyDown(key: string): void;
-
-        end(row: number, column: number): void;
-    }
+    end(row: number, column: number): void;
 }

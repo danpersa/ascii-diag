@@ -1,4 +1,9 @@
-class CellDrawer {
+import Grid from "./grid";
+import Constants from "./constants";
+import {Domain} from "./cell";
+import Cell = Domain.Cell;
+
+export class CellDrawer {
 
     private readonly context: CanvasRenderingContext2D;
     private readonly grid: Grid;

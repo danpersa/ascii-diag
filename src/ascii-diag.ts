@@ -1,4 +1,9 @@
-import ToolService = Tools.ToolService;
+import Grid from './grid'
+import {ToolService} from "./tools/tool-service";
+import Constants from "./constants";
+import {CellDrawer} from "./cell-drawer";
+import {GridDrawer} from "./grid-drawer";
+
 
 class AsciiDiag {
     private readonly canvas: HTMLCanvasElement;

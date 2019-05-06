@@ -1,4 +1,8 @@
-class GridDrawer {
+import {CellDrawer} from "./cell-drawer";
+import Grid from "./grid";
+import Constants from "./constants";
+
+export class GridDrawer {
 
     private readonly cellDrawer: CellDrawer;
     private readonly grid: Grid;
@@ -16,3 +20,4 @@ class GridDrawer {
         }
     }
 }
+
