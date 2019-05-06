@@ -62,8 +62,8 @@ namespace Domain.Cell {
             this._column = column;
         }
 
-        static from(canvasX: number, canvasY: number, row: number, column: number): Builder {
-            return new Builder(canvasX, canvasY, row, column);
+        static from(row: number, column: number): Builder {
+            return new Builder(column * Constants.densityX, row * Constants.densityY, row, column);
         }
 
         static fromCell(cell: Cell): Builder {

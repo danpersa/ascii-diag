@@ -12,7 +12,7 @@ class Grid {
         for (let row = 0; row <= Constants.numberOfRows; row++) {
             this.cellMatrix.push([]);
             for (let column = 0; column <= Constants.numberOfColumns; column++) {
-                const cell = Cell.Builder.from(column * Constants.densityX, row * Constants.densityY, row, column).build();
+                const cell = Cell.Builder.from(row, column).build();
                 this.cellMatrix[row].push(cell);
             }
         }
