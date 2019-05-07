@@ -125,7 +125,7 @@ class AsciiDiag {
     private releaseEventHandler = (e: MouseEvent | TouchEvent) => {
         let [mouseX, mouseY] = this.mousePosition(e);
         let [row, column] = this.fromCanvasToGrid(mouseX, mouseY);
-        this.toolService.currentTool().end(row, column);
+        this.toolService.currentTool().endDrag(row, column);
 
         this.lastPress = [-1, -1];
         this.paint = false;
@@ -152,7 +152,7 @@ class AsciiDiag {
         let [mouseX, mouseY] = this.mousePosition(e);
         this.lastPress = this.fromCanvasToGrid(mouseX, mouseY);
         let [row, column] = this.fromCanvasToGrid(mouseX, mouseY);
-        this.toolService.currentTool().start(row, column);
+        this.toolService.currentTool().startDrag(row, column);
 
         this.paint = true;
         this.addClick(mouseX, mouseY, false);

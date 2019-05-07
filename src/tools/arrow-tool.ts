@@ -2,18 +2,21 @@ import Grid from "../grid";
 import {Domain} from "../cell";
 import Cell = Domain.Cell;
 import {Tool} from "./tool";
+import {LayerService} from "../layer-service";
 
 export class ArrowTool implements Tool {
 
     private readonly grid: Grid;
+    private readonly layerService: LayerService;
     private modifiedCells = new Set<Cell>();
 
 
-    constructor(grid: Grid) {
+    constructor(grid: Grid, layerService: LayerService) {
         this.grid = grid;
+        this.layerService = layerService;
     }
 
-    start(row: number, column: number): void {
+    startDrag(row: number, column: number): void {
         const currentCell = this.grid.cell(row, column);
         this.modifiedCells.add(currentCell);
         this.grid.selectCell(row, column);
@@ -101,7 +104,7 @@ export class ArrowTool implements Tool {
         }
     }
 
-    end(row: number, column: number): void {
+    endDrag(row: number, column: number): void {
         this.modifiedCells.forEach(cell => {
             this.grid.unselectCell(cell.row, cell.column);
         });
@@ -110,5 +113,8 @@ export class ArrowTool implements Tool {
 
     keyDown(key: string): void {
     }
-}
 
+    persist(): void {
+        throw new Error("Method not implemented.");
+    }
+}

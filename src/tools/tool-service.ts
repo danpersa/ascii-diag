@@ -34,4 +34,3 @@ export class ToolService {
         this.tool = this.textTool;
     }
 }
-

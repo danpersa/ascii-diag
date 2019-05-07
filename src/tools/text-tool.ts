@@ -15,7 +15,7 @@ export class TextTool implements Tool {
         this.grid = grid;
     }
 
-    start(row: number, column: number): void {
+    startDrag(row: number, column: number): void {
         this.done();
         this.currentCell = this.grid.cell(row, column);
         this.startCell = this.grid.cell(row, column);
@@ -64,7 +64,13 @@ export class TextTool implements Tool {
         this.alterCell(row, column + 1, "");
     }
 
-    private done() {
+    drag(startRow: number, startColumn: number, row: number, column: number): void {
+    }
+
+    endDrag(row: number, column: number): void {
+    }
+
+    private done(): void {
         this.modifiedCells.forEach(cell => {
             this.grid.unselectCell(cell.row, cell.column);
         });
@@ -73,9 +79,6 @@ export class TextTool implements Tool {
         this.currentCell = null;
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number): void {
-    }
-
-    end(row: number, column: number): void {
+    persist(): void {
     }
 }

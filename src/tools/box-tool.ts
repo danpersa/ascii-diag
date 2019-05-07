@@ -13,7 +13,7 @@ export class BoxTool implements Tool {
         this.grid = grid;
     }
 
-    start(row: number, column: number): void {
+    startDrag(row: number, column: number): void {
         const currentCell = this.grid.cell(row, column);
         this.modifiedCells.add(currentCell);
         this.grid.selectCell(row, column);
@@ -74,7 +74,7 @@ export class BoxTool implements Tool {
         }
     }
 
-    end(row: number, column: number): void {
+    endDrag(row: number, column: number): void {
         this.modifiedCells.forEach(cell => {
             this.grid.unselectCell(cell.row, cell.column);
         });
@@ -83,4 +83,9 @@ export class BoxTool implements Tool {
 
     keyDown(key: string): void {
     }
+
+    persist(): void {
+        throw new Error("Method not implemented.");
+    }
+
 }
