@@ -10,13 +10,12 @@ export class ArrowTool implements Tool {
     private readonly layerService: LayerService;
     private modifiedCells = new Set<Cell>();
 
-
     constructor(grid: Grid, layerService: LayerService) {
         this.grid = grid;
         this.layerService = layerService;
     }
 
-    startDrag(row: number, column: number): void {
+    clickDown(row: number, column: number): void {
         const currentCell = this.grid.cell(row, column);
         this.modifiedCells.add(currentCell);
         this.grid.selectCell(row, column);

@@ -2,18 +2,20 @@ import {Tool} from "./tool";
 import Grid from "../grid";
 import {Domain} from "../cell";
 import Cell = Domain.Cell;
+import {LayerService} from "../layer-service";
 
 export class BoxTool implements Tool {
 
     private readonly grid: Grid;
+    private readonly layerService: LayerService;
     private modifiedCells = new Set<Cell>();
 
-
-    constructor(grid: Grid) {
+    constructor(grid: Grid, layerService: LayerService) {
         this.grid = grid;
+        this.layerService = layerService;
     }
 
-    startDrag(row: number, column: number): void {
+    clickDown(row: number, column: number): void {
         const currentCell = this.grid.cell(row, column);
         this.modifiedCells.add(currentCell);
         this.grid.selectCell(row, column);
@@ -87,5 +89,4 @@ export class BoxTool implements Tool {
     persist(): void {
         throw new Error("Method not implemented.");
     }
-
 }

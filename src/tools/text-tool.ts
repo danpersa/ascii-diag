@@ -2,23 +2,45 @@ import {Tool} from "./tool";
 import Grid from "../grid";
 import {Domain} from "../cell";
 import Cell = Domain.Cell;
+import {LayerService} from "../layer-service";
+import {Entity} from "../entities/entity";
+import {TextEntity} from "../entities/text-entity";
+import grid from "../grid";
 
 export class TextTool implements Tool {
 
     private readonly grid: Grid;
+    private readonly layerService: LayerService;
     private modifiedCells = new Set<Cell>();
     private currentCell: Cell | null = null;
     private startCell: Cell | null = null;
+    private currentText: string | null = null;
 
-
-    constructor(grid: Grid) {
+    constructor(grid: Grid, layerService: LayerService) {
         this.grid = grid;
+        this.layerService = layerService;
     }
 
-    startDrag(row: number, column: number): void {
+    clickDown(row: number, column: number): void {
+        const entity = this.layerService.getEntity(row, column);
+        console.log("Entity found: " + entity);
         this.done();
+
+        if (entity && entity instanceof TextEntity) {
+            entity.cells().forEach(cell => {
+                this.grid.selectCell(cell.row, cell.column);
+                this.modifiedCells.add(this.grid.cell(cell.row, cell.column));
+                console.log("Add modified cell: " + row + " " + column);
+            });
+            this.startCell = this.grid.cell(entity.row, entity.column);
+            this.currentCell = this.grid.cell(entity.row, entity.column + entity.text.length);
+            this.currentText  = entity.text;
+            return;
+        }
+
         this.currentCell = this.grid.cell(row, column);
         this.startCell = this.grid.cell(row, column);
+        this.currentText = "";
         this.alterCell(row, column, "");
     }
 
@@ -39,9 +61,9 @@ export class TextTool implements Tool {
         const row = this.currentCell!.row;
         const column = this.currentCell!.column;
 
-
         if (key === "Enter") {
-            console.log("End");
+            console.log("Done");
+            this.persist();
             this.done();
             return;
         }
@@ -51,6 +73,7 @@ export class TextTool implements Tool {
                 this.grid.unselectCell(row, column);
                 this.alterCell(row, column - 1, "");
                 this.currentCell = this.grid.cell(row, column - 1);
+                this.currentText = this.currentText!.substr(0, this.currentText!.length - 1);
             }
             return;
         }
@@ -60,6 +83,7 @@ export class TextTool implements Tool {
         }
 
         this.alterCell(row, column, key);
+        this.currentText += key;
         this.currentCell = this.grid.cell(row, column + 1);
         this.alterCell(row, column + 1, "");
     }
@@ -77,8 +101,11 @@ export class TextTool implements Tool {
         this.modifiedCells.clear();
         this.startCell = null;
         this.currentCell = null;
+        this.currentText = null;
     }
 
     persist(): void {
+        const entity: Entity = new TextEntity(this.startCell!.row, this.startCell!.column, this.currentText!);
+        this.layerService.addEntity(entity);
     }
 }

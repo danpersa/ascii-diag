@@ -3,6 +3,7 @@ import {ToolService} from "./tools/tool-service";
 import Constants from "./constants";
 import {CellDrawer} from "./cell-drawer";
 import {GridDrawer} from "./grid-drawer";
+import {LayerService} from "./layer-service";
 
 
 class AsciiDiag {
@@ -17,6 +18,7 @@ class AsciiDiag {
     private readonly gridDrawer: GridDrawer;
     private readonly cellDrawer: CellDrawer;
     private readonly toolService: ToolService;
+    private readonly layerService: LayerService;
     private lastPress: [number, number] = [-1, -1];
 
     constructor() {
@@ -32,7 +34,8 @@ class AsciiDiag {
         this.context = context;
         this.paint = false;
         this.grid = new Grid();
-        this.toolService = new ToolService(this.grid);
+        this.layerService = new LayerService(this.grid);
+        this.toolService = new ToolService(this.grid, this.layerService);
         this.cellDrawer = new CellDrawer(context, this.grid);
         this.gridDrawer = new GridDrawer(this.grid, this.cellDrawer);
         this.gridDrawer.draw();
@@ -152,7 +155,7 @@ class AsciiDiag {
         let [mouseX, mouseY] = this.mousePosition(e);
         this.lastPress = this.fromCanvasToGrid(mouseX, mouseY);
         let [row, column] = this.fromCanvasToGrid(mouseX, mouseY);
-        this.toolService.currentTool().startDrag(row, column);
+        this.toolService.currentTool().clickDown(row, column);
 
         this.paint = true;
         this.addClick(mouseX, mouseY, false);
