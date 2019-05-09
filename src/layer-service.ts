@@ -18,6 +18,7 @@ export class LayerService {
 
     getEntity(row: number, column: number): Entity | undefined {
         return this.entities.filter(entity => {
+            //console.log("Cells size: " + entity.cells().length);
             return entity.cells().some(cell => cell.row == row && cell.column == column)
         }).pop();
     }

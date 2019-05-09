@@ -1,6 +1,6 @@
 export interface Tool {
 
-    clickDown(row: number, column: number): void;
+    mouseDown(row: number, column: number): void;
 
     drag(startRow: number, startColumn: number, row: number, column: number): void;
 
@@ -9,4 +9,6 @@ export interface Tool {
     endDrag(row: number, column: number): void;
 
     persist(): void;
+
+    renderEditor(): void;
 }

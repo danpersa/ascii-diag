@@ -15,7 +15,7 @@ export class ArrowTool implements Tool {
         this.layerService = layerService;
     }
 
-    clickDown(row: number, column: number): void {
+    mouseDown(row: number, column: number): void {
         const currentCell = this.grid.cell(row, column);
         this.modifiedCells.add(currentCell);
         this.grid.selectCell(row, column);
@@ -115,5 +115,8 @@ export class ArrowTool implements Tool {
 
     persist(): void {
         throw new Error("Method not implemented.");
+    }
+
+    renderEditor(): void {
     }
 }

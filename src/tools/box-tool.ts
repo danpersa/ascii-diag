@@ -3,23 +3,30 @@ import Grid from "../grid";
 import {Domain} from "../cell";
 import Cell = Domain.Cell;
 import {LayerService} from "../layer-service";
+import {BoxEntity} from "../entities/box-entity";
 
 export class BoxTool implements Tool {
 
     private readonly grid: Grid;
     private readonly layerService: LayerService;
     private modifiedCells = new Set<Cell>();
+    private startRow: number = 0;
+    private startColumn: number = 0;
+    private endRow: number = 0;
+    private endColumn: number = 0;
 
     constructor(grid: Grid, layerService: LayerService) {
         this.grid = grid;
         this.layerService = layerService;
     }
 
-    clickDown(row: number, column: number): void {
+    mouseDown(row: number, column: number): void {
         const currentCell = this.grid.cell(row, column);
         this.modifiedCells.add(currentCell);
         this.grid.selectCell(row, column);
         this.grid.valueCell(row, column, "+");
+        this.startRow = row;
+        this.startColumn = column;
     }
 
     private alterCell(row: number, column: number, value: string) {
@@ -77,16 +84,27 @@ export class BoxTool implements Tool {
     }
 
     endDrag(row: number, column: number): void {
+        this.endRow = row;
+        this.endColumn = column;
         this.modifiedCells.forEach(cell => {
             this.grid.unselectCell(cell.row, cell.column);
         });
         this.modifiedCells.clear();
+        this.persist();
     }
 
     keyDown(key: string): void {
     }
 
     persist(): void {
-        throw new Error("Method not implemented.");
+        const entity = new BoxEntity(
+            Math.min(this.startRow, this.endRow),
+            Math.min(this.startColumn, this.endColumn),
+            Math.max(this.startRow, this.endRow),
+            Math.max(this.startColumn, this.endColumn));
+        this.layerService.addEntity(entity);
+    }
+
+    renderEditor(): void {
     }
 }

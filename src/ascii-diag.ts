@@ -4,6 +4,12 @@ import Constants from "./constants";
 import {CellDrawer} from "./cell-drawer";
 import {GridDrawer} from "./grid-drawer";
 import {LayerService} from "./layer-service";
+import {Editor} from "./editors/editor";
+import {BoxEditor} from "./editors/box-editor";
+import {BoxEntity} from "./entities/box-entity";
+import {SelectBoxDrawer} from "./select-box-drawer";
+import {VertexDrawer} from "./vertex-drawer";
+import {EditorService} from "./editors/editor-service";
 
 
 class AsciiDiag {
@@ -20,6 +26,10 @@ class AsciiDiag {
     private readonly toolService: ToolService;
     private readonly layerService: LayerService;
     private lastPress: [number, number] = [-1, -1];
+    private readonly editor: Editor;
+    private readonly selectBoxDrawer: SelectBoxDrawer;
+    private readonly vertexDrawer: VertexDrawer;
+    private readonly editorService: EditorService;
 
     constructor() {
         let canvas = document.getElementById('canvas') as
@@ -30,15 +40,22 @@ class AsciiDiag {
         context.strokeStyle = 'black';
         context.lineWidth = 1;
 
+
         this.canvas = canvas;
         this.context = context;
         this.paint = false;
         this.grid = new Grid();
         this.layerService = new LayerService(this.grid);
-        this.toolService = new ToolService(this.grid, this.layerService);
         this.cellDrawer = new CellDrawer(context, this.grid);
         this.gridDrawer = new GridDrawer(this.grid, this.cellDrawer);
-        this.gridDrawer.draw();
+        this.vertexDrawer = new VertexDrawer(context);
+        this.selectBoxDrawer = new SelectBoxDrawer(context, this.vertexDrawer);
+        this.editorService = new EditorService(this.selectBoxDrawer);
+        this.toolService = new ToolService(this.grid, this.layerService, this.selectBoxDrawer, this.editorService);
+
+        const boxEntity = new BoxEntity(10, 10, 20, 20);
+        this.editor = new BoxEditor(boxEntity, this.selectBoxDrawer);
+
         this.redraw();
         this.createUserEvents();
         console.log("Selected tool: " + this.selectedTool());
@@ -61,10 +78,13 @@ class AsciiDiag {
             .addEventListener("click", this.clearEventHandler);
         document.getElementById('box')!
             .addEventListener("click", this.boxToolEventHandler);
+        document.getElementById('box-edit')!
+            .addEventListener("click", this.boxEditToolEventHandler);
         document.getElementById('arrow')!
             .addEventListener("click", this.arrowToolEventHandler);
         document.getElementById('tx')!
             .addEventListener("click", this.textToolEventHandler);
+
 
         document.addEventListener('keydown', (e: KeyboardEvent) => {
             this.toolService.currentTool().keyDown(e.key);
@@ -93,6 +113,10 @@ class AsciiDiag {
         }
         context.closePath();
         this.gridDrawer.draw();
+        this.editor.draw();
+
+
+        this.toolService.currentTool().renderEditor();
     };
 
     private addClick(x: number, y: number, dragging: boolean) {
@@ -115,6 +139,10 @@ class AsciiDiag {
 
     private boxToolEventHandler = () => {
         this.toolService.selectBoxTool();
+    };
+
+    private boxEditToolEventHandler = () => {
+        this.toolService.selectBoxEditTool();
     };
 
     private arrowToolEventHandler = () => {
@@ -155,7 +183,7 @@ class AsciiDiag {
         let [mouseX, mouseY] = this.mousePosition(e);
         this.lastPress = this.fromCanvasToGrid(mouseX, mouseY);
         let [row, column] = this.fromCanvasToGrid(mouseX, mouseY);
-        this.toolService.currentTool().clickDown(row, column);
+        this.toolService.currentTool().mouseDown(row, column);
 
         this.paint = true;
         this.addClick(mouseX, mouseY, false);
@@ -175,7 +203,12 @@ class AsciiDiag {
             this.toolService.currentTool().drag(startRow, startColumn, row, column);
         }
 
+        document.body.style.cursor = 'default';
         this.redraw();
+        const currentEditor = this.editorService.currentEditor();
+        if (currentEditor) {
+            currentEditor.mouseMove(mouseX, mouseY);
+        }
 
         if (this.paint) {
             this.addClick(mouseX, mouseY, true);

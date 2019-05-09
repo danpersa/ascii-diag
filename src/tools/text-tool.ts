@@ -5,7 +5,6 @@ import Cell = Domain.Cell;
 import {LayerService} from "../layer-service";
 import {Entity} from "../entities/entity";
 import {TextEntity} from "../entities/text-entity";
-import grid from "../grid";
 
 export class TextTool implements Tool {
 
@@ -21,7 +20,7 @@ export class TextTool implements Tool {
         this.layerService = layerService;
     }
 
-    clickDown(row: number, column: number): void {
+    mouseDown(row: number, column: number): void {
         const entity = this.layerService.getEntity(row, column);
         console.log("Entity found: " + entity);
         this.done();
@@ -34,7 +33,7 @@ export class TextTool implements Tool {
             });
             this.startCell = this.grid.cell(entity.row, entity.column);
             this.currentCell = this.grid.cell(entity.row, entity.column + entity.text.length);
-            this.currentText  = entity.text;
+            this.currentText = entity.text;
             return;
         }
 
@@ -107,5 +106,8 @@ export class TextTool implements Tool {
     persist(): void {
         const entity: Entity = new TextEntity(this.startCell!.row, this.startCell!.column, this.currentText!);
         this.layerService.addEntity(entity);
+    }
+
+    renderEditor(): void {
     }
 }

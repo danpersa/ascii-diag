@@ -11,7 +11,6 @@ export class CellDrawer {
     constructor(context: CanvasRenderingContext2D, grid: Grid) {
         this.context = context;
         this.grid = grid;
-        context.font = Constants.font;
     }
 
     drawCell(row: number, column: number) {
