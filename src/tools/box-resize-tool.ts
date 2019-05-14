@@ -6,6 +6,9 @@ import {SelectBox} from "../select-box";
 import Constants from "../constants";
 import {BoxDrawer} from "../box-drawer";
 import {Box} from "../box";
+import {ToolService} from "./tool-service";
+import {BoxEditTool} from "./box-edit-tool";
+import {EntitySelectionService} from "./entity-selection-service";
 
 export enum ResizeType {
     TopLeft,
@@ -17,20 +20,25 @@ export enum ResizeType {
 export class BoxResizeTool implements Tool {
 
     private readonly layerService: LayerService;
+    private readonly toolService: ToolService;
     private readonly selectBoxDrawer: SelectBoxDrawer;
     private readonly boxDrawer: BoxDrawer;
+    private readonly entitySelectionService: EntitySelectionService;
     private entity: BoxEntity;
     private selectBox: SelectBox;
     private box: Box | null = null;
     private readonly resizeType: ResizeType;
 
-    constructor(layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entity: BoxEntity, selectBox: SelectBox, resizeType: ResizeType) {
+    constructor(layerService: LayerService, toolService: ToolService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entitySelectionService: EntitySelectionService,
+                entity: BoxEntity, selectBox: SelectBox, resizeType: ResizeType) {
         this.layerService = layerService;
+        this.toolService = toolService;
         this.selectBoxDrawer = selectBoxDrawer;
         this.boxDrawer = boxDrawer;
         this.resizeType = resizeType;
         this.entity = entity;
         this.selectBox = selectBox;
+        this.entitySelectionService = entitySelectionService;
         this.entity.startEditing();
         console.log("Create Box Resize Tool resizeType=" + resizeType + " entity: " + entity.topRow);
     }
@@ -101,6 +109,9 @@ export class BoxResizeTool implements Tool {
             this.selectBox.rightColumn);
         console.log("save entity id=" + entity.id(), " row=" + entity.topRow);
         this.layerService.updateEntity(entity);
+
+        const boxEditTool = new BoxEditTool(this.layerService, this.toolService, this.entitySelectionService, this.selectBoxDrawer, this.boxDrawer, entity);
+        this.toolService.setTool(boxEditTool);
 
         return true;
     }

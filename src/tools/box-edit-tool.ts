@@ -5,6 +5,8 @@ import {BoxEntity} from "../entities/box-entity";
 import {SelectBox} from "../select-box";
 import {BoxResizeTool, ResizeType} from "./box-resize-tool";
 import {BoxDrawer} from "../box-drawer";
+import {ToolService} from "./tool-service";
+import {EntitySelectionService} from "./entity-selection-service";
 
 export class BoxEditTool implements Tool {
 
@@ -13,13 +15,16 @@ export class BoxEditTool implements Tool {
     private readonly boxDrawer: BoxDrawer;
     private readonly entity: BoxEntity;
     private readonly selectBox: SelectBox;
-    private childTool: Tool | null = null;
+    private readonly toolService: ToolService;
+    private readonly entitySelectionService: EntitySelectionService;
 
-    constructor(layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entity: BoxEntity) {
+    constructor(layerService: LayerService, toolService: ToolService, entitySelectionService: EntitySelectionService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entity: BoxEntity) {
         this.layerService = layerService;
+        this.toolService = toolService;
         this.selectBoxDrawer = selectBoxDrawer;
         this.boxDrawer = boxDrawer;
         this.entity = entity;
+        this.entitySelectionService = entitySelectionService;
         this.selectBox = new SelectBox(this.entity.topRow, this.entity.leftColumn, this.entity.bottomRow, this.entity.rightColumn);
     }
 
@@ -39,37 +44,33 @@ export class BoxEditTool implements Tool {
         }
 
         if (resizeType != null) {
-            this.childTool = new BoxResizeTool(this.layerService, this.selectBoxDrawer, this.boxDrawer, this.entity, this.selectBox, resizeType);
+            this.toolService.setTool(
+                new BoxResizeTool(this.layerService,
+                    this.toolService,
+                    this.selectBoxDrawer,
+                    this.boxDrawer,
+                    this.entitySelectionService,
+                    this.entity,
+                    this.selectBox,
+                    resizeType));
             return true;
+        } else {
+            this.entitySelectionService.selectEntityFor(row, column);
         }
 
         return false;
     }
 
     render() {
-        if (this.childTool) {
-            this.childTool.render();
-        } else {
-            this.selectBoxDrawer.draw(this.selectBox);
-        }
+        this.selectBoxDrawer.draw(this.selectBox);
     }
 
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): boolean {
-        //console.log("BoxEditTool drag");
-        if (this.childTool) {
-            //console.log("BoxEditTool: Child tool drag");
-            this.childTool.drag(startRow, startColumn, row, column, x, y);
-            return true;
-        }
-        return false;
+        return true;
     }
 
     mouseUp(row: number, column: number): boolean {
-        if (this.childTool) {
-            this.childTool.mouseUp(row, column);
-            return true;
-        }
-        return false;
+        return true;
     }
 
     keyDown(key: string): boolean {

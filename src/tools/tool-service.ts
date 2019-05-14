@@ -7,8 +7,8 @@ import {LayerService} from "../layer-service";
 import {SelectBoxDrawer} from "../select-box-drawer";
 import {SelectTool} from "./select-tool";
 import {BoxDrawer} from "../box-drawer";
-import {Entity} from "../entities/entity";
 import {EntityIdService} from "../entities/entity-id-service";
+import {EntitySelectionService} from "./entity-selection-service";
 
 export class ToolService {
 
@@ -24,7 +24,8 @@ export class ToolService {
         this.boxTool = new BoxTool(grid, layerService, boxDrawer, entityIdService);
         this.arrowTool = new ArrowTool(grid, layerService);
         this.textTool = new TextTool(grid, layerService, entityIdService);
-        this.selectTool = new SelectTool(grid, layerService, selectBoxDrawer, boxDrawer, entityIdService);
+        const entitySelectionService = new EntitySelectionService(this.layerService, grid, entityIdService, this, selectBoxDrawer, boxDrawer);
+        this.selectTool = new SelectTool(grid, layerService, selectBoxDrawer, boxDrawer, entityIdService, this, entitySelectionService);
         this.toolStack.push(this.boxTool);
     }
 
@@ -51,6 +52,11 @@ export class ToolService {
         console.log("Select tool active");
         this.toolStack.pop();
         this.toolStack.push(this.selectTool);
+    }
+
+    setTool(tool: Tool): void {
+        this.toolStack.pop();
+        this.toolStack.push(tool);
     }
 
     popTool(): void {

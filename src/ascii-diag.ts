@@ -10,6 +10,7 @@ import {Box} from "./box";
 import {BoxDrawer} from "./box-drawer";
 import {Entity} from "./entities/entity";
 import {EntityIdService} from "./entities/entity-id-service";
+import {EntitySelectionService} from "./tools/entity-selection-service";
 
 
 class AsciiDiag {
@@ -51,6 +52,7 @@ class AsciiDiag {
         this.vertexDrawer = new VertexDrawer(context);
         this.selectBoxDrawer = new SelectBoxDrawer(context, this.vertexDrawer);
         this.boxDrawer = new BoxDrawer(context, this.cellDrawer);
+
         this.toolService = new ToolService(this.grid, this.layerService, this.selectBoxDrawer, this.boxDrawer, this.entityIdService);
 
         this.redraw();

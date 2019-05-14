@@ -38,14 +38,6 @@ export class BoxTool implements Tool {
         return true;
     }
 
-    private alterCell(row: number, column: number, value: string) {
-        const currentCell = this.grid.cell(row, column);
-        this.modifiedCells.add(currentCell);
-        this.grid.selectCell(row, column);
-        this.grid.valueCell(row, column, value);
-    }
-
-
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): boolean {
         this.modifiedCells.forEach(cell => {
             this.grid.switchCell(cell);
@@ -58,42 +50,6 @@ export class BoxTool implements Tool {
 
         this.box = new Box(minRow, minColumn, maxRow, maxColumn);
 
-        //
-        //
-        // // start corner
-        // this.alterCell(startRow, startColumn, "+");
-        //
-        // // start horizontal edge
-        // for (let i = minColumn + 1; i < maxColumn; i++) {
-        //     this.alterCell(startRow, i, "-");
-        // }
-        //
-        // for (let i = minRow + 1; i < maxRow; i++) {
-        //     this.alterCell(i, startColumn, "|");
-        // }
-        //
-        // if (minColumn != maxColumn) {
-        //     for (let i = minRow + 1; i < maxRow; i++) {
-        //         this.alterCell(i, column, "|");
-        //     }
-        //
-        //     // horizontal corner
-        //     this.alterCell(startRow, column, "+");
-        // }
-        //
-        // if (minRow != maxRow) {
-        //     for (let i = minColumn + 1; i < maxColumn; i++) {
-        //         this.alterCell(row, i, "-");
-        //     }
-        //
-        //     // vertical corner
-        //     this.alterCell(row, startColumn, "+");
-        // }
-        //
-        // if (minRow != maxRow && minColumn != maxColumn) {
-        //     // end corner
-        //     this.alterCell(row, column, "+");
-        // }
         return true;
     }
 
