@@ -1,5 +1,4 @@
 import {Tool} from "./tool";
-import {LayerService} from "../layer-service";
 import {SelectBoxDrawer} from "../select-box-drawer";
 import {BoxEntity} from "../entities/box-entity";
 import {SelectBox} from "../select-box";
@@ -24,7 +23,7 @@ export class BoxEditTool implements Tool {
         this.selectBox = new SelectBox(this.entity.topRow, this.entity.leftColumn, this.entity.bottomRow, this.entity.rightColumn);
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): boolean {
+    mouseDown(row: number, column: number, x: number, y: number): void {
         console.log("Box Edit Tool click on row: " + row + " column=" + column);
 
         let resizeType: ResizeType | null = null;
@@ -44,24 +43,19 @@ export class BoxEditTool implements Tool {
         } else {
             this.entitySelectionService.selectEntityFor(row, column);
         }
-
-        return false;
     }
 
     render() {
         this.selectBoxDrawer.draw(this.selectBox);
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): boolean {
-        return true;
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
     }
 
-    mouseUp(row: number, column: number): boolean {
-        return true;
+    mouseUp(row: number, column: number): void {
     }
 
-    keyDown(key: string): boolean {
-        return false;
+    keyDown(key: string): void {
     }
 
     persist(): void {
@@ -70,7 +64,7 @@ export class BoxEditTool implements Tool {
     done(): void {
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): boolean {
+    mouseMove(row: number, column: number, x: number, y: number): void {
         if (this.selectBox.topLeftVertex.containsPoint(x, y)) {
             document.body.style.cursor = 'nw-resize';
         } else if (this.selectBox.topRightVertex.containsPoint(x, y)) {
@@ -80,6 +74,5 @@ export class BoxEditTool implements Tool {
         } else if (this.selectBox.bottomRightVertex.containsPoint(x, y)) {
             document.body.style.cursor = 'se-resize';
         }
-        return true;
     }
 }

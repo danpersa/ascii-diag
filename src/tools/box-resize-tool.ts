@@ -45,7 +45,7 @@ export class BoxResizeTool implements Tool {
         return [Math.round(y / Constants.densityY), Math.round(x / Constants.densityX)];
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): boolean {
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
         //console.log("Resize Box Tool drag x=" + x + " y=" + y);
         const [vertexRow, vertexColumn] = this.fromCanvasToVertexPos(x, y);
         //console.log("Vertex row=" + vertexRow + " column=" + vertexColumn + " Resize Type=" + this.resizeType);
@@ -93,10 +93,9 @@ export class BoxResizeTool implements Tool {
             this.selectBox.leftColumn,
             this.selectBox.bottomRow,
             this.selectBox.rightColumn);
-        return true;
     }
 
-    mouseUp(row: number, column: number): boolean {
+    mouseUp(row: number, column: number): void {
         this.entity.endEditing();
 
         const entity = new BoxEntity(
@@ -108,16 +107,12 @@ export class BoxResizeTool implements Tool {
         console.log("save entity id=" + entity.id(), " row=" + entity.topRow);
         this.layerService.updateEntity(entity);
         this.toolService.selectBoxEditTool(entity);
-
-        return true;
     }
 
-    keyDown(key: string): boolean {
-        return false;
+    keyDown(key: string): void {
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): boolean {
-        return true;
+    mouseDown(row: number, column: number, x: number, y: number): void {
     }
 
     persist(): void {
@@ -135,7 +130,6 @@ export class BoxResizeTool implements Tool {
     done(): void {
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): boolean {
-        return false;
+    mouseMove(row: number, column: number, x: number, y: number): void {
     }
 }

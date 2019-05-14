@@ -9,25 +9,21 @@ export class SelectTool implements Tool {
         this.entitySelectionService = entitySelectionService;
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): boolean {
+    mouseDown(row: number, column: number, x: number, y: number): void {
         console.log("Select tool click on row: " + row + " column=" + column);
         this.entitySelectionService.selectEntityFor(row, column);
-        return true;
     }
 
     render() {
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): boolean {
-        return true;
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
     }
 
-    mouseUp(row: number, column: number): boolean {
-        return false;
+    mouseUp(row: number, column: number): void {
     }
 
-    keyDown(key: string): boolean {
-        return true;
+    keyDown(key: string): void {
     }
 
     persist(): void {
@@ -36,7 +32,6 @@ export class SelectTool implements Tool {
     done(): void {
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): boolean {
-        return true;
+    mouseMove(row: number, column: number, x: number, y: number): void {
     }
 }

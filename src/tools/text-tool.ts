@@ -33,21 +33,21 @@ export class TextTool implements Tool {
         this.currentText = entity.text;
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): boolean {
+    mouseDown(row: number, column: number, x: number, y: number): void {
         const entity = this.layerService.getEntity(row, column);
         console.log("Entity found: " + entity);
         //this.done();
 
         if (entity && entity instanceof TextEntity) {
             this.init(entity);
-            return true;
+            return;
         }
 
         this.currentCell = this.grid.cell(row, column);
         this.startCell = this.grid.cell(row, column);
         this.currentText = "";
         this.alterCell(row, column, "");
-        return true;
+        return;
     }
 
     private alterCell(row: number, column: number, value: string) {
@@ -57,11 +57,11 @@ export class TextTool implements Tool {
         this.grid.valueCell(row, column, value);
     }
 
-    keyDown(key: string): boolean {
+    keyDown(key: string): void {
         console.log("Pressed " + key);
 
         if (!this.startCell) {
-            return true;
+            return;
         }
 
         const row = this.currentCell!.row;
@@ -71,7 +71,7 @@ export class TextTool implements Tool {
             console.log("Done");
             this.persist();
             this.done();
-            return true;
+            return;
         }
 
         if (key === "Backspace") {
@@ -81,26 +81,23 @@ export class TextTool implements Tool {
                 this.currentCell = this.grid.cell(row, column - 1);
                 this.currentText = this.currentText!.substr(0, this.currentText!.length - 1);
             }
-            return true;
+            return;
         }
 
         if (key.length > 1) {
-            return true;
+            return;
         }
 
         this.alterCell(row, column, key);
         this.currentText += key;
         this.currentCell = this.grid.cell(row, column + 1);
         this.alterCell(row, column + 1, "");
-        return true;
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): boolean {
-        return false;
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
     }
 
-    mouseUp(row: number, column: number): boolean {
-        return false;
+    mouseUp(row: number, column: number): void {
     }
 
     done(): void {
@@ -125,7 +122,6 @@ export class TextTool implements Tool {
     render(): void {
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): boolean {
-        return false;
+    mouseMove(row: number, column: number, x: number, y: number): void {
     }
 }

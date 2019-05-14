@@ -28,17 +28,16 @@ export class BoxTool implements Tool {
         this.entityIdService = entityIdService;
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): boolean {
+    mouseDown(row: number, column: number, x: number, y: number): void {
         const currentCell = this.grid.cell(row, column);
         this.modifiedCells.add(currentCell);
         this.grid.selectCell(row, column);
         this.grid.valueCell(row, column, "+");
         this.startRow = row;
         this.startColumn = column;
-        return true;
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): boolean {
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
         this.modifiedCells.forEach(cell => {
             this.grid.switchCell(cell);
         });
@@ -49,11 +48,9 @@ export class BoxTool implements Tool {
         const maxColumn = Math.max(startColumn, column);
 
         this.box = new Box(minRow, minColumn, maxRow, maxColumn);
-
-        return true;
     }
 
-    mouseUp(row: number, column: number): boolean {
+    mouseUp(row: number, column: number): void {
         this.endRow = row;
         this.endColumn = column;
         this.modifiedCells.forEach(cell => {
@@ -62,11 +59,9 @@ export class BoxTool implements Tool {
         this.modifiedCells.clear();
         this.persist();
         this.box = null;
-        return true;
     }
 
-    keyDown(key: string): boolean {
-        return false;
+    keyDown(key: string): void {
     }
 
     persist(): void {
@@ -88,7 +83,6 @@ export class BoxTool implements Tool {
     done(): void {
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): boolean {
-        return false;
+    mouseMove(row: number, column: number, x: number, y: number): void {
     }
 }
