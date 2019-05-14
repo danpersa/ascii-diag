@@ -7,23 +7,21 @@ import {Entity} from "../entities/entity";
 import {TextEntity} from "../entities/text-entity";
 import {EntityIdService} from "../entities/entity-id-service";
 
-export class TextTool implements Tool {
+export class TextEditTool implements Tool {
 
     private readonly grid: Grid;
     private readonly layerService: LayerService;
     private readonly entityIdService: EntityIdService;
-    private modifiedCells = new Set<Cell>();
-    private currentCell: Cell | null = null;
-    private startCell: Cell | null = null;
-    private currentText: string | null = null;
+    private readonly currentEntity: TextEntity;
+    private readonly startCell: Cell;
 
-    constructor(grid: Grid, layerService: LayerService, entityIdService: EntityIdService) {
+    private modifiedCells = new Set<Cell>();
+    private currentCell: Cell;
+    private currentText: string;
+
+    constructor(grid: Grid, layerService: LayerService, entityIdService: EntityIdService, entity: TextEntity) {
         this.grid = grid;
         this.layerService = layerService;
-        this.entityIdService = entityIdService;
-    }
-
-    init(entity: TextEntity) {
         entity.cells().forEach(cell => {
             this.grid.selectCell(cell.row, cell.column);
             this.modifiedCells.add(this.grid.cell(cell.row, cell.column));
@@ -31,23 +29,20 @@ export class TextTool implements Tool {
         this.startCell = this.grid.cell(entity.row, entity.column);
         this.currentCell = this.grid.cell(entity.row, entity.column + entity.text.length);
         this.currentText = entity.text;
+        this.currentEntity = entity;
+        this.entityIdService = entityIdService;
     }
 
     mouseDown(row: number, column: number, x: number, y: number): boolean {
         const entity = this.layerService.getEntity(row, column);
         console.log("Entity found: " + entity);
-        //this.done();
 
-        if (entity && entity instanceof TextEntity) {
-            this.init(entity);
+        if (entity && entity instanceof TextEntity && entity === this.currentEntity) {
+            console.log("Still current entity");
             return true;
         }
 
-        this.currentCell = this.grid.cell(row, column);
-        this.startCell = this.grid.cell(row, column);
-        this.currentText = "";
-        this.alterCell(row, column, "");
-        return true;
+        return false;
     }
 
     private alterCell(row: number, column: number, value: string) {
@@ -108,9 +103,6 @@ export class TextTool implements Tool {
             this.grid.unselectCell(cell.row, cell.column);
         });
         this.modifiedCells.clear();
-        this.startCell = null;
-        this.currentCell = null;
-        this.currentText = null;
     }
 
     persist(): void {

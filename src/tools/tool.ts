@@ -1,14 +1,18 @@
 export interface Tool {
 
-    mouseDown(row: number, column: number): void;
+    mouseDown(row: number, column: number, x: number, y: number): boolean;
 
-    drag(startRow: number, startColumn: number, row: number, column: number): void;
+    mouseMove(row: number, column: number, x: number, y: number): boolean;
 
-    keyDown(key: string): void;
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): boolean;
 
-    endDrag(row: number, column: number): void;
+    keyDown(key: string): boolean;
+
+    mouseUp(row: number, column: number): boolean;
 
     persist(): void;
 
-    renderEditor(): void;
+    done(): void;
+
+    render(): void;
 }

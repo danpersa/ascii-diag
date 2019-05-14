@@ -13,6 +13,12 @@ export class CellDrawer {
         this.grid = grid;
     }
 
+    draw(cell: Cell) {
+        this.drawSelected(cell);
+        this.drawBorder(cell);
+        this.drawValue(cell);
+    }
+
     drawCell(row: number, column: number) {
         const cell = this.grid.cell(row, column);
 

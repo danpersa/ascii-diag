@@ -15,11 +15,12 @@ export class ArrowTool implements Tool {
         this.layerService = layerService;
     }
 
-    mouseDown(row: number, column: number): void {
+    mouseDown(row: number, column: number, x: number, y: number): boolean {
         const currentCell = this.grid.cell(row, column);
         this.modifiedCells.add(currentCell);
         this.grid.selectCell(row, column);
         this.grid.valueCell(row, column, "+");
+        return true;
     }
 
     private alterCell(row: number, column: number, value: string) {
@@ -57,7 +58,7 @@ export class ArrowTool implements Tool {
         }
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number): void {
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): boolean {
         this.modifiedCells.forEach(cell => {
             this.grid.switchCell(cell);
         });
@@ -101,22 +102,32 @@ export class ArrowTool implements Tool {
                 this.alterCell(row, column, arrowDirection);
             }
         }
+        return true;
     }
 
-    endDrag(row: number, column: number): void {
+    mouseUp(row: number, column: number): boolean {
         this.modifiedCells.forEach(cell => {
             this.grid.unselectCell(cell.row, cell.column);
         });
         this.modifiedCells.clear();
+        return true;
     }
 
-    keyDown(key: string): void {
+    keyDown(key: string): boolean {
+        return true;
     }
 
     persist(): void {
         throw new Error("Method not implemented.");
     }
 
-    renderEditor(): void {
+    render(): void {
+    }
+
+    done(): void {
+    }
+
+    mouseMove(row: number, column: number, x: number, y: number): boolean {
+        return true;
     }
 }

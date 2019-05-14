@@ -3,13 +3,16 @@ import Cell = Domain.Cell;
 import {Entity} from "./entity";
 
 export class BoxEntity implements Entity {
+    private readonly _id: number;
     private readonly _topRow: number;
     private readonly _leftColumn: number;
     private readonly _bottomRow: number;
     private readonly _rightColumn: number;
     private readonly _cells: Array<Cell>;
+    private _editing: boolean = false;
 
-    constructor(topRow: number, leftColumn: number, bottomRow: number, rightColumn: number) {
+    constructor(id: number, topRow: number, leftColumn: number, bottomRow: number, rightColumn: number) {
+        this._id = id;
         this._topRow = topRow;
         this._leftColumn = leftColumn;
         this._bottomRow = bottomRow;
@@ -65,6 +68,10 @@ export class BoxEntity implements Entity {
         }
     }
 
+    id(): number {
+        return this._id;
+    }
+
     get leftColumn(): number {
         return this._leftColumn;
     }
@@ -83,5 +90,17 @@ export class BoxEntity implements Entity {
 
     cells(): Array<Domain.Cell> {
         return this._cells;
+    }
+
+    editing(): boolean {
+        return this._editing;
+    }
+
+    endEditing(): void {
+        this._editing = false;
+    }
+
+    startEditing(): void {
+        this._editing = true;
     }
 }

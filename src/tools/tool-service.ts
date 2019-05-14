@@ -4,45 +4,56 @@ import {ArrowTool} from "./arrow-tool";
 import {BoxTool} from "./box-tool";
 import {TextTool} from "./text-tool";
 import {LayerService} from "../layer-service";
-import {BoxEditTool} from "./box-edit-tool";
 import {SelectBoxDrawer} from "../select-box-drawer";
-import {EditorService} from "../editors/editor-service";
+import {SelectTool} from "./select-tool";
+import {BoxDrawer} from "../box-drawer";
+import {Entity} from "../entities/entity";
+import {EntityIdService} from "../entities/entity-id-service";
 
 export class ToolService {
 
     private readonly boxTool: Tool;
-    private readonly boxEditTool: Tool;
     private readonly arrowTool: Tool;
     private readonly textTool: Tool;
     private readonly layerService: LayerService;
-    private tool: Tool;
+    private readonly selectTool: SelectTool;
+    private toolStack: Array<Tool> = [];
 
-    constructor(grid: Grid, layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, editorService: EditorService) {
+    constructor(grid: Grid, layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entityIdService: EntityIdService) {
         this.layerService = layerService;
-        this.boxTool = new BoxTool(grid, layerService);
-        this.boxEditTool = new BoxEditTool(layerService, selectBoxDrawer, editorService);
+        this.boxTool = new BoxTool(grid, layerService, boxDrawer, entityIdService);
         this.arrowTool = new ArrowTool(grid, layerService);
-        this.textTool = new TextTool(grid, layerService);
-        this.tool = this.boxTool;
+        this.textTool = new TextTool(grid, layerService, entityIdService);
+        this.selectTool = new SelectTool(grid, layerService, selectBoxDrawer, boxDrawer, entityIdService);
+        this.toolStack.push(this.boxTool);
     }
 
     currentTool(): Tool {
-        return this.tool;
+        return this.toolStack[this.toolStack.length - 1];
     }
 
     selectBoxTool(): void {
-        this.tool = this.boxTool;
-    }
-
-    selectBoxEditTool(): void {
-        this.tool = this.boxEditTool;
+        this.toolStack.pop();
+        this.toolStack.push(this.boxTool);
     }
 
     selectArrowTool(): void {
-        this.tool = this.arrowTool;
+        this.toolStack.pop();
+        this.toolStack.push(this.arrowTool);
     }
 
     selectTextTool(): void {
-        this.tool = this.textTool;
+        this.toolStack.pop();
+        this.toolStack.push(this.textTool);
+    }
+
+    selectSelectTool(): void {
+        console.log("Select tool active");
+        this.toolStack.pop();
+        this.toolStack.push(this.selectTool);
+    }
+
+    popTool(): void {
+        this.toolStack.pop();
     }
 }

@@ -9,14 +9,7 @@ export default class Grid {
 
     constructor() {
         this.cellMatrix = [];
-        console.log("Init grid: numberOfRows: " + Constants.numberOfRows + " numberOfColumns: " + Constants.numberOfColumns);
-        for (let row = 0; row <= Constants.numberOfRows; row++) {
-            this.cellMatrix.push([]);
-            for (let column = 0; column <= Constants.numberOfColumns; column++) {
-                const cell = Domain.Cell.Builder.from(row, column).build();
-                this.cellMatrix[row].push(cell);
-            }
-        }
+        this.init();
     }
 
     cell(row: number, column: number): Domain.Cell {
@@ -43,5 +36,21 @@ export default class Grid {
         const currentCell = this.cellMatrix[row][column];
         const newCell = Domain.Cell.Builder.fromCell(currentCell).selected(false).build();
         this.cellMatrix[row][column] = newCell;
+    }
+
+    private init(): void {
+        console.log("Init grid: numberOfRows: " + Constants.numberOfRows + " numberOfColumns: " + Constants.numberOfColumns);
+        for (let row = 0; row <= Constants.numberOfRows; row++) {
+            this.cellMatrix.push([]);
+            for (let column = 0; column <= Constants.numberOfColumns; column++) {
+                const cell = Domain.Cell.Builder.from(row, column).build();
+                this.cellMatrix[row].push(cell);
+            }
+        }
+    }
+
+    reset(): void {
+        this.cellMatrix.length = 0;
+        this.init();
     }
 }

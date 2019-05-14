@@ -3,12 +3,15 @@ import Cell = Domain.Cell;
 import {Entity} from "./entity";
 
 export class TextEntity implements Entity {
+    private readonly _id: number;
     private readonly _row: number;
     private readonly _column: number;
     private readonly _text: string;
     private readonly _cells: Array<Cell>;
+    private _editing: boolean = false;
 
-    constructor(row: number, column: number, text: string) {
+    constructor(id: number, row: number, column: number, text: string) {
+        this._id = id;
         this._row = row;
         this._column = column;
         this._text = text;
@@ -20,6 +23,10 @@ export class TextEntity implements Entity {
                 .build();
             this._cells.push(cell);
         }
+    }
+
+    id(): number {
+        return this._id;
     }
 
     get text(): string {
@@ -36,5 +43,17 @@ export class TextEntity implements Entity {
 
     cells(): Array<Domain.Cell> {
         return this._cells;
+    }
+
+    editing(): boolean {
+        return this._editing;
+    }
+
+    endEditing(): void {
+        this._editing = false;
+    }
+
+    startEditing(): void {
+        this._editing = true;
     }
 }
