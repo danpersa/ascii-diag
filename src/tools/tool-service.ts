@@ -9,14 +9,24 @@ import {SelectTool} from "./select-tool";
 import {BoxDrawer} from "../box-drawer";
 import {EntityIdService} from "../entities/entity-id-service";
 import {EntitySelectionService} from "./entity-selection-service";
+import {BoxEditTool} from "./box-edit-tool";
+import {BoxEntity} from "../entities/box-entity";
+import {TextEntity} from "../entities/text-entity";
+import {TextEditTool} from "./text-edit-tool";
+import {BoxResizeTool, ResizeType} from "./box-resize-tool";
 
 export class ToolService {
 
     private readonly boxTool: Tool;
     private readonly arrowTool: Tool;
     private readonly textTool: Tool;
+    private readonly grid: Grid;
     private readonly layerService: LayerService;
     private readonly selectTool: SelectTool;
+    private readonly entitySelectionService: EntitySelectionService;
+    private readonly boxDrawer: BoxDrawer;
+    private readonly selectBoxDrawer: SelectBoxDrawer;
+    private readonly entityIdService: EntityIdService;
     private toolStack: Array<Tool> = [];
 
     constructor(grid: Grid, layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entityIdService: EntityIdService) {
@@ -24,8 +34,12 @@ export class ToolService {
         this.boxTool = new BoxTool(grid, layerService, boxDrawer, entityIdService);
         this.arrowTool = new ArrowTool(grid, layerService);
         this.textTool = new TextTool(grid, layerService, entityIdService);
-        const entitySelectionService = new EntitySelectionService(this.layerService, grid, entityIdService, this, selectBoxDrawer, boxDrawer);
-        this.selectTool = new SelectTool(grid, layerService, selectBoxDrawer, boxDrawer, entityIdService, this, entitySelectionService);
+        this.entitySelectionService = new EntitySelectionService(this.layerService, grid, entityIdService, this);
+        this.selectTool = new SelectTool(this.entitySelectionService);
+        this.selectBoxDrawer = selectBoxDrawer;
+        this.boxDrawer = boxDrawer;
+        this.grid = grid;
+        this.entityIdService = entityIdService;
         this.toolStack.push(this.boxTool);
     }
 
@@ -52,6 +66,25 @@ export class ToolService {
         console.log("Select tool active");
         this.toolStack.pop();
         this.toolStack.push(this.selectTool);
+    }
+
+    selectBoxResizeTool(entity: BoxEntity, resizeType: ResizeType): void {
+        const boxResizeTool = new BoxResizeTool(this.layerService, this, this.selectBoxDrawer, this.boxDrawer, entity, resizeType);
+        this.setTool(boxResizeTool);
+    }
+
+    selectBoxEditTool(entity: BoxEntity): void {
+        const boxEditTool = new BoxEditTool(this, this.entitySelectionService, this.selectBoxDrawer, entity);
+        this.setTool(boxEditTool);
+    }
+
+    selectTextEditTool(entity: TextEntity): void {
+        const textEditTool = new TextEditTool(
+            this.grid,
+            this.layerService,
+            this.entityIdService,
+            entity);
+        this.setTool(textEditTool);
     }
 
     setTool(tool: Tool): void {

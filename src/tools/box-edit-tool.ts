@@ -3,26 +3,22 @@ import {LayerService} from "../layer-service";
 import {SelectBoxDrawer} from "../select-box-drawer";
 import {BoxEntity} from "../entities/box-entity";
 import {SelectBox} from "../select-box";
-import {BoxResizeTool, ResizeType} from "./box-resize-tool";
-import {BoxDrawer} from "../box-drawer";
+import {ResizeType} from "./box-resize-tool";
 import {ToolService} from "./tool-service";
 import {EntitySelectionService} from "./entity-selection-service";
 
 export class BoxEditTool implements Tool {
 
-    private readonly layerService: LayerService;
     private readonly selectBoxDrawer: SelectBoxDrawer;
-    private readonly boxDrawer: BoxDrawer;
-    private readonly entity: BoxEntity;
-    private readonly selectBox: SelectBox;
     private readonly toolService: ToolService;
     private readonly entitySelectionService: EntitySelectionService;
 
-    constructor(layerService: LayerService, toolService: ToolService, entitySelectionService: EntitySelectionService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entity: BoxEntity) {
-        this.layerService = layerService;
+    private readonly entity: BoxEntity;
+    private readonly selectBox: SelectBox;
+
+    constructor(toolService: ToolService, entitySelectionService: EntitySelectionService, selectBoxDrawer: SelectBoxDrawer, entity: BoxEntity) {
         this.toolService = toolService;
         this.selectBoxDrawer = selectBoxDrawer;
-        this.boxDrawer = boxDrawer;
         this.entity = entity;
         this.entitySelectionService = entitySelectionService;
         this.selectBox = new SelectBox(this.entity.topRow, this.entity.leftColumn, this.entity.bottomRow, this.entity.rightColumn);
@@ -44,16 +40,7 @@ export class BoxEditTool implements Tool {
         }
 
         if (resizeType != null) {
-            this.toolService.setTool(
-                new BoxResizeTool(this.layerService,
-                    this.toolService,
-                    this.selectBoxDrawer,
-                    this.boxDrawer,
-                    this.entitySelectionService,
-                    this.entity,
-                    this.selectBox,
-                    resizeType));
-            return true;
+            this.toolService.selectBoxResizeTool(this.entity, resizeType);
         } else {
             this.entitySelectionService.selectEntityFor(row, column);
         }

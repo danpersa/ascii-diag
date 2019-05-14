@@ -6,12 +6,9 @@ import {GridDrawer} from "./grid-drawer";
 import {LayerService} from "./layer-service";
 import {SelectBoxDrawer} from "./select-box-drawer";
 import {VertexDrawer} from "./vertex-drawer";
-import {Box} from "./box";
 import {BoxDrawer} from "./box-drawer";
 import {Entity} from "./entities/entity";
 import {EntityIdService} from "./entities/entity-id-service";
-import {EntitySelectionService} from "./tools/entity-selection-service";
-
 
 class AsciiDiag {
     private readonly canvas: HTMLCanvasElement;
