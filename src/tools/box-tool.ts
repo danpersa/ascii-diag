@@ -1,7 +1,5 @@
 import {Tool} from "./tool";
 import Grid from "../grid";
-import {Domain} from "../cell";
-import Cell = Domain.Cell;
 import {LayerService} from "../layer-service";
 import {BoxEntity} from "../entities/box-entity";
 import {BoxDrawer} from "../box-drawer";
@@ -14,7 +12,6 @@ export class BoxTool implements Tool {
     private readonly layerService: LayerService;
     private readonly boxDrawer: BoxDrawer;
     private readonly entityIdService: EntityIdService;
-    private modifiedCells = new Set<Cell>();
     private startRow: number = 0;
     private startColumn: number = 0;
     private endRow: number = 0;
@@ -29,8 +26,6 @@ export class BoxTool implements Tool {
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {
-        const currentCell = this.grid.cell(row, column);
-        this.modifiedCells.add(currentCell);
         this.grid.selectCell(row, column);
         this.grid.valueCell(row, column, "+");
         this.startRow = row;
@@ -38,9 +33,6 @@ export class BoxTool implements Tool {
     }
 
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
-        this.modifiedCells.forEach(cell => {
-            this.grid.switchCell(cell);
-        });
 
         const minRow = Math.min(startRow, row);
         const maxRow = Math.max(startRow, row);
@@ -53,10 +45,6 @@ export class BoxTool implements Tool {
     mouseUp(row: number, column: number): void {
         this.endRow = row;
         this.endColumn = column;
-        this.modifiedCells.forEach(cell => {
-            this.grid.unselectCell(cell.row, cell.column);
-        });
-        this.modifiedCells.clear();
         this.persist();
         this.box = null;
     }
