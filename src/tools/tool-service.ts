@@ -2,7 +2,7 @@ import Grid from '../grid'
 import {Tool} from "./tool";
 import {ArrowTool} from "./arrow-tool";
 import {BoxTool} from "./box-tool";
-import {TextTool} from "./text-tool";
+import {CreateTextTool} from "./create-text-tool";
 import {LayerService} from "../layer-service";
 import {SelectBoxDrawer} from "../select-box-drawer";
 import {SelectTool} from "./select-tool";
@@ -14,6 +14,8 @@ import {BoxEntity} from "../entities/box-entity";
 import {TextEntity} from "../entities/text-entity";
 import {TextEditTool} from "./text-edit-tool";
 import {BoxResizeTool, ResizeType} from "./box-resize-tool";
+import {TextDrawer} from "../text-drawer";
+import {CursorDrawer} from "../cursor-drawer";
 
 export class ToolService {
 
@@ -29,11 +31,11 @@ export class ToolService {
     private readonly entityIdService: EntityIdService;
     private toolStack: Array<Tool> = [];
 
-    constructor(grid: Grid, layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entityIdService: EntityIdService) {
+    constructor(grid: Grid, layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entityIdService: EntityIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer) {
         this.layerService = layerService;
         this.boxTool = new BoxTool(grid, layerService, boxDrawer, entityIdService);
         this.arrowTool = new ArrowTool(grid, layerService);
-        this.textTool = new TextTool(grid, layerService, entityIdService);
+        this.textTool = new CreateTextTool(layerService, entityIdService, textDrawer, cursorDrawer);
         this.entitySelectionService = new EntitySelectionService(this.layerService, grid, entityIdService, this);
         this.selectTool = new SelectTool(this.entitySelectionService);
         this.selectBoxDrawer = selectBoxDrawer;

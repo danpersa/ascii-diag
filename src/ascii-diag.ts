@@ -9,6 +9,8 @@ import {VertexDrawer} from "./vertex-drawer";
 import {BoxDrawer} from "./box-drawer";
 import {Entity} from "./entities/entity";
 import {EntityIdService} from "./entities/entity-id-service";
+import {TextDrawer} from "./text-drawer";
+import {CursorDrawer} from "./cursor-drawer";
 
 class AsciiDiag {
     private readonly canvas: HTMLCanvasElement;
@@ -49,8 +51,10 @@ class AsciiDiag {
         this.vertexDrawer = new VertexDrawer(context);
         this.selectBoxDrawer = new SelectBoxDrawer(context, this.vertexDrawer);
         this.boxDrawer = new BoxDrawer(context, this.cellDrawer);
+        const textDrawer = new TextDrawer(context, this.cellDrawer);
+        const cursorDrawer = new CursorDrawer(context);
 
-        this.toolService = new ToolService(this.grid, this.layerService, this.selectBoxDrawer, this.boxDrawer, this.entityIdService);
+        this.toolService = new ToolService(this.grid, this.layerService, this.selectBoxDrawer, this.boxDrawer, this.entityIdService, textDrawer, cursorDrawer);
 
         this.redraw();
         this.createUserEvents();

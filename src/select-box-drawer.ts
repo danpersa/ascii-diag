@@ -1,6 +1,7 @@
 import {VertexDrawer} from "./vertex-drawer";
 import {Vertex} from "./vertex";
 import {SelectBox} from "./select-box";
+import Constants from "./constants";
 
 
 export class SelectBoxDrawer {
@@ -14,7 +15,7 @@ export class SelectBoxDrawer {
     }
 
     draw(box: SelectBox): void {
-        this.context.strokeStyle = `rgb(255, 165, 0, 1.0)`;
+        this.context.strokeStyle = Constants.accentColor;
         this.context.lineWidth = 1.0;
         this.context.strokeRect(box.canvasX, box.canvasY, box.canvasWidth, box.canvasHeight);
 

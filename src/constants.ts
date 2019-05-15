@@ -8,4 +8,5 @@ export default class Constants {
     static readonly numberOfColumns = Constants.canvasWidth / Constants.densityX;
 
     static readonly font = '11px Courier';
+    static readonly accentColor = `rgb(255, 165, 0, 1.0)`;
 }
