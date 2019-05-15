@@ -39,4 +39,11 @@ export class LayerService {
             this.entities[index] = entity;
         }
     }
+
+    deleteEntity(id: number): void {
+        const entityIndex = this.entities.findIndex(entity => entity.id() === id);
+        if (entityIndex > -1) {
+            this.entities.splice(entityIndex, 1);
+        }
+    }
 }

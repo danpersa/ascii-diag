@@ -7,14 +7,14 @@ import {Text} from "../text";
 import {TextDrawer} from "../text-drawer";
 import {CursorDrawer} from "../cursor-drawer";
 
-export class CreateTextTool implements Tool {
+export class TextCreateTool implements Tool {
 
-    private readonly layerService: LayerService;
-    private readonly entityIdService: EntityIdService;
-    private readonly textDrawer: TextDrawer;
-    private readonly cursorDrawer: CursorDrawer;
+    protected readonly layerService: LayerService;
+    protected readonly entityIdService: EntityIdService;
+    protected readonly textDrawer: TextDrawer;
+    protected readonly cursorDrawer: CursorDrawer;
 
-    private currentText: Text | null = null;
+    protected currentText: Text | null = null;
 
     constructor(layerService: LayerService, entityIdService: EntityIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer) {
         this.layerService = layerService;
@@ -23,32 +23,13 @@ export class CreateTextTool implements Tool {
         this.cursorDrawer = cursorDrawer;
     }
 
-    // init(entity: TextEntity) {
-    //     entity.cells().forEach(cell => {
-    //         this.grid.selectCell(cell.row, cell.column);
-    //     });
-    //     this.startCell = this.grid.cell(entity.row, entity.column);
-    //     this.currentCell = this.grid.cell(entity.row, entity.column + entity.text.length);
-    //     this.currentText = entity.text;
-    // }
-
     mouseDown(row: number, column: number, x: number, y: number): void {
-        const entity = this.layerService.getEntity(row, column);
-        console.log("Entity found: " + entity);
-        //this.done();
-
-        // if (entity && entity instanceof TextEntity) {
-        //     this.init(entity);
-        //     return;
-        // }
         if (this.currentText) {
             this.persist();
             this.done();
         } else {
             this.currentText = new Text(row, column, "");
         }
-
-        return;
     }
 
     keyDown(key: string): void {
@@ -57,7 +38,6 @@ export class CreateTextTool implements Tool {
         if (!this.currentText) {
             return;
         }
-
 
         if (key === "Enter") {
             console.log("Done");
@@ -96,6 +76,9 @@ export class CreateTextTool implements Tool {
             this.currentText!.row,
             this.currentText!.column,
             this.currentText!.text);
+        if (this.currentText!.text.length == 0) {
+            return;
+        }
         this.layerService.createEntity(entity);
     }
 

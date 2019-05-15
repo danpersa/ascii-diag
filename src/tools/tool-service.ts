@@ -2,7 +2,7 @@ import Grid from '../grid'
 import {Tool} from "./tool";
 import {ArrowTool} from "./arrow-tool";
 import {BoxTool} from "./box-tool";
-import {CreateTextTool} from "./create-text-tool";
+import {TextCreateTool} from "./text-create-tool";
 import {LayerService} from "../layer-service";
 import {SelectBoxDrawer} from "../select-box-drawer";
 import {SelectTool} from "./select-tool";
@@ -29,13 +29,17 @@ export class ToolService {
     private readonly boxDrawer: BoxDrawer;
     private readonly selectBoxDrawer: SelectBoxDrawer;
     private readonly entityIdService: EntityIdService;
+    private readonly cursorDrawer: CursorDrawer;
+    private readonly textDrawer: TextDrawer;
     private toolStack: Array<Tool> = [];
 
     constructor(grid: Grid, layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entityIdService: EntityIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer) {
         this.layerService = layerService;
+        this.cursorDrawer = cursorDrawer;
+        this.textDrawer = textDrawer;
         this.boxTool = new BoxTool(grid, layerService, boxDrawer, entityIdService);
         this.arrowTool = new ArrowTool(grid, layerService);
-        this.textTool = new CreateTextTool(layerService, entityIdService, textDrawer, cursorDrawer);
+        this.textTool = new TextCreateTool(layerService, entityIdService, textDrawer, cursorDrawer);
         this.entitySelectionService = new EntitySelectionService(this.layerService, grid, entityIdService, this);
         this.selectTool = new SelectTool(this.entitySelectionService);
         this.selectBoxDrawer = selectBoxDrawer;
@@ -81,11 +85,7 @@ export class ToolService {
     }
 
     selectTextEditTool(entity: TextEntity): void {
-        const textEditTool = new TextEditTool(
-            this.grid,
-            this.layerService,
-            this.entityIdService,
-            entity);
+        const textEditTool = new TextEditTool(this.layerService, this.entityIdService, this.textDrawer, this.cursorDrawer, this.entitySelectionService, entity);
         this.setTool(textEditTool);
     }
 

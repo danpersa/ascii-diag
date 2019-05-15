@@ -74,8 +74,6 @@ class AsciiDiag {
         canvas.addEventListener("touchend", this.releaseEventHandler);
         canvas.addEventListener("touchcancel", this.cancelEventHandler);
 
-        document.getElementById('clear')!
-            .addEventListener("click", this.clearEventHandler);
         document.getElementById('box')!
             .addEventListener("click", this.boxToolEventHandler);
         document.getElementById('arrow')!
@@ -120,18 +118,6 @@ class AsciiDiag {
         this.clickX.push(x);
         this.clickY.push(y);
         this.clickDrag.push(dragging);
-    };
-
-    private clearCanvas() {
-        this.context
-            .clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.clickX = [];
-        this.clickY = [];
-        this.clickDrag = [];
-    };
-
-    private clearEventHandler = () => {
-        this.clearCanvas();
     };
 
     private boxToolEventHandler = () => {

@@ -1,36 +1,25 @@
 import {Tool} from "./tool";
-import Grid from "../grid";
-import {Domain} from "../cell";
-import Cell = Domain.Cell;
 import {LayerService} from "../layer-service";
 import {Entity} from "../entities/entity";
 import {TextEntity} from "../entities/text-entity";
 import {EntityIdService} from "../entities/entity-id-service";
+import {TextCreateTool} from "./text-create-tool";
+import {TextDrawer} from "../text-drawer";
+import {CursorDrawer} from "../cursor-drawer";
+import {Text} from "../text";
+import {EntitySelectionService} from "./entity-selection-service";
 
-export class TextEditTool implements Tool {
+export class TextEditTool extends TextCreateTool implements Tool {
 
-    private readonly grid: Grid;
-    private readonly layerService: LayerService;
-    private readonly entityIdService: EntityIdService;
     private readonly currentEntity: TextEntity;
-    private readonly startCell: Cell;
+    private readonly entitySelectionService: EntitySelectionService;
 
-    private modifiedCells = new Set<Cell>();
-    private currentCell: Cell;
-    private currentText: string;
-
-    constructor(grid: Grid, layerService: LayerService, entityIdService: EntityIdService, entity: TextEntity) {
-        this.grid = grid;
-        this.layerService = layerService;
-        entity.cells().forEach(cell => {
-            this.grid.selectCell(cell.row, cell.column);
-            this.modifiedCells.add(this.grid.cell(cell.row, cell.column));
-        });
-        this.startCell = this.grid.cell(entity.row, entity.column);
-        this.currentCell = this.grid.cell(entity.row, entity.column + entity.text.length);
-        this.currentText = entity.text;
+    constructor(layerService: LayerService, entityIdService: EntityIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer, entitySelectionService: EntitySelectionService, entity: TextEntity) {
+        super(layerService, entityIdService, textDrawer, cursorDrawer);
+        this.entitySelectionService = entitySelectionService;
         this.currentEntity = entity;
-        this.entityIdService = entityIdService;
+        this.currentText = new Text(this.currentEntity.row, this.currentEntity.column, this.currentEntity.text);
+        this.currentEntity.startEditing();
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {
@@ -39,78 +28,25 @@ export class TextEditTool implements Tool {
 
         if (entity && entity instanceof TextEntity && entity === this.currentEntity) {
             console.log("Still current entity");
-        }
-    }
-
-    private alterCell(row: number, column: number, value: string) {
-        const currentCell = this.grid.cell(row, column);
-        this.modifiedCells.add(currentCell);
-        this.grid.selectCell(row, column);
-        this.grid.valueCell(row, column, value);
-    }
-
-    keyDown(key: string): void {
-        console.log("Pressed " + key);
-
-        if (!this.startCell) {
-            return;
-        }
-
-        const row = this.currentCell!.row;
-        const column = this.currentCell!.column;
-
-        if (key === "Enter") {
-            console.log("Done");
-            this.persist();
-            this.done();
-            return;
-        }
-
-        if (key === "Backspace") {
-            if (column > this.startCell.column) {
-                this.grid.unselectCell(row, column);
-                this.alterCell(row, column - 1, "");
-                this.currentCell = this.grid.cell(row, column - 1);
-                this.currentText = this.currentText!.substr(0, this.currentText!.length - 1);
+        } else {
+            if (this.currentText) {
+                this.persist();
             }
-            return;
+            this.entitySelectionService.selectEntityFor(row, column);
         }
-
-        if (key.length > 1) {
-            return;
-        }
-
-        this.alterCell(row, column, key);
-        this.currentText += key;
-        this.currentCell = this.grid.cell(row, column + 1);
-        this.alterCell(row, column + 1, "");
-    }
-
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
-    }
-
-    mouseUp(row: number, column: number): void {
-    }
-
-    done(): void {
-        this.modifiedCells.forEach(cell => {
-            this.grid.unselectCell(cell.row, cell.column);
-        });
-        this.modifiedCells.clear();
     }
 
     persist(): void {
         const entity: Entity = new TextEntity(
-            this.entityIdService.nextId(),
-            this.startCell!.row,
-            this.startCell!.column,
-            this.currentText!);
-        this.layerService.createEntity(entity);
-    }
-
-    render(): void {
-    }
-
-    mouseMove(row: number, column: number, x: number, y: number): void {
+            this.currentEntity.id(),
+            this.currentText!.row,
+            this.currentText!.column,
+            this.currentText!.text);
+        if (this.currentText!.text.length > 0) {
+            this.layerService.updateEntity(entity);
+            this.currentEntity.endEditing();
+        } else {
+            this.layerService.deleteEntity(this.currentEntity.id());
+        }
     }
 }
