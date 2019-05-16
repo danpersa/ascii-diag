@@ -18,18 +18,10 @@ export class SelectBoxDrawer {
         this.context.strokeStyle = Constants.accentColor;
         this.context.lineWidth = 1.0;
         this.context.strokeRect(box.canvasX, box.canvasY, box.canvasWidth, box.canvasHeight);
-
-
-        const topLeftVertex = new Vertex(box.topRow, box.leftColumn);
-        this.vertexDrawer.draw(topLeftVertex);
-
-        const topRightVertex = new Vertex(box.topRow, box.rightColumn + 1);
-        this.vertexDrawer.draw(topRightVertex);
-
-        const bottomLeftVertex = new Vertex(box.bottomRow + 1, box.leftColumn);
-        this.vertexDrawer.draw(bottomLeftVertex);
-
-        const bottomRightVertex = new Vertex(box.bottomRow + 1, box.rightColumn + 1);
-        this.vertexDrawer.draw(bottomRightVertex);
+        this.vertexDrawer.draw(box.topLeftVertex);
+        this.vertexDrawer.draw(box.topRightVertex);
+        this.vertexDrawer.draw(box.bottomLeftVertex);
+        this.vertexDrawer.draw(box.bottomRightVertex);
+        this.vertexDrawer.draw(box.centerVertex);
     }
 }

@@ -39,7 +39,8 @@ export default class Grid {
     }
 
     private init(): void {
-        console.log("Init grid: numberOfRows: " + Constants.numberOfRows + " numberOfColumns: " + Constants.numberOfColumns);
+        // console.log("Init grid: numberOfRows: " + Constants.numberOfRows + " numberOfColumns: " + Constants.numberOfColumns);
+        // this is called too many times, should be optimized
         for (let row = 0; row <= Constants.numberOfRows; row++) {
             this.cellMatrix.push([]);
             for (let column = 0; column <= Constants.numberOfColumns; column++) {

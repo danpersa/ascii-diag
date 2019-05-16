@@ -1,24 +1,20 @@
 import Constants from "./constants";
 
 export class Vertex {
-    private _canvasX: number;
-    private _canvasY: number;
-    private _row: number;
-    private _column: number;
+    private readonly _canvasX: number;
+    private readonly _canvasY: number;
 
-    constructor(row: number, column: number) {
-        this._row = row;
-        this._column = column;
-        this._canvasX = this._column * Constants.densityX;
-        this._canvasY = this._row * Constants.densityY;
+    static fromGrid(row: number, column: number) {
+        return new Vertex(column * Constants.densityX, row * Constants.densityY);
     }
 
-    get column(): number {
-        return this._column;
+    static fromCanvas(canvasX: number, canvasY: number) {
+        return new Vertex(canvasX, canvasY);
     }
 
-    get row(): number {
-        return this._row;
+    private constructor(canvasX: number, canvasY: number) {
+        this._canvasX = canvasX;
+        this._canvasY = canvasY;
     }
 
     get canvasY(): number {

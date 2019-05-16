@@ -1,18 +1,24 @@
 import {Box} from "./box";
 import {Vertex} from "./vertex";
+import Constants from "./constants";
 
 export class SelectBox extends Box {
-    private _topLeftVertex: Vertex;
-    private _topRightVertex: Vertex;
-    private _bottomLeftVertex: Vertex;
-    private _bottomRightVertex: Vertex;
+    private readonly _topLeftVertex: Vertex;
+    private readonly _topRightVertex: Vertex;
+    private readonly _bottomLeftVertex: Vertex;
+    private readonly _bottomRightVertex: Vertex;
+    private readonly _centerVertex: Vertex;
 
     constructor(topRow: number, leftColumn: number, bottomRow: number, rightColumn: number) {
         super(topRow, leftColumn, bottomRow, rightColumn);
-        this._topLeftVertex = new Vertex(this.topRow, this.leftColumn);
-        this._topRightVertex = new Vertex(this.topRow, this.rightColumn + 1);
-        this._bottomLeftVertex = new Vertex(this.bottomRow + 1, this.leftColumn);
-        this._bottomRightVertex = new Vertex(this.bottomRow + 1, this.rightColumn + 1);
+        this._topLeftVertex = Vertex.fromGrid(this.topRow, this.leftColumn);
+        this._topRightVertex = Vertex.fromGrid(this.topRow, this.rightColumn + 1);
+        this._bottomLeftVertex = Vertex.fromGrid(this.bottomRow + 1, this.leftColumn);
+        this._bottomRightVertex = Vertex.fromGrid(this.bottomRow + 1, this.rightColumn + 1);
+        this._centerVertex = Vertex.fromCanvas(
+            leftColumn * Constants.densityX + (rightColumn + 1 - leftColumn) * Constants.densityX / 2,
+            topRow * Constants.densityY + (bottomRow + 1 - topRow) * Constants.densityY / 2
+        );
     }
 
     get bottomRightVertex(): Vertex {
@@ -29,5 +35,9 @@ export class SelectBox extends Box {
 
     get topLeftVertex(): Vertex {
         return this._topLeftVertex;
+    }
+
+    get centerVertex(): Vertex {
+        return this._centerVertex;
     }
 }

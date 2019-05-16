@@ -40,6 +40,8 @@ export class BoxEditTool implements Tool {
 
         if (resizeType != null) {
             this.toolService.selectBoxResizeTool(this.entity, resizeType);
+        } else if (this.selectBox.centerVertex.containsPoint(x, y)) {
+            this.toolService.selectBoxMoveTool(this.entity);
         } else {
             this.entitySelectionService.selectEntityFor(row, column);
         }
@@ -73,6 +75,8 @@ export class BoxEditTool implements Tool {
             document.body.style.cursor = 'sw-resize';
         } else if (this.selectBox.bottomRightVertex.containsPoint(x, y)) {
             document.body.style.cursor = 'se-resize';
+        } else if (this.selectBox.centerVertex.containsPoint(x, y)) {
+            document.body.style.cursor = 'move';
         }
     }
 }

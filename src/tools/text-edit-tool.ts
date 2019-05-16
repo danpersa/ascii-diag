@@ -42,10 +42,12 @@ export class TextEditTool extends TextCreateTool implements Tool {
             this.currentText!.row,
             this.currentText!.column,
             this.currentText!.text);
+
         if (this.currentText!.text.length > 0) {
             this.layerService.updateEntity(entity);
             this.currentEntity.endEditing();
         } else {
+            // we deleted all text, so we delete the entity
             this.layerService.deleteEntity(this.currentEntity.id());
         }
     }

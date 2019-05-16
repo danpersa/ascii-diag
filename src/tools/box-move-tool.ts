@@ -8,14 +8,7 @@ import {BoxDrawer} from "../box-drawer";
 import {Box} from "../box";
 import {ToolService} from "./tool-service";
 
-export enum ResizeType {
-    TopLeft,
-    TopRight,
-    BottomLeft,
-    BottomRight
-}
-
-export class BoxResizeTool implements Tool {
+export class BoxMoveTool implements Tool {
 
     private readonly layerService: LayerService;
     private readonly toolService: ToolService;
@@ -24,19 +17,16 @@ export class BoxResizeTool implements Tool {
     private entity: BoxEntity;
     private selectBox: SelectBox;
     private box: Box | null = null;
-    private readonly resizeType: ResizeType;
 
-    constructor(layerService: LayerService, toolService: ToolService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entity: BoxEntity,
-                resizeType: ResizeType) {
+    constructor(layerService: LayerService, toolService: ToolService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entity: BoxEntity) {
         this.layerService = layerService;
         this.toolService = toolService;
         this.selectBoxDrawer = selectBoxDrawer;
         this.boxDrawer = boxDrawer;
-        this.resizeType = resizeType;
         this.entity = entity;
         this.selectBox = new SelectBox(this.entity.topRow, this.entity.leftColumn, this.entity.bottomRow, this.entity.rightColumn);
         this.entity.startEditing();
-        console.log("Create Box Resize Tool resizeType=" + resizeType + " entity: " + entity.topRow);
+        console.log("Create Box Move Tool entity: " + entity.topRow);
     }
 
     private fromCanvasToVertexPos(x: number, y: number): [number, number] {
@@ -46,44 +36,26 @@ export class BoxResizeTool implements Tool {
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
         const [vertexRow, vertexColumn] = this.fromCanvasToVertexPos(x, y);
 
-        switch (this.resizeType) {
-            case ResizeType.TopLeft: {
-                this.selectBox = new SelectBox(
-                    Math.min(vertexRow, this.selectBox.bottomRow),
-                    Math.min(vertexColumn, this.selectBox.rightColumn),
-                    this.selectBox.bottomRow,
-                    this.selectBox.rightColumn);
-                document.body.style.cursor = 'nw-resize';
-                break;
-            }
-            case ResizeType.TopRight: {
-                this.selectBox = new SelectBox(
-                    Math.min(vertexRow, this.selectBox.bottomRow),
-                    this.selectBox.leftColumn,
-                    this.selectBox.bottomRow,
-                    Math.max(vertexColumn, this.selectBox.leftColumn));
-                document.body.style.cursor = 'ne-resize';
-                break;
-            }
-            case ResizeType.BottomLeft: {
-                this.selectBox = new SelectBox(
-                    this.selectBox.topRow,
-                    Math.min(vertexColumn, this.selectBox.rightColumn),
-                    Math.max(vertexRow, this.selectBox.topRow),
-                    this.selectBox.rightColumn);
-                document.body.style.cursor = 'sw-resize';
-                break;
-            }
-            case ResizeType.BottomRight: {
-                this.selectBox = new SelectBox(
-                    this.selectBox.topRow,
-                    this.selectBox.leftColumn,
-                    Math.max(vertexRow, this.selectBox.topRow),
-                    Math.max(vertexColumn, this.selectBox.leftColumn));
-                document.body.style.cursor = 'se-resize';
-                break;
-            }
+        const numberOfRows = this.entity.bottomRow - this.entity.topRow;
+        const numberOfColumns = this.entity.rightColumn - this.entity.leftColumn;
+
+        const newTopRow = vertexRow - Math.round(numberOfRows / 2);
+        const newLeftColumn = vertexColumn - Math.round(numberOfColumns / 2);
+
+        const newBottomRow = newTopRow + numberOfRows;
+        const newRightColumn = newLeftColumn + numberOfColumns;
+
+        if (newTopRow < 0 || newLeftColumn < 0 || newBottomRow >= Constants.numberOfRows || newRightColumn >= Constants.numberOfColumns) {
+            return
         }
+
+        this.selectBox = new SelectBox(
+            newTopRow,
+            newLeftColumn,
+            newBottomRow,
+            newRightColumn);
+        document.body.style.cursor = 'move';
+
         this.box = new Box(
             this.selectBox.topRow,
             this.selectBox.leftColumn,
@@ -100,7 +72,6 @@ export class BoxResizeTool implements Tool {
             this.selectBox.leftColumn,
             this.selectBox.bottomRow,
             this.selectBox.rightColumn);
-        console.log("save entity id=" + entity.id(), " row=" + entity.topRow);
         this.layerService.updateEntity(entity);
         this.toolService.selectBoxEditTool(entity);
     }

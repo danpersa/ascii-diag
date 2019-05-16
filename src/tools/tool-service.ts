@@ -16,6 +16,7 @@ import {TextEditTool} from "./text-edit-tool";
 import {BoxResizeTool, ResizeType} from "./box-resize-tool";
 import {TextDrawer} from "../text-drawer";
 import {CursorDrawer} from "../cursor-drawer";
+import {BoxMoveTool} from "./box-move-tool";
 
 export class ToolService {
 
@@ -77,6 +78,11 @@ export class ToolService {
     selectBoxResizeTool(entity: BoxEntity, resizeType: ResizeType): void {
         const boxResizeTool = new BoxResizeTool(this.layerService, this, this.selectBoxDrawer, this.boxDrawer, entity, resizeType);
         this.setTool(boxResizeTool);
+    }
+
+    selectBoxMoveTool(entity: BoxEntity): void {
+        const boxMoveTool = new BoxMoveTool(this.layerService, this, this.selectBoxDrawer, this.boxDrawer, entity);
+        this.setTool(boxMoveTool);
     }
 
     selectBoxEditTool(entity: BoxEntity): void {
