@@ -65,15 +65,7 @@ export class BoxMoveTool implements Tool {
 
     mouseUp(row: number, column: number): void {
         this.entity.endEditing();
-
-        const entity = new BoxEntity(
-            this.entity.id(),
-            this.selectBox.topRow,
-            this.selectBox.leftColumn,
-            this.selectBox.bottomRow,
-            this.selectBox.rightColumn);
-        this.layerService.updateEntity(entity);
-        this.toolService.selectBoxEditTool(entity);
+        this.persist();
     }
 
     keyDown(key: string): void {
@@ -83,6 +75,14 @@ export class BoxMoveTool implements Tool {
     }
 
     persist(): void {
+        const entity = new BoxEntity(
+            this.entity.id(),
+            this.selectBox.topRow,
+            this.selectBox.leftColumn,
+            this.selectBox.bottomRow,
+            this.selectBox.rightColumn);
+        this.layerService.updateEntity(entity);
+        this.toolService.selectBoxEditTool(entity);
     }
 
     render(): void {

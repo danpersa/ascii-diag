@@ -8,17 +8,31 @@ import {TextDrawer} from "../text-drawer";
 import {CursorDrawer} from "../cursor-drawer";
 import {Text} from "../text";
 import {EntitySelectionService} from "./entity-selection-service";
+import {Vertex} from "../vertex";
+import {VertexDrawer} from "../vertex-drawer";
+import {ToolService} from "./tool-service";
 
 export class TextEditTool extends TextCreateTool implements Tool {
 
-    private readonly currentEntity: TextEntity;
     private readonly entitySelectionService: EntitySelectionService;
+    private readonly vertexDrawer: VertexDrawer;
+    private readonly toolService: ToolService;
 
-    constructor(layerService: LayerService, entityIdService: EntityIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer, entitySelectionService: EntitySelectionService, entity: TextEntity) {
+    private readonly currentEntity: TextEntity;
+    private moveVertex: Vertex;
+
+    constructor(layerService: LayerService, toolService: ToolService, entityIdService: EntityIdService, textDrawer: TextDrawer,
+                cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, entitySelectionService: EntitySelectionService,
+                entity: TextEntity) {
+
         super(layerService, entityIdService, textDrawer, cursorDrawer);
         this.entitySelectionService = entitySelectionService;
+        this.vertexDrawer = vertexDrawer;
+        this.toolService = toolService;
+
         this.currentEntity = entity;
         this.currentText = new Text(this.currentEntity.row, this.currentEntity.column, this.currentEntity.text);
+        this.moveVertex = Vertex.fromGrid(this.currentEntity.row, this.currentEntity.column);
         this.currentEntity.startEditing();
     }
 
@@ -28,11 +42,35 @@ export class TextEditTool extends TextCreateTool implements Tool {
 
         if (entity && entity instanceof TextEntity && entity === this.currentEntity) {
             console.log("Still current entity");
+            this.toolService.selectTextMoveTool(this.currentEntity);
         } else {
             if (this.currentText) {
                 this.persist();
             }
             this.entitySelectionService.selectEntityFor(row, column);
+        }
+    }
+
+    private updateMoveVertex() {
+        if (this.currentText) {
+            this.moveVertex = Vertex.fromGrid(this.currentEntity.row, this.currentEntity.column);
+        }
+    }
+
+    protected addChar(char: string): void {
+        super.addChar(char);
+        this.updateMoveVertex();
+    }
+
+    protected removeChar(): void {
+        super.removeChar();
+        this.updateMoveVertex();
+    }
+
+    render(): void {
+        super.render();
+        if (this.currentText) {
+            this.vertexDrawer.draw(this.moveVertex);
         }
     }
 
@@ -49,6 +87,12 @@ export class TextEditTool extends TextCreateTool implements Tool {
         } else {
             // we deleted all text, so we delete the entity
             this.layerService.deleteEntity(this.currentEntity.id());
+        }
+    }
+
+    mouseMove(row: number, column: number, x: number, y: number): void {
+        if (this.moveVertex.containsPoint(x, y)) {
+            document.body.style.cursor = 'move';
         }
     }
 }

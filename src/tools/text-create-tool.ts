@@ -32,6 +32,16 @@ export class TextCreateTool implements Tool {
         }
     }
 
+    protected addChar(char: string): void {
+        this.currentText!.addChar(char);
+    }
+
+    protected removeChar(): void {
+        if (this.currentText && this.currentText.text.length != 0) {
+            this.currentText.removeChar();
+        }
+    }
+
     keyDown(key: string): void {
         console.log("Pressed " + key);
 
@@ -47,17 +57,14 @@ export class TextCreateTool implements Tool {
         }
 
         if (key === "Backspace") {
-            if (this.currentText.text.length != 0) {
-                this.currentText.removeChar();
-            }
+            this.removeChar();
             return;
         }
 
         if (key.length > 1) {
             return;
         }
-
-        this.currentText.addChar(key);
+        this.addChar(key);
     }
 
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {

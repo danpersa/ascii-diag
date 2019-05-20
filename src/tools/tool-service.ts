@@ -17,6 +17,8 @@ import {BoxResizeTool, ResizeType} from "./box-resize-tool";
 import {TextDrawer} from "../text-drawer";
 import {CursorDrawer} from "../cursor-drawer";
 import {BoxMoveTool} from "./box-move-tool";
+import {VertexDrawer} from "../vertex-drawer";
+import {TextMoveTool} from "./text-move-tool";
 
 export class ToolService {
 
@@ -32,9 +34,11 @@ export class ToolService {
     private readonly entityIdService: EntityIdService;
     private readonly cursorDrawer: CursorDrawer;
     private readonly textDrawer: TextDrawer;
+    private readonly vertexDrawer: VertexDrawer;
     private toolStack: Array<Tool> = [];
 
-    constructor(grid: Grid, layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entityIdService: EntityIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer) {
+    constructor(grid: Grid, layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer,
+                entityIdService: EntityIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer) {
         this.layerService = layerService;
         this.cursorDrawer = cursorDrawer;
         this.textDrawer = textDrawer;
@@ -45,6 +49,7 @@ export class ToolService {
         this.selectTool = new SelectTool(this.entitySelectionService);
         this.selectBoxDrawer = selectBoxDrawer;
         this.boxDrawer = boxDrawer;
+        this.vertexDrawer = vertexDrawer;
         this.grid = grid;
         this.entityIdService = entityIdService;
         this.toolStack.push(this.boxTool);
@@ -91,8 +96,15 @@ export class ToolService {
     }
 
     selectTextEditTool(entity: TextEntity): void {
-        const textEditTool = new TextEditTool(this.layerService, this.entityIdService, this.textDrawer, this.cursorDrawer, this.entitySelectionService, entity);
+        const textEditTool = new TextEditTool(this.layerService, this, this.entityIdService, this.textDrawer, this.cursorDrawer,
+            this.vertexDrawer, this.entitySelectionService, entity);
         this.setTool(textEditTool);
+    }
+
+    selectTextMoveTool(entity: TextEntity): void {
+        const textMoveTool = new TextMoveTool(this.layerService, this, this.selectBoxDrawer, this.boxDrawer,
+            this.vertexDrawer, this.textDrawer, entity);
+        this.setTool(textMoveTool);
     }
 
     setTool(tool: Tool): void {

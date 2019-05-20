@@ -54,7 +54,8 @@ class AsciiDiag {
         const textDrawer = new TextDrawer(context, this.cellDrawer);
         const cursorDrawer = new CursorDrawer(context);
 
-        this.toolService = new ToolService(this.grid, this.layerService, this.selectBoxDrawer, this.boxDrawer, this.entityIdService, textDrawer, cursorDrawer);
+        this.toolService = new ToolService(this.grid, this.layerService, this.selectBoxDrawer, this.boxDrawer,
+            this.entityIdService, textDrawer, cursorDrawer, this.vertexDrawer);
 
         this.redraw();
         this.createUserEvents();
