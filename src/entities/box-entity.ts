@@ -1,6 +1,8 @@
 import {Domain} from "../cell";
 import Cell = Domain.Cell;
 import {Entity} from "./entity";
+import {ArrayBoxDrawer} from "../box-drawer";
+import {Box} from "../box";
 
 export class BoxEntity implements Entity {
     private readonly _id: number;
@@ -18,54 +20,10 @@ export class BoxEntity implements Entity {
         this._bottomRow = bottomRow;
         this._rightColumn = rightColumn;
         this._cells = [];
-        this.addCorners();
-        this.addTopAndBottomEdges();
-        this.addLeftAndRightEdges();
-    }
 
-    private addCorners() {
-        const topLeftCorner: Cell = Cell.Builder.from(this.topRow, this.leftColumn)
-            .value("+")
-            .build();
-        const downRightCorner = Cell.Builder.from(this.bottomRow, this.rightColumn)
-            .value("+")
-            .build();
-        const topRightCorner = Cell.Builder.from(this.topRow, this.rightColumn)
-            .value("+")
-            .build();
-        const downLeftCorner = Cell.Builder.from(this.bottomRow, this.leftColumn)
-            .value("+")
-            .build();
-        this._cells.push(topLeftCorner);
-        this._cells.push(topRightCorner);
-        this._cells.push(downLeftCorner);
-        this._cells.push(downRightCorner);
-    }
-
-    private addLeftAndRightEdges() {
-        for (let row = this.topRow + 1; row < this.bottomRow; ++row) {
-            const leftEdgeCell = Cell.Builder.from(row, this.leftColumn)
-                .value("|")
-                .build();
-            const rightEdgeCell = Cell.Builder.from(row, this.rightColumn)
-                .value("|")
-                .build();
-            this._cells.push(leftEdgeCell);
-            this._cells.push(rightEdgeCell);
-        }
-    }
-
-    private addTopAndBottomEdges() {
-        for (let column = this.leftColumn + 1; column < this.rightColumn; ++column) {
-            const topEdgeCell = Cell.Builder.from(this.topRow, column)
-                .value("-")
-                .build();
-            const downEdgeCell = Cell.Builder.from(this.bottomRow, column)
-                .value("-")
-                .build();
-            this._cells.push(topEdgeCell);
-            this._cells.push(downEdgeCell);
-        }
+        const boxDrawer = new ArrayBoxDrawer();
+        boxDrawer.draw(new Box(topRow, leftColumn, bottomRow, rightColumn));
+        this._cells = boxDrawer.cells;
     }
 
     id(): number {
