@@ -6,7 +6,7 @@ import {BoxDrawer} from "../box-drawer";
 import {Box} from "../box";
 import {EntityIdService} from "../entities/entity-id-service";
 
-export class BoxTool implements Tool {
+export class BoxCreateTool implements Tool {
 
     private readonly grid: Grid;
     private readonly layerService: LayerService;
@@ -26,10 +26,9 @@ export class BoxTool implements Tool {
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {
-        this.grid.selectCell(row, column);
-        this.grid.valueCell(row, column, "+");
         this.startRow = row;
         this.startColumn = column;
+        this.box = new Box(row, column, row, column);
     }
 
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {

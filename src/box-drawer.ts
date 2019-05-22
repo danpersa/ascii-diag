@@ -7,10 +7,8 @@ import Cell = Domain.Cell;
 export class BoxDrawer {
 
     private cellDrawer: CellDrawer;
-    private readonly context: CanvasRenderingContext2D;
 
-    constructor(context: CanvasRenderingContext2D, cellDrawer: CellDrawer) {
-        this.context = context;
+    constructor(cellDrawer: CellDrawer) {
         this.cellDrawer = cellDrawer;
     }
 

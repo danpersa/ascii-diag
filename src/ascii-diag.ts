@@ -11,6 +11,8 @@ import {Entity} from "./entities/entity";
 import {EntityIdService} from "./entities/entity-id-service";
 import {TextDrawer} from "./text-drawer";
 import {CursorDrawer} from "./cursor-drawer";
+import {ArrowDrawer} from "./arrow-drawer";
+import {Arrow, ArrowDirection} from "./arrow";
 
 class AsciiDiag {
     private readonly canvas: HTMLCanvasElement;
@@ -30,6 +32,7 @@ class AsciiDiag {
     private readonly vertexDrawer: VertexDrawer;
     private readonly boxDrawer: BoxDrawer;
     private readonly entityIdService: EntityIdService;
+    private readonly arrowDrawer: ArrowDrawer;
 
     constructor() {
         let canvas = document.getElementById('canvas') as
@@ -50,12 +53,13 @@ class AsciiDiag {
         this.gridDrawer = new GridDrawer(this.grid, this.cellDrawer);
         this.vertexDrawer = new VertexDrawer(context);
         this.selectBoxDrawer = new SelectBoxDrawer(context, this.vertexDrawer);
-        this.boxDrawer = new BoxDrawer(context, this.cellDrawer);
-        const textDrawer = new TextDrawer(context, this.cellDrawer);
+        this.boxDrawer = new BoxDrawer(this.cellDrawer);
+        this.arrowDrawer = new ArrowDrawer(this.cellDrawer);
+        const textDrawer = new TextDrawer(this.cellDrawer);
         const cursorDrawer = new CursorDrawer(context);
 
         this.toolService = new ToolService(this.grid, this.layerService, this.selectBoxDrawer, this.boxDrawer,
-            this.entityIdService, textDrawer, cursorDrawer, this.vertexDrawer);
+            this.entityIdService, textDrawer, cursorDrawer, this.vertexDrawer, this.arrowDrawer);
 
         this.redraw();
         this.createUserEvents();
@@ -100,7 +104,6 @@ class AsciiDiag {
         this.grid.reset();
         this.addEntitiesToGrid();
         this.gridDrawer.draw();
-
 
         this.toolService.currentTool().render();
     };

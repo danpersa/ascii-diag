@@ -1,7 +1,7 @@
 import Grid from '../grid'
 import {Tool} from "./tool";
-import {ArrowTool} from "./arrow-tool";
-import {BoxTool} from "./box-tool";
+import {ArrowCreateTool} from "./arrow-create-tool";
+import {BoxCreateTool} from "./box-create-tool";
 import {TextCreateTool} from "./text-create-tool";
 import {LayerService} from "../layer-service";
 import {SelectBoxDrawer} from "../select-box-drawer";
@@ -19,11 +19,12 @@ import {CursorDrawer} from "../cursor-drawer";
 import {BoxMoveTool} from "./box-move-tool";
 import {VertexDrawer} from "../vertex-drawer";
 import {TextMoveTool} from "./text-move-tool";
+import {ArrowDrawer} from "../arrow-drawer";
 
 export class ToolService {
 
     private readonly boxTool: Tool;
-    private readonly arrowTool: Tool;
+    private readonly arrowCreateTool: Tool;
     private readonly textTool: Tool;
     private readonly grid: Grid;
     private readonly layerService: LayerService;
@@ -35,15 +36,18 @@ export class ToolService {
     private readonly cursorDrawer: CursorDrawer;
     private readonly textDrawer: TextDrawer;
     private readonly vertexDrawer: VertexDrawer;
+    private readonly arrowDrawer: ArrowDrawer;
     private toolStack: Array<Tool> = [];
 
     constructor(grid: Grid, layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer,
-                entityIdService: EntityIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer) {
+                entityIdService: EntityIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer,
+                arrowDrawer: ArrowDrawer) {
         this.layerService = layerService;
         this.cursorDrawer = cursorDrawer;
         this.textDrawer = textDrawer;
-        this.boxTool = new BoxTool(grid, layerService, boxDrawer, entityIdService);
-        this.arrowTool = new ArrowTool(grid, layerService);
+        this.arrowDrawer = arrowDrawer;
+        this.boxTool = new BoxCreateTool(grid, layerService, boxDrawer, entityIdService);
+        this.arrowCreateTool = new ArrowCreateTool(grid, layerService, entityIdService, arrowDrawer);
         this.textTool = new TextCreateTool(layerService, entityIdService, textDrawer, cursorDrawer);
         this.entitySelectionService = new EntitySelectionService(this.layerService, grid, entityIdService, this);
         this.selectTool = new SelectTool(this.entitySelectionService);
@@ -66,7 +70,8 @@ export class ToolService {
 
     selectArrowTool(): void {
         this.toolStack.pop();
-        this.toolStack.push(this.arrowTool);
+        this.toolStack.push(this.arrowCreateTool);
+        console.log("Arrow tool active");
     }
 
     selectTextTool(): void {
