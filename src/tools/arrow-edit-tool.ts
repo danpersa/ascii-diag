@@ -6,11 +6,13 @@ import {ArrowEntity} from "../entities/arrow-entity";
 import {Vertex} from "../vertex";
 import {ArrowVertexFactory} from "./arrow-vertex-factory";
 import {ArrowModifyType} from "./arrow-modify-tool";
+import {LayerService} from "../layer-service";
 
 export class ArrowEditTool implements Tool {
 
     private readonly vertexDrawer: VertexDrawer;
     private readonly toolService: ToolService;
+    private readonly layerService: LayerService;
     private readonly entitySelectionService: EntitySelectionService;
 
     private readonly entity: ArrowEntity;
@@ -18,9 +20,11 @@ export class ArrowEditTool implements Tool {
     private readonly startArrowVertex: Vertex;
     private readonly endArrowVertex: Vertex;
 
-    constructor(toolService: ToolService, entitySelectionService: EntitySelectionService, vertexDrawer: VertexDrawer,
+    constructor(toolService: ToolService, layerService: LayerService, entitySelectionService: EntitySelectionService,
+                vertexDrawer: VertexDrawer,
                 arrowVertexFactory: ArrowVertexFactory, entity: ArrowEntity) {
         this.toolService = toolService;
+        this.layerService = layerService;
         this.vertexDrawer = vertexDrawer;
         this.entity = entity;
         this.entitySelectionService = entitySelectionService;
@@ -59,6 +63,10 @@ export class ArrowEditTool implements Tool {
     }
 
     keyDown(key: string): void {
+        if (key === "Backspace" || key === "Delete") {
+            this.layerService.deleteEntity(this.entity.id());
+            this.toolService.selectSelectTool();
+        }
     }
 
     persist(): void {

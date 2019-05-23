@@ -103,12 +103,12 @@ export class ToolService {
     }
 
     selectBoxEditTool(entity: BoxEntity): void {
-        const boxEditTool = new BoxEditTool(this, this.entitySelectionService, this.selectBoxDrawer, entity);
+        const boxEditTool = new BoxEditTool(this, this.layerService, this.entitySelectionService, this.selectBoxDrawer, entity);
         this.setTool(boxEditTool);
     }
 
     selectArrowEditTool(entity: ArrowEntity): void {
-        const arrowEditTool = new ArrowEditTool(this, this.entitySelectionService, this.vertexDrawer, this.arrowVertexFactory, entity);
+        const arrowEditTool = new ArrowEditTool(this, this.layerService, this.entitySelectionService, this.vertexDrawer, this.arrowVertexFactory, entity);
         this.setTool(arrowEditTool);
     }
 

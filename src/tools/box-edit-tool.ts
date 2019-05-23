@@ -5,18 +5,22 @@ import {SelectBox} from "../select-box";
 import {ResizeType} from "./box-resize-tool";
 import {ToolService} from "./tool-service";
 import {EntitySelectionService} from "./entity-selection-service";
+import {LayerService} from "../layer-service";
 
 export class BoxEditTool implements Tool {
 
     private readonly selectBoxDrawer: SelectBoxDrawer;
     private readonly toolService: ToolService;
     private readonly entitySelectionService: EntitySelectionService;
+    private readonly layerService: LayerService;
 
     private readonly entity: BoxEntity;
     private readonly selectBox: SelectBox;
 
-    constructor(toolService: ToolService, entitySelectionService: EntitySelectionService, selectBoxDrawer: SelectBoxDrawer, entity: BoxEntity) {
+
+    constructor(toolService: ToolService, layerService: LayerService, entitySelectionService: EntitySelectionService, selectBoxDrawer: SelectBoxDrawer, entity: BoxEntity) {
         this.toolService = toolService;
+        this.layerService = layerService
         this.selectBoxDrawer = selectBoxDrawer;
         this.entity = entity;
         this.entitySelectionService = entitySelectionService;
@@ -58,6 +62,10 @@ export class BoxEditTool implements Tool {
     }
 
     keyDown(key: string): void {
+        if (key === "Backspace" || key === "Delete") {
+            this.layerService.deleteEntity(this.entity.id());
+            this.toolService.selectSelectTool();
+        }
     }
 
     persist(): void {
