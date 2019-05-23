@@ -4,26 +4,17 @@ import Cell = Domain.Cell;
 import {Arrow, ArrowDirection} from "../arrow";
 import {ArrayArrowDrawer} from "../arrow-drawer";
 
-export class ArrowEntity implements Entity {
+export class ArrowEntity extends Arrow implements Entity {
 
     private readonly _id: number;
-    private readonly _startRow: number;
-    private readonly _startColumn: number;
-    private readonly _endRow: number;
-    private readonly _endColumn: number;
-    private readonly _startDirection: ArrowDirection;
     private readonly _cells: Array<Cell>;
     private _editing: boolean = false;
 
     constructor(id: number, startRow: number, startColumn: number, endRow: number, endColumn: number, startDirection: ArrowDirection) {
+        super(startRow, startColumn, endRow, endColumn, startDirection);
         this._id = id;
-        this._startRow = startRow;
-        this._startColumn = startColumn;
-        this._endRow = endRow;
-        this._endColumn = endColumn;
-        this._startDirection = startDirection;
         const arrowDrawer = new ArrayArrowDrawer();
-        arrowDrawer.draw(new Arrow(startRow, startColumn, endRow, endColumn, startDirection));
+        arrowDrawer.draw(this);
         this._cells = arrowDrawer.cells;
     }
 

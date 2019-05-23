@@ -1,5 +1,4 @@
 import {VertexDrawer} from "./vertex-drawer";
-import {Vertex} from "./vertex";
 import {SelectBox} from "./select-box";
 import Constants from "./constants";
 

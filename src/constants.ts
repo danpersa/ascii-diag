@@ -1,3 +1,5 @@
+import {ArrowDirection} from "./arrow";
+
 export default class Constants {
     static readonly canvasWidth = 800;
     static readonly canvasHeight = 600;
@@ -9,4 +11,6 @@ export default class Constants {
 
     static readonly font = '11px Courier';
     static readonly accentColor = `rgb(255, 165, 0, 1.0)`;
+    static readonly vertexRadius = 7;
+    static readonly arrowStartDirection = ArrowDirection.Horizontal;
 }

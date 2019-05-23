@@ -1,4 +1,5 @@
 import {Vertex} from "./vertex";
+import Constants from "./constants";
 
 export class VertexDrawer {
 
@@ -10,6 +11,6 @@ export class VertexDrawer {
 
     draw(vertex: Vertex) {
         this.context.fillStyle = `rgb(255, 165, 0, 1.0)`;
-        this.context.fillRect(vertex.canvasX - 3, vertex.canvasY - 3, 6, 6);
+        this.context.fillRect(vertex.canvasX - 3, vertex.canvasY - 3, Constants.vertexRadius, Constants.vertexRadius);
     }
 }

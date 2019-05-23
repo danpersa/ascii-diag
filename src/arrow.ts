@@ -5,11 +5,11 @@ export enum ArrowDirection {
 
 
 export class Arrow {
-    private readonly _startRow: number;
-    private readonly _startColumn: number;
-    private readonly _endRow: number;
-    private readonly _endColumn: number;
-    private readonly _startDirection: ArrowDirection;
+    protected readonly _startRow: number;
+    protected readonly _startColumn: number;
+    protected readonly _endRow: number;
+    protected readonly _endColumn: number;
+    protected readonly _startDirection: ArrowDirection;
 
     constructor(startRow: number, startColumn: number, endRow: number, endColumn: number, startDirection: ArrowDirection) {
         this._startRow = startRow;

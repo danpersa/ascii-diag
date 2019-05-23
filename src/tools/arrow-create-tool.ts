@@ -3,8 +3,9 @@ import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
 import {ArrowDrawer} from "../arrow-drawer";
 import {EntityIdService} from "../entities/entity-id-service";
-import {Arrow, ArrowDirection} from "../arrow";
+import {Arrow} from "../arrow";
 import {ArrowEntity} from "../entities/arrow-entity";
+import Constants from "../constants";
 
 export class ArrowCreateTool implements Tool {
 
@@ -28,11 +29,11 @@ export class ArrowCreateTool implements Tool {
     mouseDown(row: number, column: number, x: number, y: number): void {
         this.startRow = row;
         this.startColumn = column;
-        this.arrow = new Arrow(row, column, row, column, ArrowDirection.Horizontal);
+        this.arrow = new Arrow(row, column, row, column, Constants.arrowStartDirection);
     }
 
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
-        this.arrow = new Arrow(startRow, startColumn, row, column, ArrowDirection.Horizontal);
+        this.arrow = new Arrow(startRow, startColumn, row, column, Constants.arrowStartDirection);
     }
 
     mouseUp(row: number, column: number): void {
@@ -52,7 +53,7 @@ export class ArrowCreateTool implements Tool {
             this.startColumn,
             this.endRow,
             this.endColumn,
-            ArrowDirection.Horizontal);
+            Constants.arrowStartDirection);
         this.layerService.createEntity(entity);
     }
 

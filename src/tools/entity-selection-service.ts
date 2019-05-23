@@ -4,6 +4,7 @@ import {LayerService} from "../layer-service";
 import Grid from "../grid";
 import {EntityIdService} from "../entities/entity-id-service";
 import {ToolService} from "./tool-service";
+import {ArrowEntity} from "../entities/arrow-entity";
 
 export class EntitySelectionService {
 
@@ -19,10 +20,11 @@ export class EntitySelectionService {
         const entity = this.layerService.getEntity(row, column);
 
         if (entity && entity instanceof TextEntity) {
-            console.log("Selected text");
             this.toolService.selectTextEditTool(entity);
         } else if (entity && entity instanceof BoxEntity) {
             this.toolService.selectBoxEditTool(entity);
+        } else if (entity && entity instanceof ArrowEntity) {
+            this.toolService.selectArrowEditTool(entity);
         } else {
             this.toolService.selectSelectTool();
         }
