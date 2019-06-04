@@ -1,8 +1,8 @@
 import {ArrowDirection} from "./arrow";
 
 export default class Constants {
-    static readonly canvasWidth = 800;
-    static readonly canvasHeight = 600;
+    static readonly canvasWidth = 700;
+    static readonly canvasHeight = 400;
     static readonly densityX = 10;
     static readonly densityY = 20;
 

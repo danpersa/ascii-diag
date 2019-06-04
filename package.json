@@ -2,7 +2,9 @@
   "name": "ascii-diag",
   "version": "0.0.1",
   "main": "src/index.html",
-  "dependencies": {},
+  "dependencies": {
+    "@svgdotjs/svg.js": "3.0.12"
+  },
   "scripts": {
     "start": "parcel src/index.html --open",
     "build": "parcel build src/index.html",

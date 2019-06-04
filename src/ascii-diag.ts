@@ -12,7 +12,7 @@ import {EntityIdService} from "./entities/entity-id-service";
 import {TextDrawer} from "./text-drawer";
 import {CursorDrawer} from "./cursor-drawer";
 import {ArrowDrawer} from "./arrow-drawer";
-import {Arrow, ArrowDirection} from "./arrow";
+import {DiagToSvg} from "./svg/diag-to-svg";
 
 class AsciiDiag {
     private readonly canvas: HTMLCanvasElement;
@@ -33,6 +33,7 @@ class AsciiDiag {
     private readonly boxDrawer: BoxDrawer;
     private readonly entityIdService: EntityIdService;
     private readonly arrowDrawer: ArrowDrawer;
+    private readonly diagToSvg: DiagToSvg;
 
     constructor() {
         let canvas = document.getElementById('canvas') as
@@ -61,9 +62,13 @@ class AsciiDiag {
         this.toolService = new ToolService(this.grid, this.layerService, this.selectBoxDrawer, this.boxDrawer,
             this.entityIdService, textDrawer, cursorDrawer, this.vertexDrawer, this.arrowDrawer);
 
+        this.diagToSvg = new DiagToSvg(this.layerService);
+
         this.redraw();
         this.createUserEvents();
         console.log("Selected tool: " + this.selectedTool());
+
+
     }
 
     private createUserEvents() {
@@ -106,6 +111,7 @@ class AsciiDiag {
         this.gridDrawer.draw();
 
         this.toolService.currentTool().render();
+        this.diagToSvg.render();
     };
 
     private addEntitiesToGrid() {
