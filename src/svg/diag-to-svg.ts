@@ -1,16 +1,19 @@
 import {Svg} from "@svgdotjs/svg.js";
-import {LayerService} from "../layer-service";
 import {Entity} from "../entities/entity";
 import {BoxEntity} from "../entities/box-entity";
 import Constants from "../constants";
 import {ArrowEntity} from "../entities/arrow-entity";
 import {ArrowDirection} from "../arrow";
 import {TextEntity} from "../entities/text-entity";
+import {RefObject} from "react";
+import {LayerService} from "../layer-service";
 
 export class DiagToSvg {
-    private layerService: LayerService;
+    private readonly layerService: LayerService;
+    private readonly ref: RefObject<HTMLDivElement>;
 
-    constructor(layerService: LayerService) {
+    constructor(ref: RefObject<HTMLDivElement>, layerService: LayerService) {
+        this.ref = ref;
         this.layerService = layerService;
     }
 
@@ -47,15 +50,15 @@ export class DiagToSvg {
                     add.tspan(entity.text)
                 }).font({
                     family: 'Courier',
-                    size: 17,
-                    stretch: 'expanded',
-                    weight: 'bold'
+                    size: 16.5,
+                    //stretch: 'expanded',
+                    //weight: 'bold'
 
                 }).move(startX, startY);
 
             }
         });
 
-        document.getElementById("drawing")!.innerHTML = draw.svg();
+        this.ref.current!.innerHTML = draw.svg();
     }
 }

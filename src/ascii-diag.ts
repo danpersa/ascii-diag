@@ -4,17 +4,11 @@ import Constants from "./constants";
 import {CellDrawer} from "./cell-drawer";
 import {GridDrawer} from "./grid-drawer";
 import {LayerService} from "./layer-service";
-import {SelectBoxDrawer} from "./select-box-drawer";
-import {VertexDrawer} from "./vertex-drawer";
-import {BoxDrawer} from "./box-drawer";
 import {Entity} from "./entities/entity";
 import {EntityIdService} from "./entities/entity-id-service";
-import {TextDrawer} from "./text-drawer";
-import {CursorDrawer} from "./cursor-drawer";
-import {ArrowDrawer} from "./arrow-drawer";
 import {DiagToSvg} from "./svg/diag-to-svg";
 
-class AsciiDiag {
+export default class AsciiDiag {
     private readonly canvas: HTMLCanvasElement;
     private readonly context: CanvasRenderingContext2D;
     private paint: boolean;
@@ -28,47 +22,24 @@ class AsciiDiag {
     private readonly toolService: ToolService;
     private readonly layerService: LayerService;
     private lastPress: [number, number] = [-1, -1];
-    private readonly selectBoxDrawer: SelectBoxDrawer;
-    private readonly vertexDrawer: VertexDrawer;
-    private readonly boxDrawer: BoxDrawer;
     private readonly entityIdService: EntityIdService;
-    private readonly arrowDrawer: ArrowDrawer;
     private readonly diagToSvg: DiagToSvg;
 
-    constructor() {
-        let canvas = document.getElementById('canvas') as
-            HTMLCanvasElement;
-        let context = canvas.getContext("2d")!;
-        context.lineCap = 'round';
-        context.lineJoin = 'round';
-        context.strokeStyle = 'black';
-        context.lineWidth = 1;
-
+    constructor(canvas: HTMLCanvasElement, grid: Grid, layerService: LayerService, diagToSvg: DiagToSvg, cellDrawer: CellDrawer, toolService: ToolService, context: CanvasRenderingContext2D) {
+        this.diagToSvg = diagToSvg;
         this.canvas = canvas;
         this.context = context;
         this.paint = false;
-        this.grid = new Grid();
+        this.grid = grid;
         this.entityIdService = new EntityIdService();
-        this.layerService = new LayerService(this.grid);
-        this.cellDrawer = new CellDrawer(context, this.grid);
+        this.layerService = layerService;
+        this.cellDrawer = cellDrawer;
         this.gridDrawer = new GridDrawer(this.grid, this.cellDrawer);
-        this.vertexDrawer = new VertexDrawer(context);
-        this.selectBoxDrawer = new SelectBoxDrawer(context, this.vertexDrawer);
-        this.boxDrawer = new BoxDrawer(this.cellDrawer);
-        this.arrowDrawer = new ArrowDrawer(this.cellDrawer);
-        const textDrawer = new TextDrawer(this.cellDrawer);
-        const cursorDrawer = new CursorDrawer(context);
-
-        this.toolService = new ToolService(this.grid, this.layerService, this.selectBoxDrawer, this.boxDrawer,
-            this.entityIdService, textDrawer, cursorDrawer, this.vertexDrawer, this.arrowDrawer);
-
-        this.diagToSvg = new DiagToSvg(this.layerService);
+        this.toolService = toolService;
 
         this.redraw();
         this.createUserEvents();
         console.log("Selected tool: " + this.selectedTool());
-
-
     }
 
     private createUserEvents() {
@@ -222,5 +193,3 @@ class AsciiDiag {
         }
     }
 }
-
-new AsciiDiag();

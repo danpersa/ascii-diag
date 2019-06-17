@@ -2,12 +2,13 @@
 
 <head>
     <title>Canvas demo</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 </head>
 
 <body>
-<canvas id="canvas" width="700" height="400"
-        style="border: 1px solid black;">
-</canvas>
+
 <div>
     <input type="button" id="select" name="select" value="Select">
     <input type="button" id="box" name="box" value="Box">
@@ -15,9 +16,11 @@
     <input type="button" id="tx" name="tx" value="Text">
 </div>
 
+<div id="app"></div>
+
 <div id="drawing"></div>
 
 
-<script src="./ascii-diag.ts"></script>
+<script src="./app.tsx"></script>
 </body>
 </html>

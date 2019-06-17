@@ -1,3 +1,11 @@
+export enum Tools {
+    select = "select",
+    text = "text",
+    box = "box",
+    arrow = "arrow",
+}
+
+
 export interface Tool {
 
     mouseDown(row: number, column: number, x: number, y: number): void;

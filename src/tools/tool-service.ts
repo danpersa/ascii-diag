@@ -1,5 +1,5 @@
 import Grid from '../grid'
-import {Tool} from "./tool";
+import {Tool, Tools} from "./tool";
 import {ArrowCreateTool} from "./arrow-create-tool";
 import {BoxCreateTool} from "./box-create-tool";
 import {TextCreateTool} from "./text-create-tool";
@@ -64,6 +64,23 @@ export class ToolService {
         this.grid = grid;
         this.entityIdService = entityIdService;
         this.toolStack.push(this.boxTool);
+    }
+
+    setCurrentTool(tool: Tools): void {
+        switch (tool) {
+            case Tools.arrow:
+                this.selectArrowTool();
+                break;
+            case Tools.box:
+                this.selectBoxTool();
+                break;
+            case Tools.select:
+                this.selectSelectTool();
+                break;
+            case Tools.text:
+                this.selectTextTool();
+                break;
+        }
     }
 
     currentTool(): Tool {
