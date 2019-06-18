@@ -2,6 +2,7 @@
   "name": "ascii-diag",
   "version": "0.0.1",
   "main": "src/index.html",
+  "author": "Dan Persa",
   "dependencies": {
     "@material-ui/core": "^4.1.1",
     "@material-ui/icons": "^4.2.0",
@@ -18,10 +19,17 @@
     "start": "parcel src/index.html --open",
     "build": "parcel build src/index.html",
     "type-check": "tsc --noEmit",
-    "type-check:watch": "tsc --noEmit --watch"
+    "type-check:watch": "tsc --noEmit --watch",
+    "predeploy": "rm -rf dist && parcel build src/index.html --public-url /ascii-diag",
+    "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.3",
-    "typescript": "^3.5.2"
+    "typescript": "^3.5.2",
+    "gh-pages": "^1.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danpersa/ascii-diag.git"
   }
 }
