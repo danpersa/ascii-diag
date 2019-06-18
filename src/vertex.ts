@@ -26,7 +26,7 @@ export class Vertex {
     }
 
     containsPoint(x: number, y: number): boolean {
-        if (x > this._canvasX && y > this._canvasY && x < this.canvasX + Constants.vertexRadius && y < this.canvasY + Constants.vertexRadius) {
+        if (x > this._canvasX - Constants.halfVertexRadius && y > this._canvasY - Constants.halfVertexRadius && x < this.canvasX + Constants.halfVertexRadius && y < this.canvasY + Constants.halfVertexRadius) {
             return true;
         }
         return false;

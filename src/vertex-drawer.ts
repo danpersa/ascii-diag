@@ -11,6 +11,6 @@ export class VertexDrawer {
 
     draw(vertex: Vertex) {
         this.context.fillStyle = `rgb(255, 165, 0, 1.0)`;
-        this.context.fillRect(vertex.canvasX - 3, vertex.canvasY - 3, Constants.vertexRadius, Constants.vertexRadius);
+        this.context.fillRect(vertex.canvasX - Constants.halfVertexRadius, vertex.canvasY - Constants.halfVertexRadius, Constants.vertexRadius, Constants.vertexRadius);
     }
 }

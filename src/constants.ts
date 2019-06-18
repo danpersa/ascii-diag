@@ -11,6 +11,7 @@ export default class Constants {
 
     static readonly font = '11px Courier';
     static readonly accentColor = `rgb(255, 165, 0, 1.0)`;
-    static readonly vertexRadius = 7;
+    static readonly vertexRadius = 8;
+    static readonly halfVertexRadius = Constants.vertexRadius / 2;
     static readonly arrowStartDirection = ArrowDirection.Horizontal;
 }

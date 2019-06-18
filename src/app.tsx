@@ -77,7 +77,6 @@ const AppWithStyles = withStyles(appStyles)(
                             </Typography>
                             <Button color="inherit">Login</Button>
                         </Toolbar>
-
                     </AppBar>
                     <AppBar position="static" color="default">
                         <Toolbar>
