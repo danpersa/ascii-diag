@@ -20,7 +20,7 @@ export class DiagToSvg {
     render(): void {
 
         const draw = new Svg('#drawing');
-        draw.size(Constants.canvasWidth, Constants.canvasWidth);
+        draw.size(Constants.canvasWidth, Constants.canvasHeight);
 
         this.layerService.entities.forEach((entity: Entity) => {
             if (entity instanceof BoxEntity) {
@@ -51,14 +51,13 @@ export class DiagToSvg {
                 }).font({
                     family: 'Courier',
                     size: 16.5,
-                    //stretch: 'expanded',
-                    //weight: 'bold'
-
                 }).move(startX, startY);
 
             }
         });
 
-        this.ref.current!.innerHTML = draw.svg();
+        if (this.ref.current) {
+            this.ref.current.innerHTML = draw.svg();
+        }
     }
 }

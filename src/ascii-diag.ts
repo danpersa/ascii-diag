@@ -55,15 +55,6 @@ export default class AsciiDiag {
         canvas.addEventListener("touchend", this.releaseEventHandler);
         canvas.addEventListener("touchcancel", this.cancelEventHandler);
 
-        document.getElementById('box')!
-            .addEventListener("click", this.boxToolEventHandler);
-        document.getElementById('arrow')!
-            .addEventListener("click", this.arrowToolEventHandler);
-        document.getElementById('tx')!
-            .addEventListener("click", this.textToolEventHandler);
-        document.getElementById('select')!
-            .addEventListener("click", this.selectToolEventHandler);
-
         document.addEventListener('keydown', (e: KeyboardEvent) => {
             this.toolService.currentTool().keyDown(e.key);
             this.redraw();
@@ -99,22 +90,6 @@ export default class AsciiDiag {
         this.clickX.push(x);
         this.clickY.push(y);
         this.clickDrag.push(dragging);
-    };
-
-    private boxToolEventHandler = () => {
-        this.toolService.selectBoxTool();
-    };
-
-    private arrowToolEventHandler = () => {
-        this.toolService.selectArrowTool();
-    };
-
-    private textToolEventHandler = () => {
-        this.toolService.selectTextTool();
-    };
-
-    private selectToolEventHandler = () => {
-        this.toolService.selectSelectTool();
     };
 
     private releaseEventHandler = (e: MouseEvent | TouchEvent) => {

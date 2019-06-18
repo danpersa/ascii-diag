@@ -57,11 +57,11 @@ const AppWithStyles = withStyles(appStyles)(
 
         render() {
 
-
             const handleToolChange = (event: React.MouseEvent<HTMLElement>, newTool: Tools) => {
-                // setTool(value);
                 console.log("handle tool change: " + newTool);
-                this.setState({currentTool: newTool});
+                if (newTool) {
+                    this.setState({currentTool: newTool});
+                }
             };
 
             const grid = new Grid();
@@ -72,9 +72,6 @@ const AppWithStyles = withStyles(appStyles)(
                 <div className={this.props.classes.root}>
                     <AppBar position="static">
                         <Toolbar>
-                            {/*<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="Menu">*/}
-                            {/*    <MenuIcon/>*/}
-                            {/*</IconButton>*/}
                             <Typography variant="h6">
                                 ASCII Diag
                             </Typography>
@@ -105,15 +102,15 @@ const AppWithStyles = withStyles(appStyles)(
                     <UIGrid container spacing={2}>
                         <UIGrid item sm={12} md={6}>
                             <Paper className={this.props.classes.paperStyles}>
-                                <SvgCanvas divRef={this.svgDivRef}/>
-                            </Paper>
-                        </UIGrid>
-                        <UIGrid item sm={12} md={6}>
-                            <Paper className={this.props.classes.paperStyles}>
                                 <DiagCanvas canvasRef={this.canvasDivRef}
                                             currentTool={this.state.currentTool}
                                             layerService={layerService}
                                             grid={grid} diagToSvg={diagToSvg}/>
+                            </Paper>
+                        </UIGrid>
+                        <UIGrid item sm={12} md={6}>
+                            <Paper className={this.props.classes.paperStyles}>
+                                <SvgCanvas divRef={this.svgDivRef}/>
                             </Paper>
                         </UIGrid>
                     </UIGrid>
