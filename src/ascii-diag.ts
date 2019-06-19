@@ -39,7 +39,6 @@ export default class AsciiDiag {
 
         this.redraw();
         this.createUserEvents();
-        console.log("Selected tool: " + this.selectedTool());
     }
 
     private createUserEvents() {
@@ -153,18 +152,5 @@ export default class AsciiDiag {
 
     private fromCanvasToGrid(x: number, y: number): [number, number] {
         return [Math.floor(y / Constants.densityY), Math.floor(x / Constants.densityX)];
-    }
-
-    private selectedTool(): string {
-        const buttons: Array<HTMLElement> = [];
-        document.getElementsByName("tool").forEach((value) => {
-            buttons.push(value);
-        });
-        const selected = buttons.filter(value => value.getAttribute("checked")).pop();
-        if (selected) {
-            return selected.getAttribute("value")!;
-        } else {
-            return "none";
-        }
     }
 }
