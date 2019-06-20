@@ -45,14 +45,13 @@ export class DiagToSvg {
                     .stroke({color: '#333333', width: 1.5, linecap: 'round', linejoin: 'round'});
             } else if (entity instanceof TextEntity) {
                 const startX = (entity.column - 0.5) * Constants.densityX;
-                const startY = (entity.row - 0.5) * Constants.densityY;
+                const startY = entity.row * Constants.densityY;
                 draw.text(add => {
                     add.tspan(entity.text)
                 }).font({
                     family: 'Courier',
                     size: 16.5,
-                }).move(startX, startY);
-
+                }).amove(startX, startY);
             }
         });
 
