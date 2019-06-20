@@ -44,6 +44,8 @@ export class ToolService {
     private readonly arrowDrawer: ArrowDrawer;
     private readonly arrowVertexFactory: ArrowVertexFactory;
     private toolStack: Array<Tool> = [];
+    private toolChangeCallback: () => void = () => {
+    };
 
     constructor(grid: Grid, layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer,
                 entityIdService: EntityIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer,
@@ -83,30 +85,31 @@ export class ToolService {
         }
     }
 
+    private popTool(): void {
+        const currentTool = this.toolStack.pop();
+        if (currentTool) {
+            currentTool.done();
+        }
+    }
+
     currentTool(): Tool {
         return this.toolStack[this.toolStack.length - 1];
     }
 
     selectBoxTool(): void {
-        this.toolStack.pop();
-        this.toolStack.push(this.boxTool);
+        this.setTool(this.boxTool);
     }
 
     selectArrowTool(): void {
-        this.toolStack.pop();
-        this.toolStack.push(this.arrowCreateTool);
-        console.log("Arrow tool active");
+        this.setTool(this.arrowCreateTool);
     }
 
     selectTextTool(): void {
-        this.toolStack.pop();
-        this.toolStack.push(this.textTool);
+        this.setTool(this.textTool);
     }
 
     selectSelectTool(): void {
-        console.log("Select tool active");
-        this.toolStack.pop();
-        this.toolStack.push(this.selectTool);
+        this.setTool(this.selectTool);
     }
 
     selectBoxResizeTool(entity: BoxEntity, resizeType: ResizeType): void {
@@ -151,12 +154,17 @@ export class ToolService {
         this.setTool(textMoveTool);
     }
 
-    setTool(tool: Tool): void {
-        this.toolStack.pop();
+    private setTool(tool: Tool): void {
+        this.popTool();
         this.toolStack.push(tool);
+        this.onToolChange();
     }
 
-    popTool(): void {
-        this.toolStack.pop();
+    setToolChangeCallback(callback: () => void) {
+        this.toolChangeCallback = callback;
+    }
+
+    private onToolChange() {
+        this.toolChangeCallback();
     }
 }

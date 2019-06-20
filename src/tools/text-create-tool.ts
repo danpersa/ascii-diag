@@ -21,6 +21,7 @@ export class TextCreateTool implements Tool {
         this.entityIdService = entityIdService;
         this.textDrawer = textDrawer;
         this.cursorDrawer = cursorDrawer;
+        this.currentText = null;
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {
@@ -51,7 +52,6 @@ export class TextCreateTool implements Tool {
 
         if (key === "Enter") {
             console.log("Done");
-            this.persist();
             this.done();
             return;
         }
@@ -74,10 +74,14 @@ export class TextCreateTool implements Tool {
     }
 
     done(): void {
+        this.persist();
         this.currentText = null;
     }
 
     persist(): void {
+        if (!this.currentText) {
+            return;
+        }
         const entity: Entity = new TextEntity(
             this.entityIdService.nextId(),
             this.currentText!.row,

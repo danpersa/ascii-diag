@@ -37,6 +37,10 @@ export default class AsciiDiag {
         this.gridDrawer = new GridDrawer(this.grid, this.cellDrawer);
         this.toolService = toolService;
 
+        this.toolService.setToolChangeCallback(() => {
+            this.redraw();
+        });
+
         this.redraw();
         this.createUserEvents();
     }

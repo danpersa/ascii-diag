@@ -45,7 +45,7 @@ export class DiagToSvg {
                     .stroke({color: '#333333', width: 1.5, linecap: 'round', linejoin: 'round'});
             } else if (entity instanceof TextEntity) {
                 const startX = (entity.column - 0.5) * Constants.densityX;
-                const startY = entity.row * Constants.densityY;
+                const startY = (entity.row + 0.2) * Constants.densityY;
                 draw.text(add => {
                     add.tspan(entity.text)
                 }).font({

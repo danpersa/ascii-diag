@@ -75,13 +75,16 @@ export class TextEditTool extends TextCreateTool implements Tool {
     }
 
     persist(): void {
+        if (!this.currentText) {
+            return;
+        }
         const entity: Entity = new TextEntity(
             this.currentEntity.id(),
-            this.currentText!.row,
-            this.currentText!.column,
-            this.currentText!.text);
+            this.currentText.row,
+            this.currentText.column,
+            this.currentText.text);
 
-        if (this.currentText!.text.length > 0) {
+        if (this.currentText.text.length > 0) {
             this.layerService.updateEntity(entity);
             this.currentEntity.endEditing();
         } else {
