@@ -100,7 +100,7 @@ const AppWithStyles = withStyles(appStyles)(
                     </AppBar>
                     <UIGrid container spacing={2}>
                         <UIGrid item sm={12} md={6}>
-                            <Paper className={this.props.classes.paperStyles}>
+                            <Paper className={this.props.classes.paperStyles} style={{overflow: 'auto'}}>
                                 <DiagCanvas canvasRef={this.canvasDivRef}
                                             currentTool={this.state.currentTool}
                                             layerService={layerService}
