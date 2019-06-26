@@ -16,6 +16,7 @@ import {ArrowDrawer} from "./arrow-drawer";
 import {TextDrawer} from "./text-drawer";
 import {CursorDrawer} from "./cursor-drawer";
 import {EntityIdService} from "./entities/entity-id-service";
+import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
 
 type DiagCanvasProps = {
     canvasRef: RefObject<HTMLCanvasElement>,
@@ -42,11 +43,12 @@ export default class DiagCanvas extends React.Component<DiagCanvasProps> {
         const context = canvas.getContext("2d")!;
 
 
+        const arrowTipDirectionService = new ArrowTipDirectionService();
         const cellDrawer = new CellDrawer(context, grid);
         const vertexDrawer = new VertexDrawer(context);
         const selectBoxDrawer = new SelectBoxDrawer(context, vertexDrawer);
         const boxDrawer = new BoxDrawer(cellDrawer);
-        const arrowDrawer = new ArrowDrawer(cellDrawer);
+        const arrowDrawer = new ArrowDrawer(cellDrawer, arrowTipDirectionService);
         const textDrawer = new TextDrawer(cellDrawer);
         const cursorDrawer = new CursorDrawer(context);
 

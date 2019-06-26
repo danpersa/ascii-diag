@@ -1,9 +1,16 @@
 import {CellDrawer} from "./cell-drawer";
-import {Arrow, ArrowDirection} from "./arrow";
+import {Arrow, ArrowDirection, ArrowTipDirection} from "./arrow";
 import {Domain} from "./cell";
+import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
 import Cell = Domain.Cell;
 
 export abstract class AbstractArrowDrawer {
+
+    private readonly arrowTipDirectionService: ArrowTipDirectionService;
+
+    constructor(arrowTipDirectionService: ArrowTipDirectionService) {
+        this.arrowTipDirectionService = arrowTipDirectionService;
+    }
 
     abstract addCell(cell: Cell): void;
 
@@ -15,7 +22,7 @@ export abstract class AbstractArrowDrawer {
         const maxColumn = Math.max(arrow.startColumn, arrow.endColumn);
         const minRow = Math.min(arrow.startRow, arrow.endRow);
         const maxRow = Math.max(arrow.startRow, arrow.endRow);
-        const arrowSymbol = this.arrowDirection(arrow.startRow, arrow.startColumn, arrow.endRow, arrow.endColumn, arrow.startDirection);
+        const arrowSymbol = this.endArrowDirection(arrow);
 
         if (arrow.startDirection === ArrowDirection.Horizontal) {
             for (let column = minColumn + 1; column < maxColumn; ++column) {
@@ -64,42 +71,19 @@ export abstract class AbstractArrowDrawer {
         }
     }
 
-    private arrowDirection(startRow: number, startColumn: number, row: number, column: number, startDirection: ArrowDirection): string | null {
-        // horizontal
-        if (startRow == row) {
-            if (startColumn > column) {
-                return "<";
-            } else if (startColumn < column) {
+    private endArrowDirection(arrow: Arrow): string | null {
+        const tipDirection = this.arrowTipDirectionService.endTipDirection(arrow);
+        switch (tipDirection) {
+            case ArrowTipDirection.North:
+                return "^";
+            case ArrowTipDirection.South:
+                return "v";
+            case ArrowTipDirection.East:
                 return ">";
-            } else {
-                return null;
-            }
-            // vertical
-        } else if (startColumn == column) {
-            if (startRow > row) {
-                return "^"; // ∧
-            } else if (startRow < row) {
-                return "v"; // ∨
-            } else {
-                return null;
-            }
-        } else {
-            if (startDirection === ArrowDirection.Horizontal) {
-                if (startRow > row) {
-                    return "^"; // ∧
-                } else {
-                    return "v"; // ∨
-                }
-            } else if (startDirection === ArrowDirection.Vertical) {
-                if (startColumn > column) {
-                    return "<";
-                } else {
-                    return ">";
-                }
-            } else {
-                return null
-            }
+            case ArrowTipDirection.West:
+                return "<";
         }
+        return null;
     }
 }
 
@@ -107,8 +91,8 @@ export class ArrowDrawer extends AbstractArrowDrawer {
 
     private cellDrawer: CellDrawer;
 
-    constructor(cellDrawer: CellDrawer) {
-        super();
+    constructor(cellDrawer: CellDrawer, arrowTipDirectionService: ArrowTipDirectionService) {
+        super(arrowTipDirectionService);
         this.cellDrawer = cellDrawer;
     }
 

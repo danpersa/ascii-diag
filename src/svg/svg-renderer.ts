@@ -6,6 +6,7 @@ import {TextEntity} from "../entities/text-entity";
 import {ArrowRenderer} from "./arrow-renderer";
 import {BoxRenderer} from "./box-renderer";
 import {TextRenderer} from "./text-renderer";
+import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
 
 export interface SvgRenderer {
 
@@ -19,7 +20,7 @@ export class SvgRendererService {
     private readonly textRenderer: SvgRenderer;
 
     constructor() {
-        this.arrowRenderer = new ArrowRenderer();
+        this.arrowRenderer = new ArrowRenderer(new ArrowTipDirectionService());
         this.boxRenderer = new BoxRenderer();
         this.textRenderer = new TextRenderer();
     }

@@ -3,6 +3,12 @@ export enum ArrowDirection {
     Vertical
 }
 
+export enum ArrowTipDirection {
+    North,
+    South,
+    East,
+    West
+}
 
 export class Arrow {
     protected readonly _startRow: number;

@@ -3,6 +3,7 @@ import {Domain} from "../cell";
 import Cell = Domain.Cell;
 import {Arrow, ArrowDirection} from "../arrow";
 import {ArrayArrowDrawer} from "../arrow-drawer";
+import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
 
 export class ArrowEntity extends Arrow implements Entity {
 
@@ -13,7 +14,7 @@ export class ArrowEntity extends Arrow implements Entity {
     constructor(id: number, startRow: number, startColumn: number, endRow: number, endColumn: number, startDirection: ArrowDirection) {
         super(startRow, startColumn, endRow, endColumn, startDirection);
         this._id = id;
-        const arrowDrawer = new ArrayArrowDrawer();
+        const arrowDrawer = new ArrayArrowDrawer(new ArrowTipDirectionService()); // TODO refactor this
         arrowDrawer.draw(this);
         this._cells = arrowDrawer.cells;
     }
