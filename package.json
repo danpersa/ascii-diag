@@ -23,9 +23,9 @@
     "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
-    "parcel-bundler": "^1.12.3",
-    "typescript": "^3.5.2",
-    "gh-pages": "^1.2.0"
+    "gh-pages": "^1.2.0",
+    "parcel-bundler": "^1.12.4",
+    "typescript": "^3.5.2"
   },
   "repository": {
     "type": "git",
