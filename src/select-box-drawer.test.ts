@@ -1,5 +1,5 @@
 import 'jest-canvas-mock';
-import {SelectBoxDrawer} from './select-box-drawer';
+import {CanvasSelectBoxDrawer} from './select-box-drawer';
 import {SelectBox} from "./select-box";
 import {VertexDrawer} from './vertex-drawer';
 import Constants from "./constants";
@@ -21,7 +21,7 @@ describe('draw', () => {
             draw: jest.fn()
         }));
         vertexDrawerMock = new VertexDrawerMock();
-        let selectBoxDrawer = new SelectBoxDrawer(ctx, vertexDrawerMock);
+        let selectBoxDrawer = new CanvasSelectBoxDrawer(ctx, vertexDrawerMock);
         selectBoxDrawer.draw(SelectBox.fromGrid(5, 5, 10, 10));
     });
 

@@ -5,7 +5,7 @@ export interface VertexDrawer {
     draw(vertex: Vertex): void
 }
 
-export class VertexDrawerImpl implements VertexDrawer {
+export class CanvasVertexDrawer implements VertexDrawer {
 
     private readonly context: CanvasRenderingContext2D;
 

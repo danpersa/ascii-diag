@@ -9,8 +9,8 @@ import {Tools} from "./tools/tool";
 import {ToolService} from "./tools/tool-service";
 import {CellDrawer} from "./cell-drawer";
 import {GridDrawer} from "./grid-drawer";
-import {VertexDrawer} from "./vertex-drawer";
-import {SelectBoxDrawer} from "./select-box-drawer";
+import {CanvasVertexDrawer, VertexDrawer} from "./vertex-drawer";
+import {CanvasSelectBoxDrawer} from "./select-box-drawer";
 import {BoxDrawer} from "./box-drawer";
 import {ArrowDrawer} from "./arrow-drawer";
 import {TextDrawer} from "./text-drawer";
@@ -45,8 +45,8 @@ export default class DiagCanvas extends React.Component<DiagCanvasProps> {
 
         const arrowTipDirectionService = new ArrowTipDirectionService();
         const cellDrawer = new CellDrawer(context, grid);
-        const vertexDrawer = new VertexDrawer(context);
-        const selectBoxDrawer = new SelectBoxDrawer(context, vertexDrawer);
+        const vertexDrawer = new CanvasVertexDrawer(context);
+        const selectBoxDrawer = new CanvasSelectBoxDrawer(context, vertexDrawer);
         const boxDrawer = new BoxDrawer(cellDrawer);
         const arrowDrawer = new ArrowDrawer(cellDrawer, arrowTipDirectionService);
         const textDrawer = new TextDrawer(cellDrawer);

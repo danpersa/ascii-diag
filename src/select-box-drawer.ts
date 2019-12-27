@@ -2,8 +2,11 @@ import {VertexDrawer} from "./vertex-drawer";
 import {SelectBox} from "./select-box";
 import Constants from "./constants";
 
+export interface SelectBoxDrawer {
+    draw(box: SelectBox): void
+}
 
-export class SelectBoxDrawer {
+export class CanvasSelectBoxDrawer implements SelectBoxDrawer {
 
     private readonly context: CanvasRenderingContext2D;
     private readonly vertexDrawer: VertexDrawer;

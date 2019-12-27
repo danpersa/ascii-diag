@@ -1,6 +1,6 @@
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
-import {SelectBoxDrawer} from "../select-box-drawer";
+import {CanvasSelectBoxDrawer, SelectBoxDrawer} from "../select-box-drawer";
 import {BoxEntity} from "../entities/box-entity";
 import {SelectBox} from "../select-box";
 import Constants from "../constants";

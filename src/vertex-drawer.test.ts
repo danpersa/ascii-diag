@@ -1,5 +1,5 @@
 import 'jest-canvas-mock';
-import {VertexDrawerImpl} from './vertex-drawer';
+import {CanvasVertexDrawer} from './vertex-drawer';
 import {Vertex} from "./vertex";
 
 let ctx: CanvasRenderingContext2D;
@@ -13,7 +13,7 @@ beforeEach(() => {
 
 describe('draw', () => {
     beforeEach(() => {
-        let vertexDrawer = new VertexDrawerImpl(ctx);
+        let vertexDrawer = new CanvasVertexDrawer(ctx);
         vertexDrawer.draw(Vertex.fromCanvas(10, 10));
     });
 
