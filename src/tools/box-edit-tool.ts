@@ -24,7 +24,7 @@ export class BoxEditTool implements Tool {
         this.selectBoxDrawer = selectBoxDrawer;
         this.entity = entity;
         this.entitySelectionService = entitySelectionService;
-        this.selectBox = new SelectBox(this.entity.topRow, this.entity.leftColumn, this.entity.bottomRow, this.entity.rightColumn);
+        this.selectBox = SelectBox.fromGrid(this.entity.topRow, this.entity.leftColumn, this.entity.bottomRow, this.entity.rightColumn);
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {

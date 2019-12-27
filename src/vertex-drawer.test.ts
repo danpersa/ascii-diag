@@ -1,12 +1,11 @@
-import {VertexDrawer} from './vertex-drawer';
 import 'jest-canvas-mock';
+import {VertexDrawerImpl} from './vertex-drawer';
 import {Vertex} from "./vertex";
 
-let canvas;
 let ctx: CanvasRenderingContext2D;
 
 beforeEach(() => {
-    canvas = document.createElement('canvas');
+    let canvas = document.createElement('canvas');
     ctx = canvas.getContext('2d')!;
     canvas.width = 400;
     canvas.height = 300;
@@ -14,7 +13,7 @@ beforeEach(() => {
 
 describe('draw', () => {
     beforeEach(() => {
-        let vertexDrawer = new VertexDrawer(ctx);
+        let vertexDrawer = new VertexDrawerImpl(ctx);
         vertexDrawer.draw(Vertex.fromCanvas(10, 10));
     });
 
@@ -22,7 +21,7 @@ describe('draw', () => {
         expect(ctx.fillStyle).toBe("#ffa500");
     });
 
-    it ('draw a rectangle', () => {
+    it('draw a rectangle', () => {
         expect(ctx.fillRect).toBeCalled();
     });
 });

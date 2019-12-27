@@ -34,7 +34,7 @@ export class BoxResizeTool implements Tool {
         this.boxDrawer = boxDrawer;
         this.resizeType = resizeType;
         this.entity = entity;
-        this.selectBox = new SelectBox(this.entity.topRow, this.entity.leftColumn, this.entity.bottomRow, this.entity.rightColumn);
+        this.selectBox = SelectBox.fromGrid(this.entity.topRow, this.entity.leftColumn, this.entity.bottomRow, this.entity.rightColumn);
         this.entity.startEditing();
         console.log("Create Box Resize Tool resizeType=" + resizeType + " entity: " + entity.topRow);
     }
@@ -48,7 +48,7 @@ export class BoxResizeTool implements Tool {
 
         switch (this.resizeType) {
             case ResizeType.TopLeft: {
-                this.selectBox = new SelectBox(
+                this.selectBox = SelectBox.fromGrid(
                     Math.min(vertexRow, this.selectBox.bottomRow),
                     Math.min(vertexColumn, this.selectBox.rightColumn),
                     this.selectBox.bottomRow,
@@ -57,7 +57,7 @@ export class BoxResizeTool implements Tool {
                 break;
             }
             case ResizeType.TopRight: {
-                this.selectBox = new SelectBox(
+                this.selectBox = SelectBox.fromGrid(
                     Math.min(vertexRow, this.selectBox.bottomRow),
                     this.selectBox.leftColumn,
                     this.selectBox.bottomRow,
@@ -66,7 +66,7 @@ export class BoxResizeTool implements Tool {
                 break;
             }
             case ResizeType.BottomLeft: {
-                this.selectBox = new SelectBox(
+                this.selectBox = SelectBox.fromGrid(
                     this.selectBox.topRow,
                     Math.min(vertexColumn, this.selectBox.rightColumn),
                     Math.max(vertexRow, this.selectBox.topRow),
@@ -75,7 +75,7 @@ export class BoxResizeTool implements Tool {
                 break;
             }
             case ResizeType.BottomRight: {
-                this.selectBox = new SelectBox(
+                this.selectBox = SelectBox.fromGrid(
                     this.selectBox.topRow,
                     this.selectBox.leftColumn,
                     Math.max(vertexRow, this.selectBox.topRow),

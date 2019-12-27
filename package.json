@@ -37,6 +37,8 @@
     "url": "git+https://github.com/danpersa/ascii-diag.git"
   },
   "jest": {
-    "setupFiles": ["jest-canvas-mock"]
+    "setupFiles": [
+      "jest-canvas-mock"
+    ]
   }
 }

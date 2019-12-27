@@ -9,7 +9,11 @@ export class SelectBox extends Box {
     private readonly _bottomRightVertex: Vertex;
     private readonly _centerVertex: Vertex;
 
-    constructor(topRow: number, leftColumn: number, bottomRow: number, rightColumn: number) {
+    static fromGrid(topRow: number, leftColumn: number, bottomRow: number, rightColumn: number) {
+        return new SelectBox(topRow, leftColumn, bottomRow, rightColumn);
+    }
+
+    private constructor(topRow: number, leftColumn: number, bottomRow: number, rightColumn: number) {
         super(topRow, leftColumn, bottomRow, rightColumn);
         this._topLeftVertex = Vertex.fromGrid(this.topRow, this.leftColumn);
         this._topRightVertex = Vertex.fromGrid(this.topRow, this.rightColumn + 1);

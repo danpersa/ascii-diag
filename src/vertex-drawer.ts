@@ -1,7 +1,11 @@
 import {Vertex} from "./vertex";
 import Constants from "./constants";
 
-export class VertexDrawer {
+export interface VertexDrawer {
+    draw(vertex: Vertex): void
+}
+
+export class VertexDrawerImpl implements VertexDrawer {
 
     private readonly context: CanvasRenderingContext2D;
 

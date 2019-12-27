@@ -24,7 +24,7 @@ export class BoxMoveTool implements Tool {
         this.selectBoxDrawer = selectBoxDrawer;
         this.boxDrawer = boxDrawer;
         this.entity = entity;
-        this.selectBox = new SelectBox(this.entity.topRow, this.entity.leftColumn, this.entity.bottomRow, this.entity.rightColumn);
+        this.selectBox = SelectBox.fromGrid(this.entity.topRow, this.entity.leftColumn, this.entity.bottomRow, this.entity.rightColumn);
         this.entity.startEditing();
         console.log("Create Box Move Tool entity: " + entity.topRow);
     }
@@ -49,7 +49,7 @@ export class BoxMoveTool implements Tool {
             return
         }
 
-        this.selectBox = new SelectBox(
+        this.selectBox = SelectBox.fromGrid(
             newTopRow,
             newLeftColumn,
             newBottomRow,
