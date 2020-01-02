@@ -2,9 +2,13 @@ import {CellDrawer} from "./cell-drawer";
 import {Arrow, ArrowDirection, ArrowTipDirection} from "./arrow";
 import {Domain} from "./cell";
 import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
+import {Drawer} from "./drawer";
 import Cell = Domain.Cell;
 
-export abstract class AbstractArrowDrawer {
+export interface ArrowDrawer extends Drawer<Arrow> {
+}
+
+export abstract class AbstractArrowDrawer implements ArrowDrawer {
 
     private readonly arrowTipDirectionService: ArrowTipDirectionService;
 
@@ -12,11 +16,11 @@ export abstract class AbstractArrowDrawer {
         this.arrowTipDirectionService = arrowTipDirectionService;
     }
 
-    abstract addCell(cell: Cell): void;
+    abstract drawCell(cell: Cell): void;
 
     draw(arrow: Arrow): void {
         let cell = Cell.Builder.from(arrow.startRow, arrow.startColumn).value("+").build();
-        this.addCell(cell);
+        this.drawCell(cell);
 
         const minColumn = Math.min(arrow.startColumn, arrow.endColumn);
         const maxColumn = Math.max(arrow.startColumn, arrow.endColumn);
@@ -27,45 +31,45 @@ export abstract class AbstractArrowDrawer {
         if (arrow.startDirection === ArrowDirection.Horizontal) {
             for (let column = minColumn + 1; column < maxColumn; ++column) {
                 const cell = Cell.Builder.from(arrow.startRow, column).value("-").build();
-                this.addCell(cell);
+                this.drawCell(cell);
             }
             if (arrow.startRow == arrow.endRow) {
                 if (arrowSymbol) {
                     const cell = Cell.Builder.from(arrow.startRow, arrow.endColumn).value(arrowSymbol).build();
-                    this.addCell(cell);
+                    this.drawCell(cell);
                 }
             } else {
                 const cell = Cell.Builder.from(arrow.startRow, arrow.endColumn).value("+").build();
-                this.addCell(cell);
+                this.drawCell(cell);
                 for (let row = minRow + 1; row < maxRow; ++row) {
                     const cell = Cell.Builder.from(row, arrow.endColumn).value("|").build();
-                    this.addCell(cell);
+                    this.drawCell(cell);
                 }
                 if (arrowSymbol) {
                     const cell = Cell.Builder.from(arrow.endRow, arrow.endColumn).value(arrowSymbol).build();
-                    this.addCell(cell);
+                    this.drawCell(cell);
                 }
             }
         } else if (arrow.startDirection === ArrowDirection.Vertical) {
             for (let row = minRow + 1; row < maxRow; ++row) {
                 const cell = Cell.Builder.from(row, arrow.startColumn).value("|").build();
-                this.addCell(cell);
+                this.drawCell(cell);
             }
             if (arrow.startColumn == arrow.endColumn) {
                 if (arrowSymbol) {
                     const cell = Cell.Builder.from(arrow.endRow, arrow.endColumn).value(arrowSymbol).build();
-                    this.addCell(cell);
+                    this.drawCell(cell);
                 }
             } else {
                 const cell = Cell.Builder.from(arrow.endRow, arrow.startColumn).value("+").build();
-                this.addCell(cell);
+                this.drawCell(cell);
                 for (let column = minColumn + 1; column < maxColumn; ++column) {
                     const cell = Cell.Builder.from(arrow.endRow, column).value("-").build();
-                    this.addCell(cell);
+                    this.drawCell(cell);
                 }
                 if (arrowSymbol) {
                     const cell = Cell.Builder.from(arrow.endRow, arrow.endColumn).value(arrowSymbol).build();
-                    this.addCell(cell);
+                    this.drawCell(cell);
                 }
             }
         }
@@ -87,7 +91,7 @@ export abstract class AbstractArrowDrawer {
     }
 }
 
-export class ArrowDrawer extends AbstractArrowDrawer {
+export class CanvasArrowDrawer extends AbstractArrowDrawer {
 
     private cellDrawer: CellDrawer;
 
@@ -96,7 +100,7 @@ export class ArrowDrawer extends AbstractArrowDrawer {
         this.cellDrawer = cellDrawer;
     }
 
-    addCell(cell: Cell) {
+    drawCell(cell: Cell) {
         this.cellDrawer.draw(cell);
     }
 }
@@ -104,7 +108,7 @@ export class ArrowDrawer extends AbstractArrowDrawer {
 export class ArrayArrowDrawer extends AbstractArrowDrawer {
     private readonly _cells: Array<Cell> = [];
 
-    addCell(cell: Cell): void {
+    drawCell(cell: Cell): void {
         this._cells.push(cell);
     }
 

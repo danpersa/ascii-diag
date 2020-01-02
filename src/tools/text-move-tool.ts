@@ -34,19 +34,19 @@ export class TextMoveTool implements Tool {
         this.textDrawer = textDrawer;
 
         this.currentEntity = entity;
-        this.currentText = new Text(this.currentEntity.row, this.currentEntity.column, this.currentEntity.text);
+        this.currentText = Text.fromGrid(this.currentEntity.row, this.currentEntity.column, this.currentEntity.text);
         this.moveVertex = Vertex.fromGrid(this.currentEntity.row, this.currentEntity.column);
         this.currentEntity.startEditing();
     }
 
-    private fromCanvasToVertexPos(x: number, y: number): [number, number] {
+    private fromCanvasToGridPos(x: number, y: number): [number, number] {
         return [Math.round(y / Constants.densityY), Math.round(x / Constants.densityX)];
     }
 
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
-        const [vertexRow, vertexColumn] = this.fromCanvasToVertexPos(x, y);
+        const [vertexRow, vertexColumn] = this.fromCanvasToGridPos(x, y);
         this.moveVertex = Vertex.fromGrid(vertexRow, vertexColumn);
-        this.currentText = new Text(vertexRow, vertexColumn, this.currentEntity.text);
+        this.currentText = Text.fromGrid(vertexRow, vertexColumn, this.currentEntity.text);
         document.body.style.cursor = 'move';
     }
 

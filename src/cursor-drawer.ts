@@ -1,6 +1,11 @@
 import Constants from "./constants";
+import {Drawer} from "./drawer";
+import {Cursor} from "./cursor";
 
-export class CursorDrawer {
+export interface CursorDrawer extends Drawer<Cursor> {
+}
+
+export class CanvasCursorDrawer implements CursorDrawer {
 
     private readonly context: CanvasRenderingContext2D;
 
@@ -8,9 +13,9 @@ export class CursorDrawer {
         this.context = context;
     }
 
-    draw(row: number, column: number): void {
-        const cursorX = column * Constants.densityX;
-        const cursorY = row * Constants.densityY;
+    draw(cursor: Cursor): void {
+        const cursorX = cursor.column * Constants.densityX;
+        const cursorY = cursor.row * Constants.densityY;
 
         this.context.strokeStyle = Constants.accentColor;
         this.context.lineWidth = 2;

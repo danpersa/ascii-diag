@@ -10,12 +10,12 @@ import {ToolService} from "./tools/tool-service";
 import {CanvasCellDrawer} from "./cell-drawer";
 import {CanvasVertexDrawer} from "./vertex-drawer";
 import {CanvasSelectBoxDrawer} from "./select-box-drawer";
-import {BoxDrawer} from "./box-drawer";
-import {ArrowDrawer} from "./arrow-drawer";
+import {CanvasArrowDrawer} from "./arrow-drawer";
 import {CanvasTextDrawer} from "./text-drawer";
-import {CursorDrawer} from "./cursor-drawer";
+import {CanvasCursorDrawer} from "./cursor-drawer";
 import {EntityIdService} from "./entities/entity-id-service";
 import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
+import {CanvasBoxDrawer} from "./box-drawer";
 
 type DiagCanvasProps = {
     canvasRef: RefObject<HTMLCanvasElement>,
@@ -46,10 +46,10 @@ export default class DiagCanvas extends React.Component<DiagCanvasProps> {
         const cellDrawer = new CanvasCellDrawer(context, grid);
         const vertexDrawer = new CanvasVertexDrawer(context);
         const selectBoxDrawer = new CanvasSelectBoxDrawer(context, vertexDrawer);
-        const boxDrawer = new BoxDrawer(cellDrawer);
-        const arrowDrawer = new ArrowDrawer(cellDrawer, arrowTipDirectionService);
+        const boxDrawer = new CanvasBoxDrawer(cellDrawer);
+        const arrowDrawer = new CanvasArrowDrawer(cellDrawer, arrowTipDirectionService);
         const textDrawer = new CanvasTextDrawer(cellDrawer);
-        const cursorDrawer = new CursorDrawer(context);
+        const cursorDrawer = new CanvasCursorDrawer(context);
 
         this.toolService = new ToolService(grid, layerService, selectBoxDrawer, boxDrawer,
             entityIdService, textDrawer, cursorDrawer, vertexDrawer, arrowDrawer);

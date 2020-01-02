@@ -1,9 +1,13 @@
 import {Box} from "./box";
 import {CellDrawer} from "./cell-drawer";
 import {Domain} from "./cell";
+import {Drawer} from "./drawer";
 import Cell = Domain.Cell;
 
-export abstract class AbstractBoxDrawer {
+export interface BoxDrawer extends Drawer<Box> {
+}
+
+export abstract class AbstractBoxDrawer implements BoxDrawer {
 
     abstract addCell(cell: Cell): void;
 
@@ -61,7 +65,7 @@ export abstract class AbstractBoxDrawer {
     }
 }
 
-export class BoxDrawer extends AbstractBoxDrawer {
+export class CanvasBoxDrawer extends AbstractBoxDrawer {
 
     private cellDrawer: CellDrawer;
 
