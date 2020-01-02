@@ -6,6 +6,7 @@ import {EntityIdService} from "../entities/entity-id-service";
 import {Text} from "../text";
 import {TextDrawer} from "../text-drawer";
 import {CursorDrawer} from "../cursor-drawer";
+import {Cursor} from "../cursor";
 
 export class TextCreateTool implements Tool {
 
@@ -29,7 +30,7 @@ export class TextCreateTool implements Tool {
             this.persist();
             this.done();
         } else {
-            this.currentText = new Text(row, column, "");
+            this.currentText = Text.fromGrid(row, column, "");
         }
     }
 
@@ -96,7 +97,8 @@ export class TextCreateTool implements Tool {
     render(): void {
         if (this.currentText) {
             this.textDrawer.draw(this.currentText);
-            this.cursorDrawer.draw(this.currentText.row, this.currentText.column + this.currentText.text.length);
+            const cursor = Cursor.fromGrid(this.currentText.row, this.currentText.column + this.currentText.text.length)
+            this.cursorDrawer.draw(cursor);
         }
     }
 
