@@ -1,19 +1,18 @@
 import * as React from "react";
-import Constants from "./constants";
 import {RefObject} from "react";
+import Constants from "./constants";
 import AsciiDiag from "./ascii-diag";
 import Grid from "./grid";
 import {LayerService} from "./layer-service";
 import {DiagToSvg} from "./svg/diag-to-svg";
 import {Tools} from "./tools/tool";
 import {ToolService} from "./tools/tool-service";
-import {CellDrawer} from "./cell-drawer";
-import {GridDrawer} from "./grid-drawer";
-import {CanvasVertexDrawer, VertexDrawer} from "./vertex-drawer";
+import {CanvasCellDrawer} from "./cell-drawer";
+import {CanvasVertexDrawer} from "./vertex-drawer";
 import {CanvasSelectBoxDrawer} from "./select-box-drawer";
 import {BoxDrawer} from "./box-drawer";
 import {ArrowDrawer} from "./arrow-drawer";
-import {TextDrawer} from "./text-drawer";
+import {CanvasTextDrawer} from "./text-drawer";
 import {CursorDrawer} from "./cursor-drawer";
 import {EntityIdService} from "./entities/entity-id-service";
 import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
@@ -44,12 +43,12 @@ export default class DiagCanvas extends React.Component<DiagCanvasProps> {
 
 
         const arrowTipDirectionService = new ArrowTipDirectionService();
-        const cellDrawer = new CellDrawer(context, grid);
+        const cellDrawer = new CanvasCellDrawer(context, grid);
         const vertexDrawer = new CanvasVertexDrawer(context);
         const selectBoxDrawer = new CanvasSelectBoxDrawer(context, vertexDrawer);
         const boxDrawer = new BoxDrawer(cellDrawer);
         const arrowDrawer = new ArrowDrawer(cellDrawer, arrowTipDirectionService);
-        const textDrawer = new TextDrawer(cellDrawer);
+        const textDrawer = new CanvasTextDrawer(cellDrawer);
         const cursorDrawer = new CursorDrawer(context);
 
         this.toolService = new ToolService(grid, layerService, selectBoxDrawer, boxDrawer,
