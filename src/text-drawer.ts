@@ -3,7 +3,11 @@ import {Domain} from "./cell";
 import {Text} from "./text";
 import Cell = Domain.Cell;
 
-export class TextDrawer {
+export interface TextDrawer {
+    draw(text: Text): void;
+}
+
+export class CanvasTextDrawer implements TextDrawer {
     private cellDrawer: CellDrawer;
 
     constructor(cellDrawer: CellDrawer) {

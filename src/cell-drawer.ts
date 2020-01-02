@@ -3,7 +3,11 @@ import Constants from "./constants";
 import {Domain} from "./cell";
 import Cell = Domain.Cell;
 
-export class CellDrawer {
+export interface CellDrawer {
+    draw(cell: Cell): void;
+}
+
+export class CanvasCellDrawer implements CellDrawer {
 
     private readonly context: CanvasRenderingContext2D;
     private readonly grid: Grid;
