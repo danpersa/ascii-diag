@@ -1,5 +1,5 @@
 import {Vertex} from "./vertex";
-import Constants from "./constants";
+import Constants from "../constants";
 
 export interface VertexDrawer {
     draw(vertex: Vertex): void

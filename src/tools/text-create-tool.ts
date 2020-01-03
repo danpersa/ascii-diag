@@ -3,10 +3,10 @@ import {LayerService} from "../layer-service";
 import {Entity} from "../entities/entity";
 import {TextEntity} from "../entities/text-entity";
 import {EntityIdService} from "../entities/entity-id-service";
-import {Text} from "../text";
-import {TextDrawer} from "../text-drawer";
-import {CursorDrawer} from "../cursor-drawer";
-import {Cursor} from "../cursor";
+import {Text} from "../drawer/text";
+import {TextDrawer} from "../drawer/text-drawer";
+import {CursorDrawer} from "../drawer/cursor-drawer";
+import {Cursor} from "../drawer/cursor";
 
 export class TextCreateTool implements Tool {
 

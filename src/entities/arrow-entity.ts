@@ -1,8 +1,8 @@
 import {Entity} from "./entity";
-import {Domain} from "../cell";
+import {Domain} from "../drawer/cell";
 import Cell = Domain.Cell;
-import {Arrow, ArrowDirection} from "../arrow";
-import {ArrayArrowDrawer} from "../arrow-drawer";
+import {Arrow, ArrowDirection} from "../drawer/arrow";
+import {ArrayArrowDrawer} from "../drawer/arrow-drawer";
 import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
 
 export class ArrowEntity extends Arrow implements Entity {

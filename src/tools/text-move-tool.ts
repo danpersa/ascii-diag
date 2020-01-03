@@ -1,14 +1,14 @@
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
-import {SelectBoxDrawer} from "../select-box-drawer";
+import {SelectBoxDrawer} from "../drawer/select-box-drawer";
 import Constants from "../constants";
-import {BoxDrawer} from "../box-drawer";
+import {BoxDrawer} from "../drawer/box-drawer";
 import {ToolService} from "./tool-service";
 import {TextEntity} from "../entities/text-entity";
-import {Vertex} from "../vertex";
-import {VertexDrawer} from "../vertex-drawer";
-import {Text} from "../text";
-import {TextDrawer} from "../text-drawer";
+import {Vertex} from "../drawer/vertex";
+import {VertexDrawer} from "../drawer/vertex-drawer";
+import {Text} from "../drawer/text";
+import {TextDrawer} from "../drawer/text-drawer";
 
 export class TextMoveTool implements Tool {
 

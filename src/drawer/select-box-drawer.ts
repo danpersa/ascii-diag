@@ -1,6 +1,6 @@
 import {VertexDrawer} from "./vertex-drawer";
 import {SelectBox} from "./select-box";
-import Constants from "./constants";
+import Constants from "../constants";
 
 export interface SelectBoxDrawer {
     draw(box: SelectBox): void

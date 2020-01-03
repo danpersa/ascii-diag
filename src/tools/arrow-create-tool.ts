@@ -1,9 +1,9 @@
-import Grid from "../grid";
+import Grid from "../drawer/grid";
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
-import {ArrowDrawer} from "../arrow-drawer";
+import {ArrowDrawer} from "../drawer/arrow-drawer";
 import {EntityIdService} from "../entities/entity-id-service";
-import {Arrow} from "../arrow";
+import {Arrow} from "../drawer/arrow";
 import {ArrowEntity} from "../entities/arrow-entity";
 import Constants from "../constants";
 

@@ -13,7 +13,7 @@ import CursorDefault from "mdi-material-ui/CursorDefault";
 import {CheckboxBlankOutline, FormatText, RayStartArrow} from "mdi-material-ui";
 import SvgCanvas from "./svg-diag";
 import {LayerService} from "./layer-service";
-import Grid from "./grid";
+import Grid from "./drawer/grid";
 import {DiagToSvg} from "./svg/diag-to-svg";
 import {Tool, Tools} from "./tools/tool";
 

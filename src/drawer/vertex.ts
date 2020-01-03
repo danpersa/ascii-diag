@@ -1,4 +1,4 @@
-import Constants from "./constants";
+import Constants from "../constants";
 
 export class Vertex {
     private readonly _canvasX: number;

@@ -1,4 +1,4 @@
-import Constants from "./constants";
+import Constants from "../constants";
 import {Drawer} from "./drawer";
 import {Cursor} from "./cursor";
 

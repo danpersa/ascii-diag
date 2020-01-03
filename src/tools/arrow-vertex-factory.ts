@@ -1,5 +1,5 @@
-import {Vertex} from "../vertex";
-import {Arrow, ArrowDirection} from "../arrow";
+import {Vertex} from "../drawer/vertex";
+import {Arrow, ArrowDirection} from "../drawer/arrow";
 import Constants from "../constants";
 
 
