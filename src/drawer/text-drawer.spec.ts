@@ -1,19 +1,15 @@
 import 'jest-canvas-mock';
-import {CanvasVertexDrawer} from './vertex-drawer';
-import {Vertex} from "./vertex";
 import {CellDrawer} from "./cell-drawer";
 import {CanvasTextDrawer} from "./text-drawer";
 import {Text} from "./text";
 import {Domain} from "./cell";
+import {CellDrawerMock} from "./__mocks__/cell-drawer-mock";
 import Cell = Domain.Cell;
 
 let cellDrawerMock: CellDrawer;
 
 describe('draw', () => {
     beforeEach(() => {
-        let CellDrawerMock = jest.fn<CellDrawer, []>(() => ({
-            draw: jest.fn()
-        }));
         cellDrawerMock = new CellDrawerMock();
         let textDrawer = new CanvasTextDrawer(cellDrawerMock);
         textDrawer.draw(Text.fromGrid(5, 10, "Hi"));
