@@ -83,7 +83,7 @@ export default class AsciiDiag {
         this.layerService.entities.forEach((entity: Entity) => {
             if (!entity.editing()) {
                 entity.cells().forEach(cell => {
-                    this.grid.valueCell(cell.row, cell.column, cell.value);
+                    this.grid.valueCell(cell.row, cell.column, cell.text);
                 })
             }
         });

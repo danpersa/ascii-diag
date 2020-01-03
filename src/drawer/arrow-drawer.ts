@@ -19,7 +19,7 @@ export abstract class AbstractArrowDrawer implements ArrowDrawer {
     abstract drawCell(cell: Cell): void;
 
     draw(arrow: Arrow): void {
-        let cell = Cell.Builder.from(arrow.startRow, arrow.startColumn).value("+").build();
+        let cell = Cell.Builder.from(arrow.startRow, arrow.startColumn).text("+").build();
         this.drawCell(cell);
 
         const minColumn = Math.min(arrow.startColumn, arrow.endColumn);
@@ -30,45 +30,45 @@ export abstract class AbstractArrowDrawer implements ArrowDrawer {
 
         if (arrow.startDirection === ArrowDirection.Horizontal) {
             for (let column = minColumn + 1; column < maxColumn; ++column) {
-                const cell = Cell.Builder.from(arrow.startRow, column).value("-").build();
+                const cell = Cell.Builder.from(arrow.startRow, column).text("-").build();
                 this.drawCell(cell);
             }
             if (arrow.startRow == arrow.endRow) {
                 if (arrowSymbol) {
-                    const cell = Cell.Builder.from(arrow.startRow, arrow.endColumn).value(arrowSymbol).build();
+                    const cell = Cell.Builder.from(arrow.startRow, arrow.endColumn).text(arrowSymbol).build();
                     this.drawCell(cell);
                 }
             } else {
-                const cell = Cell.Builder.from(arrow.startRow, arrow.endColumn).value("+").build();
+                const cell = Cell.Builder.from(arrow.startRow, arrow.endColumn).text("+").build();
                 this.drawCell(cell);
                 for (let row = minRow + 1; row < maxRow; ++row) {
-                    const cell = Cell.Builder.from(row, arrow.endColumn).value("|").build();
+                    const cell = Cell.Builder.from(row, arrow.endColumn).text("|").build();
                     this.drawCell(cell);
                 }
                 if (arrowSymbol) {
-                    const cell = Cell.Builder.from(arrow.endRow, arrow.endColumn).value(arrowSymbol).build();
+                    const cell = Cell.Builder.from(arrow.endRow, arrow.endColumn).text(arrowSymbol).build();
                     this.drawCell(cell);
                 }
             }
         } else if (arrow.startDirection === ArrowDirection.Vertical) {
             for (let row = minRow + 1; row < maxRow; ++row) {
-                const cell = Cell.Builder.from(row, arrow.startColumn).value("|").build();
+                const cell = Cell.Builder.from(row, arrow.startColumn).text("|").build();
                 this.drawCell(cell);
             }
             if (arrow.startColumn == arrow.endColumn) {
                 if (arrowSymbol) {
-                    const cell = Cell.Builder.from(arrow.endRow, arrow.endColumn).value(arrowSymbol).build();
+                    const cell = Cell.Builder.from(arrow.endRow, arrow.endColumn).text(arrowSymbol).build();
                     this.drawCell(cell);
                 }
             } else {
-                const cell = Cell.Builder.from(arrow.endRow, arrow.startColumn).value("+").build();
+                const cell = Cell.Builder.from(arrow.endRow, arrow.startColumn).text("+").build();
                 this.drawCell(cell);
                 for (let column = minColumn + 1; column < maxColumn; ++column) {
-                    const cell = Cell.Builder.from(arrow.endRow, column).value("-").build();
+                    const cell = Cell.Builder.from(arrow.endRow, column).text("-").build();
                     this.drawCell(cell);
                 }
                 if (arrowSymbol) {
-                    const cell = Cell.Builder.from(arrow.endRow, arrow.endColumn).value(arrowSymbol).build();
+                    const cell = Cell.Builder.from(arrow.endRow, arrow.endColumn).text(arrowSymbol).build();
                     this.drawCell(cell);
                 }
             }

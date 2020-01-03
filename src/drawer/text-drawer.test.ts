@@ -24,7 +24,7 @@ describe('draw', () => {
     });
 
     it('cell draw should be called with the right parameters', () => {
-        expect(cellDrawerMock.draw).nthCalledWith(1, Cell.Builder.from(5, 10).value('H'));
-        expect(cellDrawerMock.draw).nthCalledWith(2, Cell.Builder.from(5, 11).value('i'));
+        expect(cellDrawerMock.draw).nthCalledWith(1, Cell.Builder.from(5, 10).text('H'));
+        expect(cellDrawerMock.draw).nthCalledWith(2, Cell.Builder.from(5, 11).text('i'));
     });
 });

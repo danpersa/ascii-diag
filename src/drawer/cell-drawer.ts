@@ -20,7 +20,7 @@ export class CanvasCellDrawer implements CellDrawer {
     draw(cell: Cell) {
         this.drawSelected(cell);
         this.drawBorder(cell);
-        this.drawValue(cell);
+        this.drawText(cell);
     }
 
     drawCell(row: number, column: number) {
@@ -28,7 +28,7 @@ export class CanvasCellDrawer implements CellDrawer {
 
         this.drawSelected(cell);
         this.drawBorder(cell);
-        this.drawValue(cell);
+        this.drawText(cell);
     }
 
     private drawBorder(cell: Cell) {
@@ -45,9 +45,9 @@ export class CanvasCellDrawer implements CellDrawer {
         this.context.fillRect(cell.canvasX, cell.canvasY, Constants.densityX, Constants.densityY);
     }
 
-    private drawValue(cell: Cell) {
+    private drawText(cell: Cell) {
         this.context.fillStyle = `rgb(0, 0, 0)`;
         this.context.font = Constants.font;
-        this.context.fillText(cell.value, cell.canvasX + 2, cell.canvasY + 15);
+        this.context.fillText(cell.text, cell.canvasX + 2, cell.canvasY + 15);
     }
 }
