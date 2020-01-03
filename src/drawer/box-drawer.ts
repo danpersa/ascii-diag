@@ -18,48 +18,48 @@ export abstract class AbstractBoxDrawer implements BoxDrawer {
         const maxColumn = box.rightColumn;
 
         // start corner
-        let cell = Cell.Builder.from(box.topRow, box.leftColumn).value("+").build();
+        let cell = Cell.Builder.from(box.topRow, box.leftColumn).text("+").build();
         this.addCell(cell);
 
         // horizontal edge
         for (let i = minColumn + 1; i < maxColumn; i++) {
-            let cell = Cell.Builder.from(box.topRow, i).value("-").build();
+            let cell = Cell.Builder.from(box.topRow, i).text("-").build();
             this.addCell(cell);
         }
 
         // left edge
         for (let i = minRow + 1; i < maxRow; i++) {
-            let cell = Cell.Builder.from(i, box.leftColumn).value("|").build();
+            let cell = Cell.Builder.from(i, box.leftColumn).text("|").build();
             this.addCell(cell);
         }
 
         if (minColumn != maxColumn) {
             for (let i = minRow + 1; i < maxRow; i++) {
                 // right edge
-                let cell = Cell.Builder.from(i, box.rightColumn).value("|").build();
+                let cell = Cell.Builder.from(i, box.rightColumn).text("|").build();
                 this.addCell(cell);
             }
 
             // top right corner
-            let cell = Cell.Builder.from(box.topRow, box.rightColumn).value("+").build();
+            let cell = Cell.Builder.from(box.topRow, box.rightColumn).text("+").build();
             this.addCell(cell);
         }
 
         if (minRow != maxRow) {
             // bottom edge
             for (let i = minColumn + 1; i < maxColumn; i++) {
-                let cell = Cell.Builder.from(box.bottomRow, i).value("-").build();
+                let cell = Cell.Builder.from(box.bottomRow, i).text("-").build();
                 this.addCell(cell);
             }
 
             // bottom left corner
-            let cell = Cell.Builder.from(box.bottomRow, box.leftColumn).value("+").build();
+            let cell = Cell.Builder.from(box.bottomRow, box.leftColumn).text("+").build();
             this.addCell(cell);
         }
 
         if (minRow != maxRow && minColumn != maxColumn) {
             // bottom right corner
-            let cell = Cell.Builder.from(box.bottomRow, box.rightColumn).value("+").build();
+            let cell = Cell.Builder.from(box.bottomRow, box.rightColumn).text("+").build();
             this.addCell(cell);
         }
     }

@@ -16,7 +16,7 @@ export class CanvasTextDrawer implements TextDrawer {
 
     draw(text: Text) {
         for (let i = 0; i < text.text.length; ++i) {
-            let cell = Cell.Builder.from(text.row, text.column + i).value(text.text.charAt(i)).build();
+            let cell = Cell.Builder.from(text.row, text.column + i).text(text.text.charAt(i)).build();
             this.cellDrawer.draw(cell);
         }
     }

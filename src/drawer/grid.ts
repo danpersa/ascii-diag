@@ -28,7 +28,7 @@ export default class Grid {
 
     valueCell(row: number, column: number, value: string) {
         const currentCell = this.cellMatrix[row][column];
-        const newCell = Domain.Cell.Builder.fromCell(currentCell).value(value).build();
+        const newCell = Domain.Cell.Builder.fromCell(currentCell).text(value).build();
         this.cellMatrix[row][column] = newCell;
     }
 

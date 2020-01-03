@@ -2,15 +2,15 @@ import Constants from '../constants'
 
 export module Domain {
     export class Cell {
-        private readonly _value: string;
+        private readonly _text: string;
         private readonly _selected: boolean;
         private readonly _canvasX: number;
         private readonly _canvasY: number;
         private readonly _row: number;
         private readonly _column: number;
 
-        constructor(value: string, selected: boolean, canvasX: number, canvasY: number, row: number, column: number) {
-            this._value = value;
+        constructor(text: string, selected: boolean, canvasX: number, canvasY: number, row: number, column: number) {
+            this._text = text;
             this._selected = selected;
             this._canvasX = canvasX;
             this._canvasY = canvasY;
@@ -34,8 +34,8 @@ export module Domain {
             return this._column;
         }
 
-        get value(): string {
-            return this._value;
+        get text(): string {
+            return this._text;
         }
 
 
@@ -49,7 +49,7 @@ export module Domain {
 export module Domain.Cell {
     export class Builder {
 
-        private _value: string = "";
+        private _text: string = "";
         private _selected: boolean = false;
         private _canvasX: number;
         private _canvasY: number;
@@ -69,41 +69,41 @@ export module Domain.Cell {
 
         static fromCell(cell: Cell): Builder {
             return new Builder(cell.canvasX, cell.canvasY, cell.row, cell.column)
-                .value(cell.value)
+                .text(cell.text)
                 .selected(cell.selected);
         }
 
         build(): Cell {
-            return new Cell(this._value, this._selected, this._canvasX, this._canvasY, this._row, this._column);
+            return new Cell(this._text, this._selected, this._canvasX, this._canvasY, this._row, this._column);
         }
 
-        column(value: number): Builder {
-            this._column = value;
+        column(column: number): Builder {
+            this._column = column;
             return this;
         }
 
-        row(value: number): Builder {
-            this._row = value;
+        row(column: number): Builder {
+            this._row = column;
             return this;
         }
 
-        canvasY(value: number): Builder {
-            this._canvasY = value;
+        canvasY(column: number): Builder {
+            this._canvasY = column;
             return this;
         }
 
-        canvasX(value: number): Builder {
-            this._canvasX = value;
+        canvasX(canvasX: number): Builder {
+            this._canvasX = canvasX;
             return this;
         }
 
-        selected(value: boolean): Builder {
-            this._selected = value;
+        selected(canvasX: boolean): Builder {
+            this._selected = canvasX;
             return this;
         }
 
-        value(value: string): Builder {
-            this._value = value;
+        text(text: string): Builder {
+            this._text = text;
             return this;
         }
     }

@@ -19,7 +19,7 @@ export class TextEntity implements Entity {
         for (let i = 0; i < this.text.length; ++i) {
             const cellValue = this.text.charAt(i);
             const cell = Cell.Builder.from(this.row, this.column + i)
-                .value(cellValue)
+                .text(cellValue)
                 .build();
             this._cells.push(cell);
         }
