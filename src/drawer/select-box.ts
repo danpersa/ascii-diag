@@ -1,6 +1,6 @@
 import {Box} from "./box";
 import {Vertex} from "./vertex";
-import Constants from "./constants";
+import Constants from "../constants";
 
 export class SelectBox extends Box {
     private readonly _topLeftVertex: Vertex;

@@ -1,7 +1,7 @@
 import {SvgRenderer} from "./svg-renderer";
 import {Polygon, Svg} from "@svgdotjs/svg.js";
 import Constants from "../constants";
-import {ArrowDirection, ArrowTipDirection} from "../arrow";
+import {ArrowDirection, ArrowTipDirection} from "../drawer/arrow";
 import {ArrowEntity} from "../entities/arrow-entity";
 import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
 

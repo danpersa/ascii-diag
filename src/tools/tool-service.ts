@@ -1,12 +1,12 @@
-import Grid from '../grid'
+import Grid from '../drawer/grid'
 import {Tool, Tools} from "./tool";
 import {ArrowCreateTool} from "./arrow-create-tool";
 import {BoxCreateTool} from "./box-create-tool";
 import {TextCreateTool} from "./text-create-tool";
 import {LayerService} from "../layer-service";
-import {SelectBoxDrawer} from "../select-box-drawer";
+import {SelectBoxDrawer} from "../drawer/select-box-drawer";
 import {SelectTool} from "./select-tool";
-import {BoxDrawer} from "../box-drawer";
+import {BoxDrawer} from "../drawer/box-drawer";
 import {EntityIdService} from "../entities/entity-id-service";
 import {EntitySelectionService} from "./entity-selection-service";
 import {BoxEditTool} from "./box-edit-tool";
@@ -14,12 +14,12 @@ import {BoxEntity} from "../entities/box-entity";
 import {TextEntity} from "../entities/text-entity";
 import {TextEditTool} from "./text-edit-tool";
 import {BoxResizeTool, ResizeType} from "./box-resize-tool";
-import {TextDrawer} from "../text-drawer";
-import {CursorDrawer} from "../cursor-drawer";
+import {TextDrawer} from "../drawer/text-drawer";
+import {CursorDrawer} from "../drawer/cursor-drawer";
 import {BoxMoveTool} from "./box-move-tool";
-import {VertexDrawer} from "../vertex-drawer";
+import {VertexDrawer} from "../drawer/vertex-drawer";
 import {TextMoveTool} from "./text-move-tool";
-import {ArrowDrawer} from "../arrow-drawer";
+import {ArrowDrawer} from "../drawer/arrow-drawer";
 import {ArrowEditTool} from "./arrow-edit-tool";
 import {ArrowEntity} from "../entities/arrow-entity";
 import {ArrowFlipTool} from "./arrow-flip-tool";

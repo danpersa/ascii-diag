@@ -1,5 +1,5 @@
 import Grid from "./grid";
-import Constants from "./constants";
+import Constants from "../constants";
 import {Domain} from "./cell";
 import Cell = Domain.Cell;
 

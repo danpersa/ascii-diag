@@ -1,4 +1,4 @@
-import Constants from "./constants";
+import Constants from "../constants";
 
 export class Box {
     private _canvasX: number;

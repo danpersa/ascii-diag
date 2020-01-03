@@ -4,12 +4,12 @@ import {Entity} from "../entities/entity";
 import {TextEntity} from "../entities/text-entity";
 import {EntityIdService} from "../entities/entity-id-service";
 import {TextCreateTool} from "./text-create-tool";
-import {TextDrawer} from "../text-drawer";
-import {CursorDrawer} from "../cursor-drawer";
-import {Text} from "../text";
+import {TextDrawer} from "../drawer/text-drawer";
+import {CursorDrawer} from "../drawer/cursor-drawer";
+import {Text} from "../drawer/text";
 import {EntitySelectionService} from "./entity-selection-service";
-import {Vertex} from "../vertex";
-import {VertexDrawer} from "../vertex-drawer";
+import {Vertex} from "../drawer/vertex";
+import {VertexDrawer} from "../drawer/vertex-drawer";
 import {ToolService} from "./tool-service";
 
 export class TextEditTool extends TextCreateTool implements Tool {

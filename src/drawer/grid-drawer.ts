@@ -1,6 +1,6 @@
 import {CellDrawer} from "./cell-drawer";
 import Grid from "./grid";
-import Constants from "./constants";
+import Constants from "../constants";
 
 export class GridDrawer {
 

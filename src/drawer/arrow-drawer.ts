@@ -1,7 +1,7 @@
 import {CellDrawer} from "./cell-drawer";
 import {Arrow, ArrowDirection, ArrowTipDirection} from "./arrow";
 import {Domain} from "./cell";
-import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
+import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
 import {Drawer} from "./drawer";
 import Cell = Domain.Cell;
 
