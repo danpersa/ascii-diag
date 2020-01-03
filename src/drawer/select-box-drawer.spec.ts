@@ -2,7 +2,6 @@ import 'jest-canvas-mock';
 import {CanvasSelectBoxDrawer} from './select-box-drawer';
 import {SelectBox} from "./select-box";
 import {VertexDrawer} from './vertex-drawer';
-import Constants from "../constants";
 
 let ctx: CanvasRenderingContext2D;
 let vertexDrawerMock: VertexDrawer;
