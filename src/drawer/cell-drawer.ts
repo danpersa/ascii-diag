@@ -23,14 +23,6 @@ export class CanvasCellDrawer implements CellDrawer {
         this.drawText(cell);
     }
 
-    drawCell(row: number, column: number) {
-        const cell = this.grid.cell(row, column);
-
-        this.drawSelected(cell);
-        this.drawBorder(cell);
-        this.drawText(cell);
-    }
-
     private drawBorder(cell: Cell) {
         this.context.strokeStyle = `rgb(0, 0, 0, 0.3)`;
         this.context.lineWidth = 0.5;
