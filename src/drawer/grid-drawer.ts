@@ -15,7 +15,8 @@ export class GridDrawer {
     draw() {
         for (let row = 0; row < Constants.numberOfRows; ++row) {
             for (let column = 0; column < Constants.numberOfColumns; ++column) {
-                this.cellDrawer.drawCell(row, column);
+                const cell = this.grid.cell(row, column);
+                this.cellDrawer.draw(cell);
             }
         }
     }
