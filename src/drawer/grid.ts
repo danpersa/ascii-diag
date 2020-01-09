@@ -7,9 +7,20 @@ export default class Grid {
 
     private readonly cellMatrix: CellMatrix;
 
-    constructor() {
-        this.cellMatrix = [];
-        this.init();
+    static create(rows: number, columns: number): Grid {
+        const cellMatrix: CellMatrix = [];
+        for (let row = 0; row < rows; row++) {
+            cellMatrix.push([]);
+            for (let column = 0; column < columns; column++) {
+                const cell = Domain.Cell.Builder.from(row, column).build();
+                cellMatrix[row].push(cell);
+            }
+        }
+        return new Grid(cellMatrix);
+    }
+
+    private constructor(cellMatrix: CellMatrix) {
+        this.cellMatrix = cellMatrix;
     }
 
     cell(row: number, column: number): Domain.Cell {
@@ -38,20 +49,11 @@ export default class Grid {
         this.cellMatrix[row][column] = newCell;
     }
 
-    private init(): void {
-        // console.log("Init grid: numberOfRows: " + Constants.numberOfRows + " numberOfColumns: " + Constants.numberOfColumns);
-        // this is called too many times, should be optimized
-        for (let row = 0; row <= Constants.numberOfRows; row++) {
-            this.cellMatrix.push([]);
-            for (let column = 0; column <= Constants.numberOfColumns; column++) {
-                const cell = Domain.Cell.Builder.from(row, column).build();
-                this.cellMatrix[row].push(cell);
-            }
-        }
+    rows(): number {
+        return this.cellMatrix.length;
     }
 
-    reset(): void {
-        this.cellMatrix.length = 0;
-        this.init();
+    columns(): number {
+        return this.cellMatrix[0].length;
     }
 }

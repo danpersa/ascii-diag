@@ -1,4 +1,3 @@
-import Grid from "./grid";
 import Constants from "../constants";
 import {Domain} from "./cell";
 import Cell = Domain.Cell;
@@ -10,11 +9,9 @@ export interface CellDrawer {
 export class CanvasCellDrawer implements CellDrawer {
 
     private readonly context: CanvasRenderingContext2D;
-    private readonly grid: Grid;
 
-    constructor(context: CanvasRenderingContext2D, grid: Grid) {
+    constructor(context: CanvasRenderingContext2D) {
         this.context = context;
-        this.grid = grid;
     }
 
     draw(cell: Cell) {

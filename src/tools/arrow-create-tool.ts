@@ -1,4 +1,3 @@
-import Grid from "../drawer/grid";
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
 import {ArrowDrawer} from "../drawer/arrow-drawer";
@@ -10,7 +9,6 @@ import Constants from "../constants";
 export class ArrowCreateTool implements Tool {
 
     private readonly arrowDrawer: ArrowDrawer;
-    private readonly grid: Grid;
     private readonly layerService: LayerService;
     private readonly entityIdService: EntityIdService;
     private startRow: number = 0;
@@ -19,8 +17,7 @@ export class ArrowCreateTool implements Tool {
     private endColumn: number = 0;
     private arrow: Arrow | null = null;
 
-    constructor(grid: Grid, layerService: LayerService, entityIdService: EntityIdService, arrowDrawer: ArrowDrawer) {
-        this.grid = grid;
+    constructor(layerService: LayerService, entityIdService: EntityIdService, arrowDrawer: ArrowDrawer) {
         this.layerService = layerService;
         this.arrowDrawer = arrowDrawer;
         this.entityIdService = entityIdService;

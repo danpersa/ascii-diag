@@ -1,4 +1,3 @@
-import Grid from '../drawer/grid'
 import {Tool, Tools} from "./tool";
 import {ArrowCreateTool} from "./arrow-create-tool";
 import {BoxCreateTool} from "./box-create-tool";
@@ -31,7 +30,6 @@ export class ToolService {
     private readonly boxTool: Tool;
     private readonly arrowCreateTool: Tool;
     private readonly textTool: Tool;
-    private readonly grid: Grid;
     private readonly layerService: LayerService;
     private readonly selectTool: SelectTool;
     private readonly entitySelectionService: EntitySelectionService;
@@ -47,23 +45,21 @@ export class ToolService {
     private toolChangeCallback: () => void = () => {
     };
 
-    constructor(grid: Grid, layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer,
-                entityIdService: EntityIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer,
-                arrowDrawer: ArrowDrawer) {
+    constructor(layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entityIdService: EntityIdService,
+                textDrawer: TextDrawer, cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, arrowDrawer: ArrowDrawer) {
         this.layerService = layerService;
         this.cursorDrawer = cursorDrawer;
         this.textDrawer = textDrawer;
         this.arrowDrawer = arrowDrawer;
-        this.boxTool = new BoxCreateTool(grid, layerService, boxDrawer, entityIdService);
-        this.arrowCreateTool = new ArrowCreateTool(grid, layerService, entityIdService, arrowDrawer);
+        this.boxTool = new BoxCreateTool(layerService, boxDrawer, entityIdService);
+        this.arrowCreateTool = new ArrowCreateTool(layerService, entityIdService, arrowDrawer);
         this.textTool = new TextCreateTool(layerService, entityIdService, textDrawer, cursorDrawer);
-        this.entitySelectionService = new EntitySelectionService(this.layerService, grid, entityIdService, this);
+        this.entitySelectionService = new EntitySelectionService(this.layerService, entityIdService, this);
         this.arrowVertexFactory = new ArrowVertexFactory();
         this.selectTool = new SelectTool(this.entitySelectionService);
         this.selectBoxDrawer = selectBoxDrawer;
         this.boxDrawer = boxDrawer;
         this.vertexDrawer = vertexDrawer;
-        this.grid = grid;
         this.entityIdService = entityIdService;
         this.toolStack.push(this.boxTool);
     }
