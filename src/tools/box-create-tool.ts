@@ -1,5 +1,4 @@
 import {Tool} from "./tool";
-import Grid from "../drawer/grid";
 import {LayerService} from "../layer-service";
 import {BoxEntity} from "../entities/box-entity";
 import {BoxDrawer} from "../drawer/box-drawer";
@@ -8,7 +7,6 @@ import {EntityIdService} from "../entities/entity-id-service";
 
 export class BoxCreateTool implements Tool {
 
-    private readonly grid: Grid;
     private readonly layerService: LayerService;
     private readonly boxDrawer: BoxDrawer;
     private readonly entityIdService: EntityIdService;
@@ -18,8 +16,7 @@ export class BoxCreateTool implements Tool {
     private endColumn: number = 0;
     private box: Box | null = null;
 
-    constructor(grid: Grid, layerService: LayerService, boxDrawer: BoxDrawer, entityIdService: EntityIdService) {
-        this.grid = grid;
+    constructor(layerService: LayerService, boxDrawer: BoxDrawer, entityIdService: EntityIdService) {
         this.layerService = layerService;
         this.boxDrawer = boxDrawer;
         this.entityIdService = entityIdService;

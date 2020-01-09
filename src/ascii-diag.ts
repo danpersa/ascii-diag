@@ -2,7 +2,7 @@ import Grid from './drawer/grid'
 import {ToolService} from "./tools/tool-service";
 import Constants from "./constants";
 import {CellDrawer} from "./drawer/cell-drawer";
-import {GridDrawer} from "./drawer/grid-drawer";
+import {CanvasGridDrawer, GridDrawer} from "./drawer/grid-drawer";
 import {LayerService} from "./layer-service";
 import {Entity} from "./entities/entity";
 import {EntityIdService} from "./entities/entity-id-service";
@@ -16,7 +16,6 @@ export default class AsciiDiag {
     private clickX: number[] = [];
     private clickY: number[] = [];
     private clickDrag: boolean[] = [];
-    private readonly grid: Grid;
     private readonly gridDrawer: GridDrawer;
     private readonly cellDrawer: CellDrawer;
     private readonly toolService: ToolService;
@@ -25,16 +24,15 @@ export default class AsciiDiag {
     private readonly entityIdService: EntityIdService;
     private readonly diagToSvg: DiagToSvg;
 
-    constructor(canvas: HTMLCanvasElement, grid: Grid, layerService: LayerService, diagToSvg: DiagToSvg, cellDrawer: CellDrawer, toolService: ToolService, context: CanvasRenderingContext2D) {
+    constructor(canvas: HTMLCanvasElement, layerService: LayerService, diagToSvg: DiagToSvg, cellDrawer: CellDrawer, toolService: ToolService, context: CanvasRenderingContext2D) {
         this.diagToSvg = diagToSvg;
         this.canvas = canvas;
         this.context = context;
         this.paint = false;
-        this.grid = grid;
         this.entityIdService = new EntityIdService();
         this.layerService = layerService;
         this.cellDrawer = cellDrawer;
-        this.gridDrawer = new GridDrawer(this.grid, this.cellDrawer);
+        this.gridDrawer = new CanvasGridDrawer(this.cellDrawer);
         this.toolService = toolService;
 
         this.toolService.setToolChangeCallback(() => {
@@ -71,19 +69,19 @@ export default class AsciiDiag {
         let clickY = this.clickY;
 
         context.clearRect(0, 0, Constants.canvasWidth, Constants.canvasHeight);
-        this.grid.reset();
-        this.addEntitiesToGrid();
-        this.gridDrawer.draw();
+        const grid = Grid.create(Constants.numberOfRows, Constants.numberOfColumns);
+        this.addEntitiesToGrid(grid);
+        this.gridDrawer.draw(grid);
 
         this.toolService.currentTool().render();
         this.diagToSvg.render();
     };
 
-    private addEntitiesToGrid() {
+    private addEntitiesToGrid(grid: Grid) {
         this.layerService.entities.forEach((entity: Entity) => {
             if (!entity.editing()) {
                 entity.cells().forEach(cell => {
-                    this.grid.valueCell(cell.row, cell.column, cell.text);
+                    grid.valueCell(cell.row, cell.column, cell.text);
                 })
             }
         });

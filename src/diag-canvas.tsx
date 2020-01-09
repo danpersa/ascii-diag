@@ -36,14 +36,12 @@ export default class DiagCanvas extends React.Component<DiagCanvasProps> {
     componentDidMount() {
 
         const canvas = this.props.canvasRef.current!;
-        const grid = this.props.grid;
         const entityIdService = new EntityIdService();
         const layerService = this.props.layerService;
         const context = canvas.getContext("2d")!;
 
-
         const arrowTipDirectionService = new ArrowTipDirectionService();
-        const cellDrawer = new CanvasCellDrawer(context, grid);
+        const cellDrawer = new CanvasCellDrawer(context);
         const vertexDrawer = new CanvasVertexDrawer(context);
         const selectBoxDrawer = new CanvasSelectBoxDrawer(context, vertexDrawer);
         const boxDrawer = new CanvasBoxDrawer(cellDrawer);
@@ -51,10 +49,9 @@ export default class DiagCanvas extends React.Component<DiagCanvasProps> {
         const textDrawer = new CanvasTextDrawer(cellDrawer);
         const cursorDrawer = new CanvasCursorDrawer(context);
 
-        this.toolService = new ToolService(grid, layerService, selectBoxDrawer, boxDrawer,
-            entityIdService, textDrawer, cursorDrawer, vertexDrawer, arrowDrawer);
+        this.toolService = new ToolService(layerService, selectBoxDrawer, boxDrawer, entityIdService, textDrawer, cursorDrawer, vertexDrawer, arrowDrawer);
 
-        new AsciiDiag(canvas, this.props.grid, this.props.layerService, this.props.diagToSvg, cellDrawer, this.toolService, context);
+        new AsciiDiag(canvas, this.props.layerService, this.props.diagToSvg, cellDrawer, this.toolService, context);
     }
 
     render() {

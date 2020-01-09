@@ -1,21 +1,23 @@
 import {CellDrawer} from "./cell-drawer";
 import Grid from "./grid";
-import Constants from "../constants";
 
-export class GridDrawer {
+export interface GridDrawer {
+    draw(grid: Grid): void;
+}
+
+export class CanvasGridDrawer implements GridDrawer {
 
     private readonly cellDrawer: CellDrawer;
-    private readonly grid: Grid;
 
-    constructor(grid: Grid, cellDrawer: CellDrawer) {
+    constructor(cellDrawer: CellDrawer) {
         this.cellDrawer = cellDrawer;
-        this.grid = grid;
     }
 
-    draw() {
-        for (let row = 0; row < Constants.numberOfRows; ++row) {
-            for (let column = 0; column < Constants.numberOfColumns; ++column) {
-                const cell = this.grid.cell(row, column);
+    draw(grid: Grid) {
+        for (let row = 0; row < grid.rows(); ++row) {
+            console.log("Rows " + grid.rows());
+            for (let column = 0; column < grid.columns(); ++column) {
+                const cell = grid.cell(row, column);
                 this.cellDrawer.draw(cell);
             }
         }

@@ -15,7 +15,8 @@ import SvgCanvas from "./svg-diag";
 import {LayerService} from "./layer-service";
 import Grid from "./drawer/grid";
 import {DiagToSvg} from "./svg/diag-to-svg";
-import {Tool, Tools} from "./tools/tool";
+import {Tools} from "./tools/tool";
+import Constants from "./constants";
 
 
 const appStyles = (theme: Theme) => createStyles({
@@ -47,12 +48,16 @@ const AppWithStyles = withStyles(appStyles)(
 
         private readonly canvasDivRef: RefObject<HTMLCanvasElement> = React.createRef();
         private readonly svgDivRef: RefObject<HTMLDivElement> = React.createRef();
+        private readonly grid: Grid;
+        private readonly layerService: LayerService;
 
         constructor(props: AppProps) {
             super(props);
             this.state = {
                 currentTool: Tools.box
             };
+            this.grid = Grid.create(Constants.numberOfRows, Constants.numberOfColumns);
+            this.layerService = new LayerService();
         }
 
         render() {
@@ -64,9 +69,7 @@ const AppWithStyles = withStyles(appStyles)(
                 }
             };
 
-            const grid = new Grid();
-            const layerService = new LayerService(grid);
-            const diagToSvg = new DiagToSvg(this.svgDivRef, layerService);
+            const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService);
 
             return (
                 <div className={this.props.classes.root}>
@@ -103,8 +106,8 @@ const AppWithStyles = withStyles(appStyles)(
                             <Paper className={this.props.classes.paperStyles} style={{overflow: 'auto'}}>
                                 <DiagCanvas canvasRef={this.canvasDivRef}
                                             currentTool={this.state.currentTool}
-                                            layerService={layerService}
-                                            grid={grid} diagToSvg={diagToSvg}/>
+                                            layerService={this.layerService}
+                                            grid={this.grid} diagToSvg={diagToSvg}/>
                             </Paper>
                         </UIGrid>
                         <UIGrid item sm={12} md={6}>
@@ -120,8 +123,8 @@ const AppWithStyles = withStyles(appStyles)(
 );
 
 
-window.addEventListener('keydown', function(e) {
-    if(e.keyCode == 32 && e.target == document.body) {
+window.addEventListener('keydown', function (e) {
+    if (e.keyCode == 32 && e.target == document.body) {
         e.preventDefault();
     }
 });

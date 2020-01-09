@@ -1,7 +1,6 @@
 import {TextEntity} from "../entities/text-entity";
 import {BoxEntity} from "../entities/box-entity";
 import {LayerService} from "../layer-service";
-import Grid from "../drawer/grid";
 import {EntityIdService} from "../entities/entity-id-service";
 import {ToolService} from "./tool-service";
 import {ArrowEntity} from "../entities/arrow-entity";
@@ -11,7 +10,7 @@ export class EntitySelectionService {
     private readonly layerService: LayerService;
     private readonly toolService: ToolService;
 
-    constructor(layerService: LayerService, grid: Grid, entityIdService: EntityIdService, toolService: ToolService) {
+    constructor(layerService: LayerService, entityIdService: EntityIdService, toolService: ToolService) {
         this.layerService = layerService;
         this.toolService = toolService;
     }
