@@ -1,4 +1,4 @@
-import {Arrow, ArrowDirection, ArrowTipDirection} from "./drawer/arrow";
+import {Arrow, ArrowDirection, ArrowTipDirection} from "./drawers/arrow";
 
 export class ArrowTipDirectionService {
 

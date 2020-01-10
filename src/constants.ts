@@ -1,4 +1,4 @@
-import {ArrowDirection} from "./drawer/arrow";
+import {ArrowDirection} from "./drawers/arrow";
 
 export default class Constants {
     static readonly canvasWidth = 900;

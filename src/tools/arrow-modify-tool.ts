@@ -1,12 +1,12 @@
 import {Tool} from "./tool";
 import {ToolService} from "./tool-service";
-import {VertexDrawer} from "../drawer/vertex-drawer";
+import {VertexDrawer} from "../drawers/vertex-drawer";
 import {ArrowEntity} from "../entities/arrow-entity";
-import {Vertex} from "../drawer/vertex";
-import {Arrow} from "../drawer/arrow";
+import {Vertex} from "../drawers/vertex";
+import {Arrow} from "../drawers/arrow";
 import {LayerService} from "../layer-service";
 import {ArrowVertexFactory} from "./arrow-vertex-factory";
-import {ArrowDrawer} from "../drawer/arrow-drawer";
+import {ArrowDrawer} from "../drawers/arrow-drawer";
 
 export enum ArrowModifyType {
     StartMove,

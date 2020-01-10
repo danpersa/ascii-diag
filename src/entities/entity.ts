@@ -1,4 +1,4 @@
-import {Domain} from "../drawer/cell";
+import {Domain} from "../drawers/cell";
 
 export interface Entity {
 

@@ -1,8 +1,8 @@
-import Grid from './drawer/grid'
+import Grid from './drawers/grid'
 import {ToolService} from "./tools/tool-service";
 import Constants from "./constants";
-import {CellDrawer} from "./drawer/cell-drawer";
-import {CanvasGridDrawer, GridDrawer} from "./drawer/grid-drawer";
+import {CellDrawer} from "./drawers/cell-drawer";
+import {CanvasGridDrawer, GridDrawer} from "./drawers/grid-drawer";
 import {LayerService} from "./layer-service";
 import {Entity} from "./entities/entity";
 import {EntityIdService} from "./entities/entity-id-service";

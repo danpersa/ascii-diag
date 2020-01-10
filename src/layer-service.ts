@@ -1,4 +1,4 @@
-import Grid from "./drawer/grid";
+import Grid from "./drawers/grid";
 import {Entity} from "./entities/entity";
 
 export class LayerService {

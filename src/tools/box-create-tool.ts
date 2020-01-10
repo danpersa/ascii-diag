@@ -1,8 +1,8 @@
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
 import {BoxEntity} from "../entities/box-entity";
-import {BoxDrawer} from "../drawer/box-drawer";
-import {Box} from "../drawer/box";
+import {BoxDrawer} from "../drawers/box-drawer";
+import {Box} from "../drawers/box";
 import {EntityIdService} from "../entities/entity-id-service";
 
 export class BoxCreateTool implements Tool {
