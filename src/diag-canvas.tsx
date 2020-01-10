@@ -4,7 +4,7 @@ import Constants from "./constants";
 import AsciiDiag from "./ascii-diag";
 import Grid from "./drawers/grid";
 import {LayerService} from "./layer-service";
-import {DiagToSvg} from "./svg/diag-to-svg";
+import {DiagToSvg} from "./renderers/diag-to-svg";
 import {Tools} from "./tools/tool";
 import {ToolService} from "./tools/tool-service";
 import {CanvasCellDrawer} from "./drawers/cell-drawer";

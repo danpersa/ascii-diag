@@ -6,7 +6,7 @@ import {CanvasGridDrawer, GridDrawer} from "./drawers/grid-drawer";
 import {LayerService} from "./layer-service";
 import {Shape} from "./shapes/shape";
 import {ShapeIdService} from "./shapes/shape-id-service";
-import {DiagToSvg} from "./svg/diag-to-svg";
+import {DiagToSvg} from "./renderers/diag-to-svg";
 
 export default class AsciiDiag {
     private readonly canvas: HTMLCanvasElement;
