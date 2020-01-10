@@ -1,8 +1,8 @@
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
-import {ArrowDrawer} from "../drawer/arrow-drawer";
+import {ArrowDrawer} from "../drawers/arrow-drawer";
 import {EntityIdService} from "../entities/entity-id-service";
-import {Arrow} from "../drawer/arrow";
+import {Arrow} from "../drawers/arrow";
 import {ArrowEntity} from "../entities/arrow-entity";
 import Constants from "../constants";
 

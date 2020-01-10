@@ -1,9 +1,9 @@
 import {Tool} from "./tool";
 import {ToolService} from "./tool-service";
-import {VertexDrawer} from "../drawer/vertex-drawer";
+import {VertexDrawer} from "../drawers/vertex-drawer";
 import {ArrowEntity} from "../entities/arrow-entity";
-import {Vertex} from "../drawer/vertex";
-import {ArrowDirection} from "../drawer/arrow";
+import {Vertex} from "../drawers/vertex";
+import {ArrowDirection} from "../drawers/arrow";
 import {LayerService} from "../layer-service";
 import {ArrowVertexFactory} from "./arrow-vertex-factory";
 

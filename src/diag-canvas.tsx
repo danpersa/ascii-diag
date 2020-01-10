@@ -2,20 +2,20 @@ import * as React from "react";
 import {RefObject} from "react";
 import Constants from "./constants";
 import AsciiDiag from "./ascii-diag";
-import Grid from "./drawer/grid";
+import Grid from "./drawers/grid";
 import {LayerService} from "./layer-service";
 import {DiagToSvg} from "./svg/diag-to-svg";
 import {Tools} from "./tools/tool";
 import {ToolService} from "./tools/tool-service";
-import {CanvasCellDrawer} from "./drawer/cell-drawer";
-import {CanvasVertexDrawer} from "./drawer/vertex-drawer";
-import {CanvasSelectBoxDrawer} from "./drawer/select-box-drawer";
-import {CanvasArrowDrawer} from "./drawer/arrow-drawer";
-import {CanvasTextDrawer} from "./drawer/text-drawer";
-import {CanvasCursorDrawer} from "./drawer/cursor-drawer";
+import {CanvasCellDrawer} from "./drawers/cell-drawer";
+import {CanvasVertexDrawer} from "./drawers/vertex-drawer";
+import {CanvasSelectBoxDrawer} from "./drawers/select-box-drawer";
+import {CanvasArrowDrawer} from "./drawers/arrow-drawer";
+import {CanvasTextDrawer} from "./drawers/text-drawer";
+import {CanvasCursorDrawer} from "./drawers/cursor-drawer";
 import {EntityIdService} from "./entities/entity-id-service";
 import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
-import {CanvasBoxDrawer} from "./drawer/box-drawer";
+import {CanvasBoxDrawer} from "./drawers/box-drawer";
 
 type DiagCanvasProps = {
     canvasRef: RefObject<HTMLCanvasElement>,

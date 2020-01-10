@@ -1,11 +1,11 @@
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
-import {SelectBoxDrawer} from "../drawer/select-box-drawer";
+import {SelectBoxDrawer} from "../drawers/select-box-drawer";
 import {BoxEntity} from "../entities/box-entity";
-import {SelectBox} from "../drawer/select-box";
+import {SelectBox} from "../drawers/select-box";
 import Constants from "../constants";
-import {BoxDrawer} from "../drawer/box-drawer";
-import {Box} from "../drawer/box";
+import {BoxDrawer} from "../drawers/box-drawer";
+import {Box} from "../drawers/box";
 import {ToolService} from "./tool-service";
 
 export enum ResizeType {

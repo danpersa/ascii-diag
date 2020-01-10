@@ -1,8 +1,8 @@
-import {Domain} from "../drawer/cell";
+import {Domain} from "../drawers/cell";
 import Cell = Domain.Cell;
 import {Entity} from "./entity";
-import {ArrayBoxDrawer} from "../drawer/box-drawer";
-import {Box} from "../drawer/box";
+import {ArrayBoxDrawer} from "../drawers/box-drawer";
+import {Box} from "../drawers/box";
 
 export class BoxEntity implements Entity {
     private readonly _id: number;
