@@ -1,7 +1,7 @@
 import {Tool} from "./tool";
 import {ToolService} from "./tool-service";
 import {VertexDrawer} from "../drawers/vertex-drawer";
-import {ArrowEntity} from "../entities/arrow-entity";
+import {ArrowShape} from "../shapes/arrow-shape";
 import {Vertex} from "../drawers/vertex";
 import {ArrowDirection} from "../drawers/arrow";
 import {LayerService} from "../layer-service";
@@ -14,11 +14,11 @@ export class ArrowFlipTool implements Tool {
     private readonly layerService: LayerService;
     private readonly arrowVertexFactory: ArrowVertexFactory;
 
-    private readonly entity: ArrowEntity;
+    private readonly entity: ArrowShape;
     private readonly flipVertex: Vertex | null;
 
     constructor(toolService: ToolService, layerService: LayerService, vertexDrawer: VertexDrawer,
-                arrowVertexFactory: ArrowVertexFactory, entity: ArrowEntity) {
+                arrowVertexFactory: ArrowVertexFactory, entity: ArrowShape) {
         this.toolService = toolService;
         this.vertexDrawer = vertexDrawer;
         this.entity = entity;
@@ -43,7 +43,7 @@ export class ArrowFlipTool implements Tool {
     mouseUp(row: number, column: number): void {
         const newArrowDirection = this.entity.startDirection === ArrowDirection.Horizontal ? ArrowDirection.Vertical : ArrowDirection.Horizontal;
 
-        const entity = new ArrowEntity(
+        const entity = new ArrowShape(
             this.entity.id(),
             this.entity.startRow,
             this.entity.startColumn,

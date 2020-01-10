@@ -1,7 +1,7 @@
 import {Tool} from "./tool";
 import {ToolService} from "./tool-service";
 import {VertexDrawer} from "../drawers/vertex-drawer";
-import {ArrowEntity} from "../entities/arrow-entity";
+import {ArrowShape} from "../shapes/arrow-shape";
 import {Vertex} from "../drawers/vertex";
 import {Arrow} from "../drawers/arrow";
 import {LayerService} from "../layer-service";
@@ -22,7 +22,7 @@ export class ArrowModifyTool implements Tool {
     private readonly arrowDrawer: ArrowDrawer;
 
 
-    private readonly entity: ArrowEntity;
+    private readonly entity: ArrowShape;
     private readonly moveType: ArrowModifyType;
     private startArrowVertex: Vertex;
     private endArrowVertex: Vertex;
@@ -30,7 +30,7 @@ export class ArrowModifyTool implements Tool {
 
     constructor(toolService: ToolService, layerService: LayerService, vertexDrawer: VertexDrawer,
                 arrowVertexFactory: ArrowVertexFactory, arrowDrawer: ArrowDrawer,
-                entity: ArrowEntity, moveType: ArrowModifyType) {
+                entity: ArrowShape, moveType: ArrowModifyType) {
         this.toolService = toolService;
         this.vertexDrawer = vertexDrawer;
         this.entity = entity;
@@ -70,7 +70,7 @@ export class ArrowModifyTool implements Tool {
 
     mouseUp(row: number, column: number): void {
         if (this.moveType === ArrowModifyType.StartMove) {
-            const entity = new ArrowEntity(
+            const entity = new ArrowShape(
                 this.entity.id(),
                 this.arrow.startRow,
                 this.arrow.startColumn,
@@ -81,7 +81,7 @@ export class ArrowModifyTool implements Tool {
             this.layerService.updateEntity(entity);
             this.toolService.selectArrowEditTool(entity);
         } else {
-            const entity = new ArrowEntity(
+            const entity = new ArrowShape(
                 this.entity.id(),
                 this.entity.startRow,
                 this.entity.startColumn,

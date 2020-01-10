@@ -1,23 +1,23 @@
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
 import {ArrowDrawer} from "../drawers/arrow-drawer";
-import {EntityIdService} from "../entities/entity-id-service";
+import {ShapeIdService} from "../shapes/shape-id-service";
 import {Arrow} from "../drawers/arrow";
-import {ArrowEntity} from "../entities/arrow-entity";
+import {ArrowShape} from "../shapes/arrow-shape";
 import Constants from "../constants";
 
 export class ArrowCreateTool implements Tool {
 
     private readonly arrowDrawer: ArrowDrawer;
     private readonly layerService: LayerService;
-    private readonly entityIdService: EntityIdService;
+    private readonly entityIdService: ShapeIdService;
     private startRow: number = 0;
     private startColumn: number = 0;
     private endRow: number = 0;
     private endColumn: number = 0;
     private arrow: Arrow | null = null;
 
-    constructor(layerService: LayerService, entityIdService: EntityIdService, arrowDrawer: ArrowDrawer) {
+    constructor(layerService: LayerService, entityIdService: ShapeIdService, arrowDrawer: ArrowDrawer) {
         this.layerService = layerService;
         this.arrowDrawer = arrowDrawer;
         this.entityIdService = entityIdService;
@@ -44,7 +44,7 @@ export class ArrowCreateTool implements Tool {
     }
 
     persist(): void {
-        const entity = new ArrowEntity(
+        const entity = new ArrowShape(
             this.entityIdService.nextId(),
             this.startRow,
             this.startColumn,

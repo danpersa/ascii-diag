@@ -1,4 +1,4 @@
-export class EntityIdService {
+export class ShapeIdService {
 
     private currentId: number = 0;
 

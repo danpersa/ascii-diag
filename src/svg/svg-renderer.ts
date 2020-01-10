@@ -1,8 +1,8 @@
-import {Entity} from "../entities/entity";
+import {Shape} from "../shapes/shape";
 import {Svg} from "@svgdotjs/svg.js";
-import {BoxEntity} from "../entities/box-entity";
-import {ArrowEntity} from "../entities/arrow-entity";
-import {TextEntity} from "../entities/text-entity";
+import {BoxShape} from "../shapes/box-shape";
+import {ArrowShape} from "../shapes/arrow-shape";
+import {TextShape} from "../shapes/text-shape";
 import {ArrowRenderer} from "./arrow-renderer";
 import {BoxRenderer} from "./box-renderer";
 import {TextRenderer} from "./text-renderer";
@@ -10,7 +10,7 @@ import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
 
 export interface SvgRenderer {
 
-    render(entity: Entity, svg: Svg): void;
+    render(entity: Shape, svg: Svg): void;
 }
 
 export class SvgRendererService {
@@ -25,12 +25,12 @@ export class SvgRendererService {
         this.textRenderer = new TextRenderer();
     }
 
-    render(entity: Entity, svg: Svg) {
-        if (entity instanceof BoxEntity) {
+    render(entity: Shape, svg: Svg) {
+        if (entity instanceof BoxShape) {
             this.boxRenderer.render(entity, svg);
-        } else if (entity instanceof ArrowEntity) {
+        } else if (entity instanceof ArrowShape) {
             this.arrowRenderer.render(entity, svg);
-        } else if (entity instanceof TextEntity) {
+        } else if (entity instanceof TextShape) {
             this.textRenderer.render(entity, svg);
         }
     }

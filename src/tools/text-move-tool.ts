@@ -4,7 +4,7 @@ import {SelectBoxDrawer} from "../drawers/select-box-drawer";
 import Constants from "../constants";
 import {BoxDrawer} from "../drawers/box-drawer";
 import {ToolService} from "./tool-service";
-import {TextEntity} from "../entities/text-entity";
+import {TextShape} from "../shapes/text-shape";
 import {Vertex} from "../drawers/vertex";
 import {VertexDrawer} from "../drawers/vertex-drawer";
 import {Text} from "../drawers/text";
@@ -19,12 +19,12 @@ export class TextMoveTool implements Tool {
     private readonly vertexDrawer: VertexDrawer;
     private readonly textDrawer: TextDrawer;
 
-    private readonly currentEntity: TextEntity;
+    private readonly currentEntity: TextShape;
     protected currentText: Text;
     private moveVertex: Vertex;
 
     constructor(layerService: LayerService, toolService: ToolService, selectBoxDrawer: SelectBoxDrawer,
-                boxDrawer: BoxDrawer, vertexDrawer: VertexDrawer, textDrawer: TextDrawer, entity: TextEntity) {
+                boxDrawer: BoxDrawer, vertexDrawer: VertexDrawer, textDrawer: TextDrawer, entity: TextShape) {
 
         this.layerService = layerService;
         this.toolService = toolService;
@@ -62,7 +62,7 @@ export class TextMoveTool implements Tool {
     }
 
     persist(): void {
-        const entity = new TextEntity(
+        const entity = new TextShape(
             this.currentEntity.id(),
             this.currentText.row,
             this.currentText.column,

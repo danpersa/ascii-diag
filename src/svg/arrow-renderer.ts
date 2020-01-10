@@ -2,7 +2,7 @@ import {SvgRenderer} from "./svg-renderer";
 import {Polygon, Svg} from "@svgdotjs/svg.js";
 import Constants from "../constants";
 import {ArrowDirection, ArrowTipDirection} from "../drawers/arrow";
-import {ArrowEntity} from "../entities/arrow-entity";
+import {ArrowShape} from "../shapes/arrow-shape";
 import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
 
 export class ArrowRenderer implements SvgRenderer {
@@ -13,7 +13,7 @@ export class ArrowRenderer implements SvgRenderer {
         this.arrowTipDirectionService = arrowTipDirectionService;
     }
 
-    render(entity: ArrowEntity, svg: Svg): void {
+    render(entity: ArrowShape, svg: Svg): void {
 
         const startX = entity.startColumn * Constants.densityX;
         const startY = entity.startRow * Constants.densityY;

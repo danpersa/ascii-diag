@@ -13,7 +13,7 @@ import {CanvasSelectBoxDrawer} from "./drawers/select-box-drawer";
 import {CanvasArrowDrawer} from "./drawers/arrow-drawer";
 import {CanvasTextDrawer} from "./drawers/text-drawer";
 import {CanvasCursorDrawer} from "./drawers/cursor-drawer";
-import {EntityIdService} from "./entities/entity-id-service";
+import {ShapeIdService} from "./shapes/shape-id-service";
 import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
 import {CanvasBoxDrawer} from "./drawers/box-drawer";
 
@@ -36,7 +36,7 @@ export default class DiagCanvas extends React.Component<DiagCanvasProps> {
     componentDidMount() {
 
         const canvas = this.props.canvasRef.current!;
-        const entityIdService = new EntityIdService();
+        const entityIdService = new ShapeIdService();
         const layerService = this.props.layerService;
         const context = canvas.getContext("2d")!;
 
