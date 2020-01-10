@@ -1,8 +1,8 @@
 import {Domain} from "../drawers/cell";
 import Cell = Domain.Cell;
-import {Entity} from "./entity";
+import {Shape} from "./shape";
 
-export class TextEntity implements Entity {
+export class TextShape implements Shape {
     private readonly _id: number;
     private readonly _row: number;
     private readonly _column: number;

@@ -1,10 +1,10 @@
 import {Domain} from "../drawers/cell";
 import Cell = Domain.Cell;
-import {Entity} from "./entity";
+import {Shape} from "./shape";
 import {ArrayBoxDrawer} from "../drawers/box-drawer";
 import {Box} from "../drawers/box";
 
-export class BoxEntity implements Entity {
+export class BoxShape implements Shape {
     private readonly _id: number;
     private readonly _topRow: number;
     private readonly _leftColumn: number;

@@ -1,6 +1,6 @@
 import {Tool} from "./tool";
 import {SelectBoxDrawer} from "../drawers/select-box-drawer";
-import {BoxEntity} from "../entities/box-entity";
+import {BoxShape} from "../shapes/box-shape";
 import {SelectBox} from "../drawers/select-box";
 import {ResizeType} from "./box-resize-tool";
 import {ToolService} from "./tool-service";
@@ -14,11 +14,11 @@ export class BoxEditTool implements Tool {
     private readonly entitySelectionService: EntitySelectionService;
     private readonly layerService: LayerService;
 
-    private readonly entity: BoxEntity;
+    private readonly entity: BoxShape;
     private readonly selectBox: SelectBox;
 
 
-    constructor(toolService: ToolService, layerService: LayerService, entitySelectionService: EntitySelectionService, selectBoxDrawer: SelectBoxDrawer, entity: BoxEntity) {
+    constructor(toolService: ToolService, layerService: LayerService, entitySelectionService: EntitySelectionService, selectBoxDrawer: SelectBoxDrawer, entity: BoxShape) {
         this.toolService = toolService;
         this.layerService = layerService
         this.selectBoxDrawer = selectBoxDrawer;

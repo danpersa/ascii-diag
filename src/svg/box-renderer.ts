@@ -1,11 +1,11 @@
 import Constants from "../constants";
-import {BoxEntity} from "../entities/box-entity";
+import {BoxShape} from "../shapes/box-shape";
 import {SvgRenderer} from "./svg-renderer";
 import {Svg} from "@svgdotjs/svg.js";
 
 export class BoxRenderer implements SvgRenderer {
 
-    render(entity: BoxEntity, svg: Svg): void {
+    render(entity: BoxShape, svg: Svg): void {
         const rectWidth = (entity.rightColumn - entity.leftColumn) * Constants.densityX;
         const rectHeight = (entity.bottomRow - entity.topRow) * Constants.densityY;
         const rect = svg.rect(rectWidth, rectHeight).fill('none')

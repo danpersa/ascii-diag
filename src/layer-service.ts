@@ -1,30 +1,30 @@
 import Grid from "./drawers/grid";
-import {Entity} from "./entities/entity";
+import {Shape} from "./shapes/shape";
 
 export class LayerService {
 
-    private readonly _entities: Array<Entity>;
+    private readonly _entities: Array<Shape>;
 
     constructor() {
         this._entities = [];
     }
 
-    createEntity(entity: Entity) {
+    createEntity(entity: Shape) {
         console.log("add entity: " + entity);
         this._entities.push(entity);
     }
 
-    getEntity(row: number, column: number): Entity | undefined {
+    getEntity(row: number, column: number): Shape | undefined {
         return this._entities.filter(entity => {
             return entity.cells().some(cell => cell.row == row && cell.column == column)
         }).pop();
     }
 
-    get entities(): Array<Entity> {
+    get entities(): Array<Shape> {
         return this._entities;
     }
 
-    updateEntity(entity: Entity): void {
+    updateEntity(entity: Shape): void {
         console.log("update entity");
         let index: number | null = null;
         this.entities.forEach((e, i) => {

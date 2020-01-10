@@ -1,22 +1,22 @@
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
-import {BoxEntity} from "../entities/box-entity";
+import {BoxShape} from "../shapes/box-shape";
 import {BoxDrawer} from "../drawers/box-drawer";
 import {Box} from "../drawers/box";
-import {EntityIdService} from "../entities/entity-id-service";
+import {ShapeIdService} from "../shapes/shape-id-service";
 
 export class BoxCreateTool implements Tool {
 
     private readonly layerService: LayerService;
     private readonly boxDrawer: BoxDrawer;
-    private readonly entityIdService: EntityIdService;
+    private readonly entityIdService: ShapeIdService;
     private startRow: number = 0;
     private startColumn: number = 0;
     private endRow: number = 0;
     private endColumn: number = 0;
     private box: Box | null = null;
 
-    constructor(layerService: LayerService, boxDrawer: BoxDrawer, entityIdService: EntityIdService) {
+    constructor(layerService: LayerService, boxDrawer: BoxDrawer, entityIdService: ShapeIdService) {
         this.layerService = layerService;
         this.boxDrawer = boxDrawer;
         this.entityIdService = entityIdService;
@@ -49,7 +49,7 @@ export class BoxCreateTool implements Tool {
     }
 
     persist(): void {
-        const entity = new BoxEntity(
+        const entity = new BoxShape(
             this.entityIdService.nextId(),
             Math.min(this.startRow, this.endRow),
             Math.min(this.startColumn, this.endColumn),

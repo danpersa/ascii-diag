@@ -1,11 +1,11 @@
 import {SvgRenderer} from "./svg-renderer";
 import {Svg} from "@svgdotjs/svg.js";
 import Constants from "../constants";
-import {TextEntity} from "../entities/text-entity";
+import {TextShape} from "../shapes/text-shape";
 
 export class TextRenderer implements SvgRenderer {
 
-    render(entity: TextEntity, svg: Svg): void {
+    render(entity: TextShape, svg: Svg): void {
         const startX = (entity.column - 0.5) * Constants.densityX;
         const startY = (entity.row + 0.2) * Constants.densityY;
         svg.text(add => {

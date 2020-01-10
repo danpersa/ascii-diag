@@ -4,8 +4,8 @@ import Constants from "./constants";
 import {CellDrawer} from "./drawers/cell-drawer";
 import {CanvasGridDrawer, GridDrawer} from "./drawers/grid-drawer";
 import {LayerService} from "./layer-service";
-import {Entity} from "./entities/entity";
-import {EntityIdService} from "./entities/entity-id-service";
+import {Shape} from "./shapes/shape";
+import {ShapeIdService} from "./shapes/shape-id-service";
 import {DiagToSvg} from "./svg/diag-to-svg";
 
 export default class AsciiDiag {
@@ -21,7 +21,7 @@ export default class AsciiDiag {
     private readonly toolService: ToolService;
     private readonly layerService: LayerService;
     private lastPress: [number, number] = [-1, -1];
-    private readonly entityIdService: EntityIdService;
+    private readonly entityIdService: ShapeIdService;
     private readonly diagToSvg: DiagToSvg;
 
     constructor(canvas: HTMLCanvasElement, layerService: LayerService, diagToSvg: DiagToSvg, cellDrawer: CellDrawer, toolService: ToolService, context: CanvasRenderingContext2D) {
@@ -29,7 +29,7 @@ export default class AsciiDiag {
         this.canvas = canvas;
         this.context = context;
         this.paint = false;
-        this.entityIdService = new EntityIdService();
+        this.entityIdService = new ShapeIdService();
         this.layerService = layerService;
         this.cellDrawer = cellDrawer;
         this.gridDrawer = new CanvasGridDrawer(this.cellDrawer);
@@ -78,7 +78,7 @@ export default class AsciiDiag {
     };
 
     private addEntitiesToGrid(grid: Grid) {
-        this.layerService.entities.forEach((entity: Entity) => {
+        this.layerService.entities.forEach((entity: Shape) => {
             if (!entity.editing()) {
                 entity.cells().forEach(cell => {
                     grid.valueCell(cell.row, cell.column, cell.text);

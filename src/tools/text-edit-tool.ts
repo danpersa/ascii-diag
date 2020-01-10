@@ -1,8 +1,8 @@
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
-import {Entity} from "../entities/entity";
-import {TextEntity} from "../entities/text-entity";
-import {EntityIdService} from "../entities/entity-id-service";
+import {Shape} from "../shapes/shape";
+import {TextShape} from "../shapes/text-shape";
+import {ShapeIdService} from "../shapes/shape-id-service";
 import {TextCreateTool} from "./text-create-tool";
 import {TextDrawer} from "../drawers/text-drawer";
 import {CursorDrawer} from "../drawers/cursor-drawer";
@@ -18,12 +18,12 @@ export class TextEditTool extends TextCreateTool implements Tool {
     private readonly vertexDrawer: VertexDrawer;
     private readonly toolService: ToolService;
 
-    private readonly currentEntity: TextEntity;
+    private readonly currentEntity: TextShape;
     private moveVertex: Vertex;
 
-    constructor(layerService: LayerService, toolService: ToolService, entityIdService: EntityIdService, textDrawer: TextDrawer,
+    constructor(layerService: LayerService, toolService: ToolService, entityIdService: ShapeIdService, textDrawer: TextDrawer,
                 cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, entitySelectionService: EntitySelectionService,
-                entity: TextEntity) {
+                entity: TextShape) {
 
         super(layerService, entityIdService, textDrawer, cursorDrawer);
         this.entitySelectionService = entitySelectionService;
@@ -40,7 +40,7 @@ export class TextEditTool extends TextCreateTool implements Tool {
         const entity = this.layerService.getEntity(row, column);
         console.log("Entity found: " + entity);
 
-        if (entity && entity instanceof TextEntity && entity === this.currentEntity) {
+        if (entity && entity instanceof TextShape && entity === this.currentEntity) {
             console.log("Still current entity");
             this.toolService.selectTextMoveTool(this.currentEntity);
         } else {
@@ -78,7 +78,7 @@ export class TextEditTool extends TextCreateTool implements Tool {
         if (!this.currentText) {
             return;
         }
-        const entity: Entity = new TextEntity(
+        const entity: Shape = new TextShape(
             this.currentEntity.id(),
             this.currentText.row,
             this.currentText.column,

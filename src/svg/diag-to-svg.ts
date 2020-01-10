@@ -1,5 +1,5 @@
 import {Svg} from "@svgdotjs/svg.js";
-import {Entity} from "../entities/entity";
+import {Shape} from "../shapes/shape";
 import Constants from "../constants";
 import {RefObject} from "react";
 import {LayerService} from "../layer-service";
@@ -20,7 +20,7 @@ export class DiagToSvg {
         const svg = new Svg('#drawing');
         svg.size(Constants.canvasWidth, Constants.canvasHeight);
 
-        this.layerService.entities.forEach((entity: Entity) => {
+        this.layerService.entities.forEach((entity: Shape) => {
             this.svgRendererService.render(entity, svg);
         });
 

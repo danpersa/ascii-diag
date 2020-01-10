@@ -6,11 +6,11 @@ import {LayerService} from "../layer-service";
 import {SelectBoxDrawer} from "../drawers/select-box-drawer";
 import {SelectTool} from "./select-tool";
 import {BoxDrawer} from "../drawers/box-drawer";
-import {EntityIdService} from "../entities/entity-id-service";
+import {ShapeIdService} from "../shapes/shape-id-service";
 import {EntitySelectionService} from "./entity-selection-service";
 import {BoxEditTool} from "./box-edit-tool";
-import {BoxEntity} from "../entities/box-entity";
-import {TextEntity} from "../entities/text-entity";
+import {BoxShape} from "../shapes/box-shape";
+import {TextShape} from "../shapes/text-shape";
 import {TextEditTool} from "./text-edit-tool";
 import {BoxResizeTool, ResizeType} from "./box-resize-tool";
 import {TextDrawer} from "../drawers/text-drawer";
@@ -20,7 +20,7 @@ import {VertexDrawer} from "../drawers/vertex-drawer";
 import {TextMoveTool} from "./text-move-tool";
 import {ArrowDrawer} from "../drawers/arrow-drawer";
 import {ArrowEditTool} from "./arrow-edit-tool";
-import {ArrowEntity} from "../entities/arrow-entity";
+import {ArrowShape} from "../shapes/arrow-shape";
 import {ArrowFlipTool} from "./arrow-flip-tool";
 import {ArrowVertexFactory} from "./arrow-vertex-factory";
 import {ArrowModifyTool, ArrowModifyType} from "./arrow-modify-tool";
@@ -35,7 +35,7 @@ export class ToolService {
     private readonly entitySelectionService: EntitySelectionService;
     private readonly boxDrawer: BoxDrawer;
     private readonly selectBoxDrawer: SelectBoxDrawer;
-    private readonly entityIdService: EntityIdService;
+    private readonly entityIdService: ShapeIdService;
     private readonly cursorDrawer: CursorDrawer;
     private readonly textDrawer: TextDrawer;
     private readonly vertexDrawer: VertexDrawer;
@@ -45,7 +45,7 @@ export class ToolService {
     private toolChangeCallback: () => void = () => {
     };
 
-    constructor(layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entityIdService: EntityIdService,
+    constructor(layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entityIdService: ShapeIdService,
                 textDrawer: TextDrawer, cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, arrowDrawer: ArrowDrawer) {
         this.layerService = layerService;
         this.cursorDrawer = cursorDrawer;
@@ -108,43 +108,43 @@ export class ToolService {
         this.setTool(this.selectTool);
     }
 
-    selectBoxResizeTool(entity: BoxEntity, resizeType: ResizeType): void {
+    selectBoxResizeTool(entity: BoxShape, resizeType: ResizeType): void {
         const boxResizeTool = new BoxResizeTool(this.layerService, this, this.selectBoxDrawer, this.boxDrawer, entity, resizeType);
         this.setTool(boxResizeTool);
     }
 
-    selectBoxMoveTool(entity: BoxEntity): void {
+    selectBoxMoveTool(entity: BoxShape): void {
         const boxMoveTool = new BoxMoveTool(this.layerService, this, this.selectBoxDrawer, this.boxDrawer, entity);
         this.setTool(boxMoveTool);
     }
 
-    selectBoxEditTool(entity: BoxEntity): void {
+    selectBoxEditTool(entity: BoxShape): void {
         const boxEditTool = new BoxEditTool(this, this.layerService, this.entitySelectionService, this.selectBoxDrawer, entity);
         this.setTool(boxEditTool);
     }
 
-    selectArrowEditTool(entity: ArrowEntity): void {
+    selectArrowEditTool(entity: ArrowShape): void {
         const arrowEditTool = new ArrowEditTool(this, this.layerService, this.entitySelectionService, this.vertexDrawer, this.arrowVertexFactory, entity);
         this.setTool(arrowEditTool);
     }
 
-    selectArrowFlipTool(entity: ArrowEntity): void {
+    selectArrowFlipTool(entity: ArrowShape): void {
         const arrowFlipTool = new ArrowFlipTool(this, this.layerService, this.vertexDrawer, this.arrowVertexFactory, entity);
         this.setTool(arrowFlipTool);
     }
 
-    selectArrowModifyTool(entity: ArrowEntity, moveType: ArrowModifyType): void {
+    selectArrowModifyTool(entity: ArrowShape, moveType: ArrowModifyType): void {
         const arrowModifyTool = new ArrowModifyTool(this, this.layerService, this.vertexDrawer, this.arrowVertexFactory, this.arrowDrawer, entity, moveType);
         this.setTool(arrowModifyTool);
     }
 
-    selectTextEditTool(entity: TextEntity): void {
+    selectTextEditTool(entity: TextShape): void {
         const textEditTool = new TextEditTool(this.layerService, this, this.entityIdService, this.textDrawer, this.cursorDrawer,
             this.vertexDrawer, this.entitySelectionService, entity);
         this.setTool(textEditTool);
     }
 
-    selectTextMoveTool(entity: TextEntity): void {
+    selectTextMoveTool(entity: TextShape): void {
         const textMoveTool = new TextMoveTool(this.layerService, this, this.selectBoxDrawer, this.boxDrawer,
             this.vertexDrawer, this.textDrawer, entity);
         this.setTool(textMoveTool);

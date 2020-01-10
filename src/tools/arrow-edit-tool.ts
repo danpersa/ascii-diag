@@ -2,7 +2,7 @@ import {Tool} from "./tool";
 import {ToolService} from "./tool-service";
 import {EntitySelectionService} from "./entity-selection-service";
 import {VertexDrawer} from "../drawers/vertex-drawer";
-import {ArrowEntity} from "../entities/arrow-entity";
+import {ArrowShape} from "../shapes/arrow-shape";
 import {Vertex} from "../drawers/vertex";
 import {ArrowVertexFactory} from "./arrow-vertex-factory";
 import {ArrowModifyType} from "./arrow-modify-tool";
@@ -15,14 +15,14 @@ export class ArrowEditTool implements Tool {
     private readonly layerService: LayerService;
     private readonly entitySelectionService: EntitySelectionService;
 
-    private readonly entity: ArrowEntity;
+    private readonly entity: ArrowShape;
     private readonly flipVertex: Vertex | null;
     private readonly startArrowVertex: Vertex;
     private readonly endArrowVertex: Vertex;
 
     constructor(toolService: ToolService, layerService: LayerService, entitySelectionService: EntitySelectionService,
                 vertexDrawer: VertexDrawer,
-                arrowVertexFactory: ArrowVertexFactory, entity: ArrowEntity) {
+                arrowVertexFactory: ArrowVertexFactory, entity: ArrowShape) {
         this.toolService = toolService;
         this.layerService = layerService;
         this.vertexDrawer = vertexDrawer;

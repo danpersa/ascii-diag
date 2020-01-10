@@ -1,6 +1,6 @@
 import {Domain} from "../drawers/cell";
 
-export interface Entity {
+export interface Shape {
 
     id(): number;
 

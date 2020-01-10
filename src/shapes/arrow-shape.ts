@@ -1,11 +1,11 @@
-import {Entity} from "./entity";
+import {Shape} from "./shape";
 import {Domain} from "../drawers/cell";
 import Cell = Domain.Cell;
 import {Arrow, ArrowDirection} from "../drawers/arrow";
 import {ArrayArrowDrawer} from "../drawers/arrow-drawer";
 import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
 
-export class ArrowEntity extends Arrow implements Entity {
+export class ArrowShape extends Arrow implements Shape {
 
     private readonly _id: number;
     private readonly _cells: Array<Cell>;

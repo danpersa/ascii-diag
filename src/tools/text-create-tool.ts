@@ -1,8 +1,8 @@
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
-import {Entity} from "../entities/entity";
-import {TextEntity} from "../entities/text-entity";
-import {EntityIdService} from "../entities/entity-id-service";
+import {Shape} from "../shapes/shape";
+import {TextShape} from "../shapes/text-shape";
+import {ShapeIdService} from "../shapes/shape-id-service";
 import {Text} from "../drawers/text";
 import {TextDrawer} from "../drawers/text-drawer";
 import {CursorDrawer} from "../drawers/cursor-drawer";
@@ -11,13 +11,13 @@ import {Cursor} from "../drawers/cursor";
 export class TextCreateTool implements Tool {
 
     protected readonly layerService: LayerService;
-    protected readonly entityIdService: EntityIdService;
+    protected readonly entityIdService: ShapeIdService;
     protected readonly textDrawer: TextDrawer;
     protected readonly cursorDrawer: CursorDrawer;
 
     protected currentText: Text | null = null;
 
-    constructor(layerService: LayerService, entityIdService: EntityIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer) {
+    constructor(layerService: LayerService, entityIdService: ShapeIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer) {
         this.layerService = layerService;
         this.entityIdService = entityIdService;
         this.textDrawer = textDrawer;
@@ -83,7 +83,7 @@ export class TextCreateTool implements Tool {
         if (!this.currentText) {
             return;
         }
-        const entity: Entity = new TextEntity(
+        const entity: Shape = new TextShape(
             this.entityIdService.nextId(),
             this.currentText!.row,
             this.currentText!.column,

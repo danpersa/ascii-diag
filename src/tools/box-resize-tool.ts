@@ -1,7 +1,7 @@
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
 import {SelectBoxDrawer} from "../drawers/select-box-drawer";
-import {BoxEntity} from "../entities/box-entity";
+import {BoxShape} from "../shapes/box-shape";
 import {SelectBox} from "../drawers/select-box";
 import Constants from "../constants";
 import {BoxDrawer} from "../drawers/box-drawer";
@@ -21,12 +21,12 @@ export class BoxResizeTool implements Tool {
     private readonly toolService: ToolService;
     private readonly selectBoxDrawer: SelectBoxDrawer;
     private readonly boxDrawer: BoxDrawer;
-    private entity: BoxEntity;
+    private entity: BoxShape;
     private selectBox: SelectBox;
     private box: Box | null = null;
     private readonly resizeType: ResizeType;
 
-    constructor(layerService: LayerService, toolService: ToolService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entity: BoxEntity,
+    constructor(layerService: LayerService, toolService: ToolService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entity: BoxShape,
                 resizeType: ResizeType) {
         this.layerService = layerService;
         this.toolService = toolService;
@@ -94,7 +94,7 @@ export class BoxResizeTool implements Tool {
     mouseUp(row: number, column: number): void {
         this.entity.endEditing();
 
-        const entity = new BoxEntity(
+        const entity = new BoxShape(
             this.entity.id(),
             this.selectBox.topRow,
             this.selectBox.leftColumn,
