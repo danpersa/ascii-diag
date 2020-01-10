@@ -14,7 +14,7 @@ import {CheckboxBlankOutline, FormatText, RayStartArrow} from "mdi-material-ui";
 import SvgCanvas from "./svg-diag";
 import {LayerService} from "./layer-service";
 import Grid from "./drawers/grid";
-import {DiagToSvg} from "./svg/diag-to-svg";
+import {DiagToSvg} from "./renderers/diag-to-svg";
 import {Tools} from "./tools/tool";
 import Constants from "./constants";
 
