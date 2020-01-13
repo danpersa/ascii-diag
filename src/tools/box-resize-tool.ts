@@ -21,22 +21,22 @@ export class BoxResizeTool implements Tool {
     private readonly toolService: ToolService;
     private readonly selectBoxDrawer: SelectBoxDrawer;
     private readonly boxDrawer: BoxDrawer;
-    private entity: BoxShape;
+    private shape: BoxShape;
     private selectBox: SelectBox;
     private box: Box | null = null;
     private readonly resizeType: ResizeType;
 
-    constructor(layerService: LayerService, toolService: ToolService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, entity: BoxShape,
+    constructor(layerService: LayerService, toolService: ToolService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, shape: BoxShape,
                 resizeType: ResizeType) {
         this.layerService = layerService;
         this.toolService = toolService;
         this.selectBoxDrawer = selectBoxDrawer;
         this.boxDrawer = boxDrawer;
         this.resizeType = resizeType;
-        this.entity = entity;
-        this.selectBox = SelectBox.fromGrid(this.entity.topRow, this.entity.leftColumn, this.entity.bottomRow, this.entity.rightColumn);
-        this.entity.startEditing();
-        console.log("Create Box Resize Tool resizeType=" + resizeType + " entity: " + entity.topRow);
+        this.shape = shape;
+        this.selectBox = SelectBox.fromGrid(this.shape.topRow, this.shape.leftColumn, this.shape.bottomRow, this.shape.rightColumn);
+        this.shape.startEditing();
+        console.log("Create Box Resize Tool resizeType=" + resizeType + " shape: " + shape.topRow);
     }
 
     private fromCanvasToVertexPos(x: number, y: number): [number, number] {
@@ -92,17 +92,17 @@ export class BoxResizeTool implements Tool {
     }
 
     mouseUp(row: number, column: number): void {
-        this.entity.endEditing();
+        this.shape.endEditing();
 
-        const entity = new BoxShape(
-            this.entity.id(),
+        const shape = new BoxShape(
+            this.shape.id(),
             this.selectBox.topRow,
             this.selectBox.leftColumn,
             this.selectBox.bottomRow,
             this.selectBox.rightColumn);
-        console.log("save entity id=" + entity.id(), " row=" + entity.topRow);
-        this.layerService.updateEntity(entity);
-        this.toolService.selectBoxEditTool(entity);
+        console.log("save shape id=" + shape.id(), " row=" + shape.topRow);
+        this.layerService.updateShape(shape);
+        this.toolService.selectBoxEditTool(shape);
     }
 
     keyDown(key: string): void {

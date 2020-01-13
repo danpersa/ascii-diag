@@ -10,7 +10,7 @@ import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
 
 export interface SvgRenderer {
 
-    render(entity: Shape, svg: Svg): void;
+    render(shape: Shape, svg: Svg): void;
 }
 
 export class SvgRendererService {
@@ -25,13 +25,13 @@ export class SvgRendererService {
         this.textRenderer = new TextRenderer();
     }
 
-    render(entity: Shape, svg: Svg) {
-        if (entity instanceof BoxShape) {
-            this.boxRenderer.render(entity, svg);
-        } else if (entity instanceof ArrowShape) {
-            this.arrowRenderer.render(entity, svg);
-        } else if (entity instanceof TextShape) {
-            this.textRenderer.render(entity, svg);
+    render(shape: Shape, svg: Svg) {
+        if (shape instanceof BoxShape) {
+            this.boxRenderer.render(shape, svg);
+        } else if (shape instanceof ArrowShape) {
+            this.arrowRenderer.render(shape, svg);
+        } else if (shape instanceof TextShape) {
+            this.textRenderer.render(shape, svg);
         }
     }
 }

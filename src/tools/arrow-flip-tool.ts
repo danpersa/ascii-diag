@@ -14,17 +14,17 @@ export class ArrowFlipTool implements Tool {
     private readonly layerService: LayerService;
     private readonly arrowVertexFactory: ArrowVertexFactory;
 
-    private readonly entity: ArrowShape;
+    private readonly shape: ArrowShape;
     private readonly flipVertex: Vertex | null;
 
     constructor(toolService: ToolService, layerService: LayerService, vertexDrawer: VertexDrawer,
-                arrowVertexFactory: ArrowVertexFactory, entity: ArrowShape) {
+                arrowVertexFactory: ArrowVertexFactory, shape: ArrowShape) {
         this.toolService = toolService;
         this.vertexDrawer = vertexDrawer;
-        this.entity = entity;
+        this.shape = shape;
         this.layerService = layerService;
         this.arrowVertexFactory = arrowVertexFactory;
-        this.flipVertex = arrowVertexFactory.createFlipVertex(entity);
+        this.flipVertex = arrowVertexFactory.createFlipVertex(shape);
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {
@@ -41,19 +41,19 @@ export class ArrowFlipTool implements Tool {
     }
 
     mouseUp(row: number, column: number): void {
-        const newArrowDirection = this.entity.startDirection === ArrowDirection.Horizontal ? ArrowDirection.Vertical : ArrowDirection.Horizontal;
+        const newArrowDirection = this.shape.startDirection === ArrowDirection.Horizontal ? ArrowDirection.Vertical : ArrowDirection.Horizontal;
 
-        const entity = new ArrowShape(
-            this.entity.id(),
-            this.entity.startRow,
-            this.entity.startColumn,
-            this.entity.endRow,
-            this.entity.endColumn,
+        const shape = new ArrowShape(
+            this.shape.id(),
+            this.shape.startRow,
+            this.shape.startColumn,
+            this.shape.endRow,
+            this.shape.endColumn,
             newArrowDirection
         );
 
-        this.layerService.updateEntity(entity);
-        this.toolService.selectArrowEditTool(entity);
+        this.layerService.updateShape(shape);
+        this.toolService.selectArrowEditTool(shape);
     }
 
     keyDown(key: string): void {

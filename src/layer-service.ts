@@ -2,44 +2,44 @@ import {Shape} from "./shapes/shape";
 
 export class LayerService {
 
-    private readonly _entities: Array<Shape>;
+    private readonly _shapes: Array<Shape>;
 
     constructor() {
-        this._entities = [];
+        this._shapes = [];
     }
 
-    createEntity(entity: Shape) {
-        console.log("add entity: " + entity);
-        this._entities.push(entity);
+    createShape(shape: Shape) {
+        console.log("add shape: " + shape);
+        this._shapes.push(shape);
     }
 
-    getEntity(row: number, column: number): Shape | undefined {
-        return this._entities.filter(entity => {
-            return entity.cells().some(cell => cell.row == row && cell.column == column)
+    getShape(row: number, column: number): Shape | undefined {
+        return this._shapes.filter(shape => {
+            return shape.cells().some(cell => cell.row == row && cell.column == column)
         }).pop();
     }
 
-    get entities(): Array<Shape> {
-        return this._entities;
+    get shapes(): Array<Shape> {
+        return this._shapes;
     }
 
-    updateEntity(entity: Shape): void {
-        console.log("update entity");
+    updateShape(shape: Shape): void {
+        console.log("update shape");
         let index: number | null = null;
-        this.entities.forEach((e, i) => {
-            if (e.id() == entity.id()) {
+        this.shapes.forEach((s, i) => {
+            if (s.id() == shape.id()) {
                 index = i;
             }
         });
         if (index != null) {
-            this.entities[index] = entity;
+            this.shapes[index] = shape;
         }
     }
 
-    deleteEntity(id: number): void {
-        const entityIndex = this.entities.findIndex(entity => entity.id() === id);
-        if (entityIndex > -1) {
-            this.entities.splice(entityIndex, 1);
+    deleteShape(id: number): void {
+        const index = this.shapes.findIndex(shape => shape.id() === id);
+        if (index > -1) {
+            this.shapes.splice(index, 1);
         }
     }
 }
