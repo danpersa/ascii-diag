@@ -13,22 +13,22 @@ export class ArrowRenderer implements SvgRenderer {
         this.arrowTipDirectionService = arrowTipDirectionService;
     }
 
-    render(entity: ArrowShape, svg: Svg): void {
+    render(shape: ArrowShape, svg: Svg): void {
 
-        const startX = entity.startColumn * Constants.densityX;
-        const startY = entity.startRow * Constants.densityY;
+        const startX = shape.startColumn * Constants.densityX;
+        const startY = shape.startRow * Constants.densityY;
 
 
-        const endX = entity.endColumn * Constants.densityX;
-        const endY = entity.endRow * Constants.densityY;
+        const endX = shape.endColumn * Constants.densityX;
+        const endY = shape.endRow * Constants.densityY;
 
-        const midX = entity.startDirection === ArrowDirection.Horizontal ? endX : startX;
-        const midY = entity.startDirection === ArrowDirection.Horizontal ? startY : endY;
+        const midX = shape.startDirection === ArrowDirection.Horizontal ? endX : startX;
+        const midY = shape.startDirection === ArrowDirection.Horizontal ? startY : endY;
 
         svg.polyline([startX, startY, midX, midY, endX, endY]).fill('none')
             .stroke({color: '#333333', width: 1.5, linecap: 'round', linejoin: 'round'});
 
-        const tipDirection = this.arrowTipDirectionService.endTipDirection(entity);
+        const tipDirection = this.arrowTipDirectionService.endTipDirection(shape);
 
         if (tipDirection !== null) {
             const arrowTip = this.renderArrowTip(endX, endY, svg);

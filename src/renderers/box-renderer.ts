@@ -5,12 +5,12 @@ import {Svg} from "@svgdotjs/svg.js";
 
 export class BoxRenderer implements SvgRenderer {
 
-    render(entity: BoxShape, svg: Svg): void {
-        const rectWidth = (entity.rightColumn - entity.leftColumn) * Constants.densityX;
-        const rectHeight = (entity.bottomRow - entity.topRow) * Constants.densityY;
+    render(shape: BoxShape, svg: Svg): void {
+        const rectWidth = (shape.rightColumn - shape.leftColumn) * Constants.densityX;
+        const rectHeight = (shape.bottomRow - shape.topRow) * Constants.densityY;
         const rect = svg.rect(rectWidth, rectHeight).fill('none')
             .stroke({color: '#333333', width: 1.5});
-        rect.center(entity.leftColumn * Constants.densityX + ((entity.rightColumn - entity.leftColumn) / 2) * Constants.densityX,
-            (entity.topRow) * Constants.densityY + ((entity.bottomRow - entity.topRow) / 2) * Constants.densityY);
+        rect.center(shape.leftColumn * Constants.densityX + ((shape.rightColumn - shape.leftColumn) / 2) * Constants.densityX,
+            (shape.topRow) * Constants.densityY + ((shape.bottomRow - shape.topRow) / 2) * Constants.densityY);
     }
 }

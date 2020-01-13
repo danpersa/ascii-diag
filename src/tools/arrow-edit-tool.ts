@@ -1,6 +1,6 @@
 import {Tool} from "./tool";
 import {ToolService} from "./tool-service";
-import {EntitySelectionService} from "./entity-selection-service";
+import {ShapeSelectionService} from "./shape-selection-service";
 import {VertexDrawer} from "../drawers/vertex-drawer";
 import {ArrowShape} from "../shapes/arrow-shape";
 import {Vertex} from "../drawers/vertex";
@@ -13,24 +13,24 @@ export class ArrowEditTool implements Tool {
     private readonly vertexDrawer: VertexDrawer;
     private readonly toolService: ToolService;
     private readonly layerService: LayerService;
-    private readonly entitySelectionService: EntitySelectionService;
+    private readonly shapeSelectionService: ShapeSelectionService;
 
-    private readonly entity: ArrowShape;
+    private readonly shape: ArrowShape;
     private readonly flipVertex: Vertex | null;
     private readonly startArrowVertex: Vertex;
     private readonly endArrowVertex: Vertex;
 
-    constructor(toolService: ToolService, layerService: LayerService, entitySelectionService: EntitySelectionService,
+    constructor(toolService: ToolService, layerService: LayerService, shapeSelectionService: ShapeSelectionService,
                 vertexDrawer: VertexDrawer,
-                arrowVertexFactory: ArrowVertexFactory, entity: ArrowShape) {
+                arrowVertexFactory: ArrowVertexFactory, shape: ArrowShape) {
         this.toolService = toolService;
         this.layerService = layerService;
         this.vertexDrawer = vertexDrawer;
-        this.entity = entity;
-        this.entitySelectionService = entitySelectionService;
-        this.flipVertex = arrowVertexFactory.createFlipVertex(entity);
-        this.startArrowVertex = arrowVertexFactory.createStartArrowVertex(entity);
-        this.endArrowVertex = arrowVertexFactory.createEndArrowVertex(entity);
+        this.shape = shape;
+        this.shapeSelectionService = shapeSelectionService;
+        this.flipVertex = arrowVertexFactory.createFlipVertex(shape);
+        this.startArrowVertex = arrowVertexFactory.createStartArrowVertex(shape);
+        this.endArrowVertex = arrowVertexFactory.createEndArrowVertex(shape);
     }
 
 
@@ -38,13 +38,13 @@ export class ArrowEditTool implements Tool {
         console.log("Arrow Edit Tool click on row: " + row + " column=" + column);
 
         if (this.flipVertex && this.flipVertex.containsPoint(x, y)) {
-            this.toolService.selectArrowFlipTool(this.entity)
+            this.toolService.selectArrowFlipTool(this.shape)
         } else if (this.startArrowVertex.containsPoint(x, y)) {
-            this.toolService.selectArrowModifyTool(this.entity, ArrowModifyType.StartMove);
+            this.toolService.selectArrowModifyTool(this.shape, ArrowModifyType.StartMove);
         } else if (this.endArrowVertex.containsPoint(x, y)) {
-            this.toolService.selectArrowModifyTool(this.entity, ArrowModifyType.EndMove);
+            this.toolService.selectArrowModifyTool(this.shape, ArrowModifyType.EndMove);
         } else {
-            this.entitySelectionService.selectEntityFor(row, column);
+            this.shapeSelectionService.selectShapeFor(row, column);
         }
     }
 
@@ -64,7 +64,7 @@ export class ArrowEditTool implements Tool {
 
     keyDown(key: string): void {
         if (key === "Backspace" || key === "Delete") {
-            this.layerService.deleteEntity(this.entity.id());
+            this.layerService.deleteShape(this.shape.id());
             this.toolService.selectSelectTool();
         }
     }

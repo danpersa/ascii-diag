@@ -4,27 +4,27 @@ import {BoxShape} from "../shapes/box-shape";
 import {SelectBox} from "../drawers/select-box";
 import {ResizeType} from "./box-resize-tool";
 import {ToolService} from "./tool-service";
-import {EntitySelectionService} from "./entity-selection-service";
+import {ShapeSelectionService} from "./shape-selection-service";
 import {LayerService} from "../layer-service";
 
 export class BoxEditTool implements Tool {
 
     private readonly selectBoxDrawer: SelectBoxDrawer;
     private readonly toolService: ToolService;
-    private readonly entitySelectionService: EntitySelectionService;
+    private readonly shapeSelectionService: ShapeSelectionService;
     private readonly layerService: LayerService;
 
-    private readonly entity: BoxShape;
+    private readonly shape: BoxShape;
     private readonly selectBox: SelectBox;
 
 
-    constructor(toolService: ToolService, layerService: LayerService, entitySelectionService: EntitySelectionService, selectBoxDrawer: SelectBoxDrawer, entity: BoxShape) {
+    constructor(toolService: ToolService, layerService: LayerService, shapeSelectionService: ShapeSelectionService, selectBoxDrawer: SelectBoxDrawer, shape: BoxShape) {
         this.toolService = toolService;
-        this.layerService = layerService
+        this.layerService = layerService;
         this.selectBoxDrawer = selectBoxDrawer;
-        this.entity = entity;
-        this.entitySelectionService = entitySelectionService;
-        this.selectBox = SelectBox.fromGrid(this.entity.topRow, this.entity.leftColumn, this.entity.bottomRow, this.entity.rightColumn);
+        this.shape = shape;
+        this.shapeSelectionService = shapeSelectionService;
+        this.selectBox = SelectBox.fromGrid(this.shape.topRow, this.shape.leftColumn, this.shape.bottomRow, this.shape.rightColumn);
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {
@@ -43,11 +43,11 @@ export class BoxEditTool implements Tool {
         }
 
         if (resizeType != null) {
-            this.toolService.selectBoxResizeTool(this.entity, resizeType);
+            this.toolService.selectBoxResizeTool(this.shape, resizeType);
         } else if (this.selectBox.centerVertex.containsPoint(x, y)) {
-            this.toolService.selectBoxMoveTool(this.entity);
+            this.toolService.selectBoxMoveTool(this.shape);
         } else {
-            this.entitySelectionService.selectEntityFor(row, column);
+            this.shapeSelectionService.selectShapeFor(row, column);
         }
     }
 
@@ -63,7 +63,7 @@ export class BoxEditTool implements Tool {
 
     keyDown(key: string): void {
         if (key === "Backspace" || key === "Delete") {
-            this.layerService.deleteEntity(this.entity.id());
+            this.layerService.deleteShape(this.shape.id());
             this.toolService.selectSelectTool();
         }
     }

@@ -7,53 +7,53 @@ import {TextCreateTool} from "./text-create-tool";
 import {TextDrawer} from "../drawers/text-drawer";
 import {CursorDrawer} from "../drawers/cursor-drawer";
 import {Text} from "../drawers/text";
-import {EntitySelectionService} from "./entity-selection-service";
+import {ShapeSelectionService} from "./shape-selection-service";
 import {Vertex} from "../drawers/vertex";
 import {VertexDrawer} from "../drawers/vertex-drawer";
 import {ToolService} from "./tool-service";
 
 export class TextEditTool extends TextCreateTool implements Tool {
 
-    private readonly entitySelectionService: EntitySelectionService;
+    private readonly shapeSelectionService: ShapeSelectionService;
     private readonly vertexDrawer: VertexDrawer;
     private readonly toolService: ToolService;
 
-    private readonly currentEntity: TextShape;
+    private readonly shape: TextShape;
     private moveVertex: Vertex;
 
-    constructor(layerService: LayerService, toolService: ToolService, entityIdService: ShapeIdService, textDrawer: TextDrawer,
-                cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, entitySelectionService: EntitySelectionService,
-                entity: TextShape) {
+    constructor(layerService: LayerService, toolService: ToolService, shapeIdService: ShapeIdService, textDrawer: TextDrawer,
+                cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, shapeSelectionService: ShapeSelectionService,
+                shape: TextShape) {
 
-        super(layerService, entityIdService, textDrawer, cursorDrawer);
-        this.entitySelectionService = entitySelectionService;
+        super(layerService, shapeIdService, textDrawer, cursorDrawer);
+        this.shapeSelectionService = shapeSelectionService;
         this.vertexDrawer = vertexDrawer;
         this.toolService = toolService;
 
-        this.currentEntity = entity;
-        this.currentText = Text.fromGrid(this.currentEntity.row, this.currentEntity.column, this.currentEntity.text);
-        this.moveVertex = Vertex.fromGrid(this.currentEntity.row, this.currentEntity.column);
-        this.currentEntity.startEditing();
+        this.shape = shape;
+        this.currentText = Text.fromGrid(this.shape.row, this.shape.column, this.shape.text);
+        this.moveVertex = Vertex.fromGrid(this.shape.row, this.shape.column);
+        this.shape.startEditing();
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {
-        const entity = this.layerService.getEntity(row, column);
-        console.log("Entity found: " + entity);
+        const shape = this.layerService.getShape(row, column);
+        console.log("Shape found: " + shape);
 
-        if (entity && entity instanceof TextShape && entity === this.currentEntity) {
+        if (shape && shape instanceof TextShape && shape === this.shape) {
             console.log("Select TextMoveTool");
-            this.toolService.selectTextMoveTool(this.currentEntity);
+            this.toolService.selectTextMoveTool(this.shape);
         } else {
             if (this.currentText) {
                 this.persist();
             }
-            this.entitySelectionService.selectEntityFor(row, column);
+            this.shapeSelectionService.selectShapeFor(row, column);
         }
     }
 
     private updateMoveVertex() {
         if (this.currentText) {
-            this.moveVertex = Vertex.fromGrid(this.currentEntity.row, this.currentEntity.column);
+            this.moveVertex = Vertex.fromGrid(this.shape.row, this.shape.column);
         }
     }
 
@@ -78,18 +78,18 @@ export class TextEditTool extends TextCreateTool implements Tool {
         if (!this.currentText) {
             return;
         }
-        const entity: Shape = new TextShape(
-            this.currentEntity.id(),
+        const shape: Shape = new TextShape(
+            this.shape.id(),
             this.currentText.row,
             this.currentText.column,
             this.currentText.text);
 
         if (this.currentText.text.length > 0) {
-            this.layerService.updateEntity(entity);
-            this.currentEntity.endEditing();
+            this.layerService.updateShape(shape);
+            this.shape.endEditing();
         } else {
-            // we deleted all text, so we delete the entity
-            this.layerService.deleteEntity(this.currentEntity.id());
+            // we deleted all text, so we delete the shape
+            this.layerService.deleteShape(this.shape.id());
         }
     }
 

@@ -20,8 +20,8 @@ export class DiagToSvg {
         const svg = new Svg('#drawing');
         svg.size(Constants.canvasWidth, Constants.canvasHeight);
 
-        this.layerService.entities.forEach((entity: Shape) => {
-            this.svgRendererService.render(entity, svg);
+        this.layerService.shapes.forEach((shape: Shape) => {
+            this.svgRendererService.render(shape, svg);
         });
 
         if (this.ref.current) {

@@ -19,12 +19,12 @@ export class TextMoveTool implements Tool {
     private readonly vertexDrawer: VertexDrawer;
     private readonly textDrawer: TextDrawer;
 
-    private readonly currentEntity: TextShape;
+    private readonly currentShape: TextShape;
     protected currentText: Text;
     private moveVertex: Vertex;
 
     constructor(layerService: LayerService, toolService: ToolService, selectBoxDrawer: SelectBoxDrawer,
-                boxDrawer: BoxDrawer, vertexDrawer: VertexDrawer, textDrawer: TextDrawer, entity: TextShape) {
+                boxDrawer: BoxDrawer, vertexDrawer: VertexDrawer, textDrawer: TextDrawer, shape: TextShape) {
 
         this.layerService = layerService;
         this.toolService = toolService;
@@ -33,11 +33,11 @@ export class TextMoveTool implements Tool {
         this.vertexDrawer = vertexDrawer;
         this.textDrawer = textDrawer;
 
-        this.currentEntity = entity;
-        this.currentText = Text.fromGrid(this.currentEntity.row, this.currentEntity.column, this.currentEntity.text);
-        this.moveVertex = Vertex.fromGrid(this.currentEntity.row, this.currentEntity.column);
+        this.currentShape = shape;
+        this.currentText = Text.fromGrid(this.currentShape.row, this.currentShape.column, this.currentShape.text);
+        this.moveVertex = Vertex.fromGrid(this.currentShape.row, this.currentShape.column);
         console.log("Start moving text");
-        this.currentEntity.startEditing();
+        this.currentShape.startEditing();
     }
 
     private fromCanvasToGridPos(x: number, y: number): [number, number] {
@@ -47,13 +47,13 @@ export class TextMoveTool implements Tool {
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
         const [vertexRow, vertexColumn] = this.fromCanvasToGridPos(x, y);
         this.moveVertex = Vertex.fromGrid(vertexRow, vertexColumn);
-        this.currentText = Text.fromGrid(vertexRow, vertexColumn, this.currentEntity.text);
+        this.currentText = Text.fromGrid(vertexRow, vertexColumn, this.currentShape.text);
         document.body.style.cursor = 'move';
     }
 
     mouseUp(row: number, column: number): void {
         console.log("End moving text");
-        this.currentEntity.endEditing();
+        this.currentShape.endEditing();
         this.persist();
     }
 
@@ -64,13 +64,13 @@ export class TextMoveTool implements Tool {
     }
 
     persist(): void {
-        const entity = new TextShape(
-            this.currentEntity.id(),
+        const shape = new TextShape(
+            this.currentShape.id(),
             this.currentText.row,
             this.currentText.column,
-            this.currentEntity.text);
-        this.layerService.updateEntity(entity);
-        this.toolService.selectTextEditTool(entity);
+            this.currentShape.text);
+        this.layerService.updateShape(shape);
+        this.toolService.selectTextEditTool(shape);
     }
 
     render(): void {

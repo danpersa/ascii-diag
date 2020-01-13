@@ -10,17 +10,17 @@ export class ArrowCreateTool implements Tool {
 
     private readonly arrowDrawer: ArrowDrawer;
     private readonly layerService: LayerService;
-    private readonly entityIdService: ShapeIdService;
+    private readonly shapeIdService: ShapeIdService;
     private startRow: number = 0;
     private startColumn: number = 0;
     private endRow: number = 0;
     private endColumn: number = 0;
     private arrow: Arrow | null = null;
 
-    constructor(layerService: LayerService, entityIdService: ShapeIdService, arrowDrawer: ArrowDrawer) {
+    constructor(layerService: LayerService, shapeIdService: ShapeIdService, arrowDrawer: ArrowDrawer) {
         this.layerService = layerService;
         this.arrowDrawer = arrowDrawer;
-        this.entityIdService = entityIdService;
+        this.shapeIdService = shapeIdService;
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {
@@ -44,14 +44,14 @@ export class ArrowCreateTool implements Tool {
     }
 
     persist(): void {
-        const entity = new ArrowShape(
-            this.entityIdService.nextId(),
+        const shape = new ArrowShape(
+            this.shapeIdService.nextId(),
             this.startRow,
             this.startColumn,
             this.endRow,
             this.endColumn,
             Constants.arrowStartDirection);
-        this.layerService.createEntity(entity);
+        this.layerService.createShape(shape);
     }
 
     render(): void {

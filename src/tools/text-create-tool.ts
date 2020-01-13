@@ -11,15 +11,15 @@ import {Cursor} from "../drawers/cursor";
 export class TextCreateTool implements Tool {
 
     protected readonly layerService: LayerService;
-    protected readonly entityIdService: ShapeIdService;
+    protected readonly shapeIdService: ShapeIdService;
     protected readonly textDrawer: TextDrawer;
     protected readonly cursorDrawer: CursorDrawer;
 
     protected currentText: Text | null = null;
 
-    constructor(layerService: LayerService, entityIdService: ShapeIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer) {
+    constructor(layerService: LayerService, shapeIdService: ShapeIdService, textDrawer: TextDrawer, cursorDrawer: CursorDrawer) {
         this.layerService = layerService;
-        this.entityIdService = entityIdService;
+        this.shapeIdService = shapeIdService;
         this.textDrawer = textDrawer;
         this.cursorDrawer = cursorDrawer;
         this.currentText = null;
@@ -78,15 +78,15 @@ export class TextCreateTool implements Tool {
         if (!this.currentText) {
             return;
         }
-        const entity: Shape = new TextShape(
-            this.entityIdService.nextId(),
+        const shape: Shape = new TextShape(
+            this.shapeIdService.nextId(),
             this.currentText!.row,
             this.currentText!.column,
             this.currentText!.text);
         if (this.currentText!.text.length == 0) {
             return;
         }
-        this.layerService.createEntity(entity);
+        this.layerService.createShape(shape);
     }
 
     render(): void {

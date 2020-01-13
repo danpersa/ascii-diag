@@ -9,17 +9,17 @@ export class BoxCreateTool implements Tool {
 
     private readonly layerService: LayerService;
     private readonly boxDrawer: BoxDrawer;
-    private readonly entityIdService: ShapeIdService;
+    private readonly shapeIdService: ShapeIdService;
     private startRow: number = 0;
     private startColumn: number = 0;
     private endRow: number = 0;
     private endColumn: number = 0;
     private box: Box | null = null;
 
-    constructor(layerService: LayerService, boxDrawer: BoxDrawer, entityIdService: ShapeIdService) {
+    constructor(layerService: LayerService, boxDrawer: BoxDrawer, shapeIdService: ShapeIdService) {
         this.layerService = layerService;
         this.boxDrawer = boxDrawer;
-        this.entityIdService = entityIdService;
+        this.shapeIdService = shapeIdService;
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {
@@ -49,13 +49,13 @@ export class BoxCreateTool implements Tool {
     }
 
     persist(): void {
-        const entity = new BoxShape(
-            this.entityIdService.nextId(),
+        const shape = new BoxShape(
+            this.shapeIdService.nextId(),
             Math.min(this.startRow, this.endRow),
             Math.min(this.startColumn, this.endColumn),
             Math.max(this.startRow, this.endRow),
             Math.max(this.startColumn, this.endColumn));
-        this.layerService.createEntity(entity);
+        this.layerService.createShape(shape);
     }
 
     render(): void {

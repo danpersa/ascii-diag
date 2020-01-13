@@ -21,7 +21,7 @@ export default class AsciiDiag {
     private readonly toolService: ToolService;
     private readonly layerService: LayerService;
     private lastPress: [number, number] = [-1, -1];
-    private readonly entityIdService: ShapeIdService;
+    private readonly shapeIdService: ShapeIdService;
     private readonly diagToSvg: DiagToSvg;
 
     constructor(canvas: HTMLCanvasElement, layerService: LayerService, diagToSvg: DiagToSvg, cellDrawer: CellDrawer, toolService: ToolService, context: CanvasRenderingContext2D) {
@@ -29,7 +29,7 @@ export default class AsciiDiag {
         this.canvas = canvas;
         this.context = context;
         this.paint = false;
-        this.entityIdService = new ShapeIdService();
+        this.shapeIdService = new ShapeIdService();
         this.layerService = layerService;
         this.cellDrawer = cellDrawer;
         this.gridDrawer = new CanvasGridDrawer(this.cellDrawer);
@@ -70,17 +70,17 @@ export default class AsciiDiag {
 
         context.clearRect(0, 0, Constants.canvasWidth, Constants.canvasHeight);
         const grid = Grid.create(Constants.numberOfRows, Constants.numberOfColumns);
-        this.addEntitiesToGrid(grid);
+        this.addShapesToGrid(grid);
         this.gridDrawer.draw(grid);
 
         this.toolService.currentTool().render();
         this.diagToSvg.render();
     };
 
-    private addEntitiesToGrid(grid: Grid) {
-        this.layerService.entities.forEach((entity: Shape) => {
-            if (!entity.editing()) {
-                entity.cells().forEach(cell => {
+    private addShapesToGrid(grid: Grid) {
+        this.layerService.shapes.forEach((shape: Shape) => {
+            if (!shape.editing()) {
+                shape.cells().forEach(cell => {
                     grid.valueCell(cell.row, cell.column, cell.text);
                 })
             }
