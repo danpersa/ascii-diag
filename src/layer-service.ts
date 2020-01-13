@@ -1,4 +1,3 @@
-import Grid from "./drawers/grid";
 import {Shape} from "./shapes/shape";
 
 export class LayerService {

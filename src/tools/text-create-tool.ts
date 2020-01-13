@@ -28,7 +28,6 @@ export class TextCreateTool implements Tool {
     mouseDown(row: number, column: number, x: number, y: number): void {
         if (this.currentText) {
             this.persist();
-            this.done();
         } else {
             this.currentText = Text.fromGrid(row, column, "");
         }
@@ -53,7 +52,8 @@ export class TextCreateTool implements Tool {
 
         if (key === "Enter") {
             console.log("Done");
-            this.done();
+            this.persist();
+            this.currentText = null;
             return;
         }
 
@@ -75,8 +75,6 @@ export class TextCreateTool implements Tool {
     }
 
     done(): void {
-        this.persist();
-        this.currentText = null;
     }
 
     persist(): void {
