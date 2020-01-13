@@ -51,7 +51,7 @@ export class TextCreateTool implements Tool {
         }
 
         if (key === "Enter") {
-            console.log("Done");
+            console.log("Persist text");
             this.persist();
             this.currentText = null;
             return;
@@ -72,9 +72,6 @@ export class TextCreateTool implements Tool {
     }
 
     mouseUp(row: number, column: number): void {
-    }
-
-    done(): void {
     }
 
     persist(): void {

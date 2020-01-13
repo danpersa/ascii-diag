@@ -20,7 +20,5 @@ export interface Tool {
 
     persist(): void;
 
-    done(): void;
-
     render(): void;
 }

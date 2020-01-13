@@ -71,9 +71,6 @@ export class BoxEditTool implements Tool {
     persist(): void {
     }
 
-    done(): void {
-    }
-
     mouseMove(row: number, column: number, x: number, y: number): void {
         if (this.selectBox.topLeftVertex.containsPoint(x, y)) {
             document.body.style.cursor = 'nw-resize';

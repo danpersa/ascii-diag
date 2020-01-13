@@ -78,9 +78,6 @@ export class TextMoveTool implements Tool {
         this.vertexDrawer.draw(this.moveVertex);
     }
 
-    done(): void {
-    }
-
     mouseMove(row: number, column: number, x: number, y: number): void {
     }
 }

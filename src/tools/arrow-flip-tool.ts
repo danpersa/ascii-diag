@@ -62,9 +62,6 @@ export class ArrowFlipTool implements Tool {
     persist(): void {
     }
 
-    done(): void {
-    }
-
     mouseMove(row: number, column: number, x: number, y: number): void {
     }
 }

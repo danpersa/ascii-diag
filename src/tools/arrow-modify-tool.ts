@@ -102,9 +102,6 @@ export class ArrowModifyTool implements Tool {
 
     }
 
-    done(): void {
-    }
-
     mouseMove(row: number, column: number, x: number, y: number): void {
     }
 }
