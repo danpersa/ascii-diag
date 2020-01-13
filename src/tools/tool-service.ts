@@ -83,9 +83,6 @@ export class ToolService {
 
     private popTool(): void {
         const currentTool = this.toolStack.pop();
-        if (currentTool) {
-            currentTool.done();
-        }
     }
 
     currentTool(): Tool {

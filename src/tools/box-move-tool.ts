@@ -92,9 +92,6 @@ export class BoxMoveTool implements Tool {
         this.selectBoxDrawer.draw(this.selectBox);
     }
 
-    done(): void {
-    }
-
     mouseMove(row: number, column: number, x: number, y: number): void {
     }
 }
