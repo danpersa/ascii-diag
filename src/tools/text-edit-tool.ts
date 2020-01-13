@@ -31,7 +31,7 @@ export class TextEditTool extends TextCreateTool implements Tool {
         this.toolService = toolService;
 
         this.currentEntity = entity;
-        this.currentText = new Text(this.currentEntity.row, this.currentEntity.column, this.currentEntity.text);
+        this.currentText = Text.fromGrid(this.currentEntity.row, this.currentEntity.column, this.currentEntity.text);
         this.moveVertex = Vertex.fromGrid(this.currentEntity.row, this.currentEntity.column);
         this.currentEntity.startEditing();
     }
@@ -41,7 +41,7 @@ export class TextEditTool extends TextCreateTool implements Tool {
         console.log("Entity found: " + entity);
 
         if (entity && entity instanceof TextShape && entity === this.currentEntity) {
-            console.log("Still current entity");
+            console.log("Select TextMoveTool");
             this.toolService.selectTextMoveTool(this.currentEntity);
         } else {
             if (this.currentText) {

@@ -36,6 +36,7 @@ export class TextMoveTool implements Tool {
         this.currentEntity = entity;
         this.currentText = Text.fromGrid(this.currentEntity.row, this.currentEntity.column, this.currentEntity.text);
         this.moveVertex = Vertex.fromGrid(this.currentEntity.row, this.currentEntity.column);
+        console.log("Start moving text");
         this.currentEntity.startEditing();
     }
 
@@ -51,6 +52,7 @@ export class TextMoveTool implements Tool {
     }
 
     mouseUp(row: number, column: number): void {
+        console.log("End moving text");
         this.currentEntity.endEditing();
         this.persist();
     }
