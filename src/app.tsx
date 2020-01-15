@@ -17,6 +17,7 @@ import Grid from "./drawers/grid";
 import {DiagToSvg} from "./renderers/diag-to-svg";
 import {Tools} from "./tools/tool";
 import Constants from "./constants";
+import {ShapeUpdateNotificationService} from "./shape-update-notification-service";
 
 
 const appStyles = (theme: Theme) => createStyles({
@@ -50,6 +51,7 @@ const AppWithStyles = withStyles(appStyles)(
         private readonly svgDivRef: RefObject<HTMLDivElement> = React.createRef();
         private readonly grid: Grid;
         private readonly layerService: LayerService;
+        private readonly shapeUpdateNotificationService: ShapeUpdateNotificationService;
 
         constructor(props: AppProps) {
             super(props);
@@ -57,7 +59,8 @@ const AppWithStyles = withStyles(appStyles)(
                 currentTool: Tools.box
             };
             this.grid = Grid.create(Constants.numberOfRows, Constants.numberOfColumns);
-            this.layerService = new LayerService();
+            this.shapeUpdateNotificationService = new ShapeUpdateNotificationService();
+            this.layerService = new LayerService(this.shapeUpdateNotificationService);
         }
 
         render() {

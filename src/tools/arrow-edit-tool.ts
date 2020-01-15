@@ -33,7 +33,6 @@ export class ArrowEditTool implements Tool {
         this.endArrowVertex = arrowVertexFactory.createEndArrowVertex(shape);
     }
 
-
     mouseDown(row: number, column: number, x: number, y: number): void {
         console.log("Arrow Edit Tool click on row: " + row + " column=" + column);
 
