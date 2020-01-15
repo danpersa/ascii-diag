@@ -1,22 +1,14 @@
 import {Shape} from "./shape";
-import {Domain} from "../drawers/cell";
-import Cell = Domain.Cell;
 import {Arrow, ArrowDirection} from "../drawers/arrow";
-import {ArrayArrowDrawer} from "../drawers/arrow-drawer";
-import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
 
 export class ArrowShape extends Arrow implements Shape {
 
     private readonly _id: number;
-    private readonly _cells: Array<Cell>;
     private _editing: boolean = false;
 
     constructor(id: number, startRow: number, startColumn: number, endRow: number, endColumn: number, startDirection: ArrowDirection) {
         super(startRow, startColumn, endRow, endColumn, startDirection);
         this._id = id;
-        const arrowDrawer = new ArrayArrowDrawer(new ArrowTipDirectionService()); // TODO refactor this
-        arrowDrawer.draw(this);
-        this._cells = arrowDrawer.cells;
     }
 
     get startRow(): number {
@@ -41,10 +33,6 @@ export class ArrowShape extends Arrow implements Shape {
 
     id(): number {
         return this._id;
-    }
-
-    cells(): Array<Cell> {
-        return this._cells;
     }
 
     editing(): boolean {
