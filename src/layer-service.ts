@@ -1,16 +1,21 @@
 import {Shape} from "./shapes/shape";
+import {ShapeUpdateNotificationService} from "./shape-update-notification-service";
 
 export class LayerService {
 
+    private readonly shapeUpdateNotificationService: ShapeUpdateNotificationService;
+
     private readonly _shapes: Array<Shape>;
 
-    constructor() {
+    constructor(shapeUpdateNotificationService: ShapeUpdateNotificationService) {
         this._shapes = [];
+        this.shapeUpdateNotificationService = shapeUpdateNotificationService;
     }
 
     createShape(shape: Shape) {
         console.log("add shape: " + shape);
         this._shapes.push(shape);
+        this.shapeUpdateNotificationService.notify(shape);
     }
 
     getShape(row: number, column: number): Shape | undefined {
@@ -33,6 +38,7 @@ export class LayerService {
         });
         if (index != null) {
             this.shapes[index] = shape;
+            this.shapeUpdateNotificationService.notify(shape);
         }
     }
 
