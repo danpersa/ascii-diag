@@ -4,26 +4,23 @@ import {BoxShape} from "../shapes/box-shape";
 import {SelectBox} from "../drawers/select-box";
 import {ResizeType} from "./box-resize-tool";
 import {ToolService} from "./tool-service";
-import {ShapeSelectionService} from "./shape-selection-service";
 import {LayerService} from "../layer-service";
 
 export class BoxEditTool implements Tool {
 
     private readonly selectBoxDrawer: SelectBoxDrawer;
     private readonly toolService: ToolService;
-    private readonly shapeSelectionService: ShapeSelectionService;
     private readonly layerService: LayerService;
 
     private readonly shape: BoxShape;
     private readonly selectBox: SelectBox;
 
 
-    constructor(toolService: ToolService, layerService: LayerService, shapeSelectionService: ShapeSelectionService, selectBoxDrawer: SelectBoxDrawer, shape: BoxShape) {
+    constructor(toolService: ToolService, layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, shape: BoxShape) {
         this.toolService = toolService;
         this.layerService = layerService;
         this.selectBoxDrawer = selectBoxDrawer;
         this.shape = shape;
-        this.shapeSelectionService = shapeSelectionService;
         this.selectBox = SelectBox.fromGrid(this.shape.topRow, this.shape.leftColumn, this.shape.bottomRow, this.shape.rightColumn);
     }
 
@@ -47,7 +44,7 @@ export class BoxEditTool implements Tool {
         } else if (this.selectBox.centerVertex.containsPoint(x, y)) {
             this.toolService.selectBoxMoveTool(this.shape);
         } else {
-            this.shapeSelectionService.selectShapeFor(row, column);
+            this.toolService.selectShapeFor(row, column);
         }
     }
 

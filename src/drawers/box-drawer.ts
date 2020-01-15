@@ -10,7 +10,7 @@ export interface BoxDrawer extends Drawer<Box> {
 
 export abstract class AbstractBoxDrawer implements BoxDrawer {
 
-    abstract addCell(cell: Cell): void;
+    abstract drawCell(cell: Cell): void;
 
     draw(box: Box): void {
         const minRow = box.topRow;
@@ -20,48 +20,48 @@ export abstract class AbstractBoxDrawer implements BoxDrawer {
 
         // start corner
         let cell = Cell.Builder.from(box.topRow, box.leftColumn).text("+").build();
-        this.addCell(cell);
+        this.drawCell(cell);
 
         // horizontal edge
         for (let i = minColumn + 1; i < maxColumn; i++) {
             let cell = Cell.Builder.from(box.topRow, i).text("-").build();
-            this.addCell(cell);
+            this.drawCell(cell);
         }
 
         // left edge
         for (let i = minRow + 1; i < maxRow; i++) {
             let cell = Cell.Builder.from(i, box.leftColumn).text("|").build();
-            this.addCell(cell);
+            this.drawCell(cell);
         }
 
         if (minColumn != maxColumn) {
             for (let i = minRow + 1; i < maxRow; i++) {
                 // right edge
                 let cell = Cell.Builder.from(i, box.rightColumn).text("|").build();
-                this.addCell(cell);
+                this.drawCell(cell);
             }
 
             // top right corner
             let cell = Cell.Builder.from(box.topRow, box.rightColumn).text("+").build();
-            this.addCell(cell);
+            this.drawCell(cell);
         }
 
         if (minRow != maxRow) {
             // bottom edge
             for (let i = minColumn + 1; i < maxColumn; i++) {
                 let cell = Cell.Builder.from(box.bottomRow, i).text("-").build();
-                this.addCell(cell);
+                this.drawCell(cell);
             }
 
             // bottom left corner
             let cell = Cell.Builder.from(box.bottomRow, box.leftColumn).text("+").build();
-            this.addCell(cell);
+            this.drawCell(cell);
         }
 
         if (minRow != maxRow && minColumn != maxColumn) {
             // bottom right corner
             let cell = Cell.Builder.from(box.bottomRow, box.rightColumn).text("+").build();
-            this.addCell(cell);
+            this.drawCell(cell);
         }
     }
 }
@@ -75,7 +75,7 @@ export class CanvasBoxDrawer extends AbstractBoxDrawer {
         this.cellDrawer = cellDrawer;
     }
 
-    addCell(cell: Cell) {
+    drawCell(cell: Cell) {
         this.cellDrawer.draw(cell);
     }
 }
@@ -83,7 +83,7 @@ export class CanvasBoxDrawer extends AbstractBoxDrawer {
 export class ArrayBoxDrawer extends AbstractBoxDrawer {
     private readonly _cells: Array<Cell> = [];
 
-    addCell(cell: Cell): void {
+    drawCell(cell: Cell): void {
         this._cells.push(cell);
     }
 
@@ -100,7 +100,7 @@ export class GridBoxDrawer extends AbstractBoxDrawer {
         this.grid = grid;
     }
 
-    addCell(cell: Cell): void {
+    drawCell(cell: Cell): void {
         this.grid.setTextForCell(cell.row, cell.column, cell.text);
     }
 }

@@ -7,28 +7,28 @@ import {TextCreateTool} from "./text-create-tool";
 import {TextDrawer} from "../drawers/text-drawer";
 import {CursorDrawer} from "../drawers/cursor-drawer";
 import {Text} from "../drawers/text";
-import {ShapeSelectionService} from "./shape-selection-service";
 import {Vertex} from "../drawers/vertex";
 import {VertexDrawer} from "../drawers/vertex-drawer";
 import {ToolService} from "./tool-service";
+import {CellToShapeService} from "../cell-to-shape-service";
 
 export class TextEditTool extends TextCreateTool implements Tool {
 
-    private readonly shapeSelectionService: ShapeSelectionService;
     private readonly vertexDrawer: VertexDrawer;
     private readonly toolService: ToolService;
+    private readonly cellToShapeService: CellToShapeService;
 
     private readonly shape: TextShape;
     private moveVertex: Vertex;
 
     constructor(layerService: LayerService, toolService: ToolService, shapeIdService: ShapeIdService, textDrawer: TextDrawer,
-                cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, shapeSelectionService: ShapeSelectionService,
+                cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, cellToShapeService: CellToShapeService,
                 shape: TextShape) {
 
         super(layerService, shapeIdService, textDrawer, cursorDrawer);
-        this.shapeSelectionService = shapeSelectionService;
         this.vertexDrawer = vertexDrawer;
         this.toolService = toolService;
+        this.cellToShapeService = cellToShapeService;
 
         this.shape = shape;
         this.currentText = Text.fromGrid(this.shape.row, this.shape.column, this.shape.text);
@@ -37,7 +37,7 @@ export class TextEditTool extends TextCreateTool implements Tool {
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {
-        const shape = this.layerService.getShape(row, column);
+        const shape = this.cellToShapeService.getShape(row, column);
         console.log("Shape found: " + shape);
 
         if (shape && shape instanceof TextShape && shape === this.shape) {
@@ -47,7 +47,7 @@ export class TextEditTool extends TextCreateTool implements Tool {
             if (this.currentText) {
                 this.persist();
             }
-            this.shapeSelectionService.selectShapeFor(row, column);
+            this.toolService.selectShapeFor(row, column);
         }
     }
 

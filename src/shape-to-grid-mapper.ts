@@ -29,6 +29,5 @@ export class ShapeToGridMapper {
         } else {
             throw new Error("No drawer for shape");
         }
-
     }
 }

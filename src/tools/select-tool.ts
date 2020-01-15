@@ -1,17 +1,17 @@
 import {Tool} from "./tool";
-import {ShapeSelectionService} from "./shape-selection-service";
+import {ToolService} from "./tool-service";
 
 export class SelectTool implements Tool {
 
-    private readonly shapeSelectionService: ShapeSelectionService;
+    private readonly toolService: ToolService;
 
-    constructor(shapeSelectionService: ShapeSelectionService) {
-        this.shapeSelectionService = shapeSelectionService;
+    constructor(toolService: ToolService) {
+        this.toolService = toolService;
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {
         console.log("Select tool click on row: " + row + " column=" + column);
-        this.shapeSelectionService.selectShapeFor(row, column);
+        this.toolService.selectShapeFor(row, column);
     }
 
     render() {

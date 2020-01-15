@@ -1,7 +1,11 @@
 import {Shape} from "./shapes/shape";
 
+export enum ShapeUpdateEvent {
+    CREATED, UPDATED, DELETED
+}
+
 export interface ShapeUpdateListener {
-    update(shape: Shape): void;
+    update(event: ShapeUpdateEvent, shape: Shape): void;
 }
 
 export class ShapeUpdateNotificationService {
@@ -11,9 +15,9 @@ export class ShapeUpdateNotificationService {
         this.listeners.push(listener);
     }
 
-    notify(shape: Shape): void {
+    notify(event: ShapeUpdateEvent, shape: Shape): void {
         this.listeners.forEach((listener: ShapeUpdateListener) => {
-            listener.update(shape);
+            listener.update(event, shape);
         });
     }
 }
