@@ -1,15 +1,15 @@
 import Constants from "../constants";
 
 export class Box {
-    private _canvasX: number;
-    private _canvasY: number;
-    private _canvasWidth: number;
-    private _canvasHeight: number;
+    private readonly _canvasX: number;
+    private readonly _canvasY: number;
+    private readonly _canvasWidth: number;
+    private readonly _canvasHeight: number;
 
-    private _topRow: number;
-    private _leftColumn: number;
-    private _bottomRow: number;
-    private _rightColumn: number;
+    private readonly _topRow: number;
+    private readonly _leftColumn: number;
+    private readonly _bottomRow: number;
+    private readonly _rightColumn: number;
 
     constructor(topRow: number, leftColumn: number, bottomRow: number, rightColumn: number) {
         this._topRow = topRow;
@@ -19,7 +19,7 @@ export class Box {
 
         this._canvasX = leftColumn * Constants.densityX;
         this._canvasY = topRow * Constants.densityY;
-        this._canvasWidth = (rightColumn - leftColumn +1) * Constants.densityX;
+        this._canvasWidth = (rightColumn - leftColumn + 1) * Constants.densityX;
         this._canvasHeight = (bottomRow - topRow + 1) * Constants.densityY;
     }
 

@@ -2,6 +2,7 @@ import {Box} from "./box";
 import {CellDrawer} from "./cell-drawer";
 import {Domain} from "./cell";
 import {Drawer} from "./drawer";
+import Grid from "./grid";
 import Cell = Domain.Cell;
 
 export interface BoxDrawer extends Drawer<Box> {
@@ -88,5 +89,18 @@ export class ArrayBoxDrawer extends AbstractBoxDrawer {
 
     get cells(): Array<Cell> {
         return this._cells;
+    }
+}
+
+export class GridBoxDrawer extends AbstractBoxDrawer {
+    private readonly grid: Grid;
+
+    constructor(grid: Grid) {
+        super();
+        this.grid = grid;
+    }
+
+    addCell(cell: Cell): void {
+        this.grid.setTextForCell(cell.row, cell.column, cell.text);
     }
 }

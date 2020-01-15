@@ -4,6 +4,7 @@ import {Domain} from "./cell";
 import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
 import {Drawer} from "./drawer";
 import Cell = Domain.Cell;
+import Grid from "./grid";
 
 export interface ArrowDrawer extends Drawer<Arrow> {
 }
@@ -114,5 +115,18 @@ export class ArrayArrowDrawer extends AbstractArrowDrawer {
 
     get cells(): Array<Cell> {
         return this._cells;
+    }
+}
+
+export class GridArrowDrawer extends AbstractArrowDrawer {
+    private readonly grid: Grid;
+
+    constructor(arrowTipDirectionService: ArrowTipDirectionService, grid: Grid) {
+        super(arrowTipDirectionService);
+        this.grid = grid;
+    }
+
+    drawCell(cell: Cell): void {
+        this.grid.setTextForCell(cell.row, cell.column, cell.text);
     }
 }

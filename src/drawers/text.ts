@@ -7,7 +7,7 @@ export class Text {
         return new Text(row, column, text);
     }
 
-    private constructor(row: number, column: number, text: string) {
+    protected constructor(row: number, column: number, text: string) {
         this._row = row;
         this._column = column;
         this._text = text;
