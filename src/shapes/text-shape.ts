@@ -1,20 +1,16 @@
 import {Domain} from "../drawers/cell";
 import Cell = Domain.Cell;
 import {Shape} from "./shape";
+import {Text} from "../drawers/text";
 
-export class TextShape implements Shape {
+export class TextShape extends Text implements Shape {
     private readonly _id: number;
-    private readonly _row: number;
-    private readonly _column: number;
-    private readonly _text: string;
     private readonly _cells: Array<Cell>;
     private _editing: boolean = false;
 
     constructor(id: number, row: number, column: number, text: string) {
+        super(row, column, text);
         this._id = id;
-        this._row = row;
-        this._column = column;
-        this._text = text;
         this._cells = [];
         for (let i = 0; i < this.text.length; ++i) {
             const cellValue = this.text.charAt(i);
@@ -27,18 +23,6 @@ export class TextShape implements Shape {
 
     id(): number {
         return this._id;
-    }
-
-    get text(): string {
-        return this._text;
-    }
-
-    get column(): number {
-        return this._column;
-    }
-
-    get row(): number {
-        return this._row;
     }
 
     cells(): Array<Domain.Cell> {

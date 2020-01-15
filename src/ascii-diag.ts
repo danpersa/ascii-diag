@@ -7,6 +7,8 @@ import {LayerService} from "./layer-service";
 import {Shape} from "./shapes/shape";
 import {ShapeIdService} from "./shapes/shape-id-service";
 import {DiagToSvg} from "./renderers/diag-to-svg";
+import {ShapeToGridMapper} from "./shape-to-grid-mapper";
+import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
 
 export default class AsciiDiag {
     private readonly canvas: HTMLCanvasElement;
@@ -23,6 +25,7 @@ export default class AsciiDiag {
     private lastPress: [number, number] = [-1, -1];
     private readonly shapeIdService: ShapeIdService;
     private readonly diagToSvg: DiagToSvg;
+    private readonly shapeToGridMapper: ShapeToGridMapper;
 
     constructor(canvas: HTMLCanvasElement, layerService: LayerService, diagToSvg: DiagToSvg, cellDrawer: CellDrawer, toolService: ToolService, context: CanvasRenderingContext2D) {
         this.diagToSvg = diagToSvg;
@@ -34,6 +37,7 @@ export default class AsciiDiag {
         this.cellDrawer = cellDrawer;
         this.gridDrawer = new CanvasGridDrawer(this.cellDrawer);
         this.toolService = toolService;
+        this.shapeToGridMapper = new ShapeToGridMapper(new ArrowTipDirectionService());
 
         this.toolService.setToolChangeCallback(() => {
             this.redraw();
@@ -80,9 +84,7 @@ export default class AsciiDiag {
     private addShapesToGrid(grid: Grid) {
         this.layerService.shapes.forEach((shape: Shape) => {
             if (!shape.editing()) {
-                shape.cells().forEach(cell => {
-                    grid.valueCell(cell.row, cell.column, cell.text);
-                })
+                this.shapeToGridMapper.addShapeToGrid(shape, grid);
             }
         });
     }

@@ -37,7 +37,7 @@ export default class Grid {
         this.cellMatrix[row][column] = newCell;
     }
 
-    valueCell(row: number, column: number, value: string) {
+    setTextForCell(row: number, column: number, value: string) {
         const currentCell = this.cellMatrix[row][column];
         const newCell = Domain.Cell.Builder.fromCell(currentCell).text(value).build();
         this.cellMatrix[row][column] = newCell;
