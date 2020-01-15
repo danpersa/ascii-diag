@@ -1,6 +1,5 @@
 import {Tool} from "./tool";
 import {ToolService} from "./tool-service";
-import {ShapeSelectionService} from "./shape-selection-service";
 import {VertexDrawer} from "../drawers/vertex-drawer";
 import {ArrowShape} from "../shapes/arrow-shape";
 import {Vertex} from "../drawers/vertex";
@@ -13,21 +12,19 @@ export class ArrowEditTool implements Tool {
     private readonly vertexDrawer: VertexDrawer;
     private readonly toolService: ToolService;
     private readonly layerService: LayerService;
-    private readonly shapeSelectionService: ShapeSelectionService;
 
     private readonly shape: ArrowShape;
     private readonly flipVertex: Vertex | null;
     private readonly startArrowVertex: Vertex;
     private readonly endArrowVertex: Vertex;
 
-    constructor(toolService: ToolService, layerService: LayerService, shapeSelectionService: ShapeSelectionService,
+    constructor(toolService: ToolService, layerService: LayerService,
                 vertexDrawer: VertexDrawer,
                 arrowVertexFactory: ArrowVertexFactory, shape: ArrowShape) {
         this.toolService = toolService;
         this.layerService = layerService;
         this.vertexDrawer = vertexDrawer;
         this.shape = shape;
-        this.shapeSelectionService = shapeSelectionService;
         this.flipVertex = arrowVertexFactory.createFlipVertex(shape);
         this.startArrowVertex = arrowVertexFactory.createStartArrowVertex(shape);
         this.endArrowVertex = arrowVertexFactory.createEndArrowVertex(shape);
@@ -43,7 +40,7 @@ export class ArrowEditTool implements Tool {
         } else if (this.endArrowVertex.containsPoint(x, y)) {
             this.toolService.selectArrowModifyTool(this.shape, ArrowModifyType.EndMove);
         } else {
-            this.shapeSelectionService.selectShapeFor(row, column);
+            this.toolService.selectShapeFor(row, column);
         }
     }
 

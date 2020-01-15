@@ -34,6 +34,18 @@ export class CanvasTextDrawer extends AbstractTextDrawer {
     }
 }
 
+export class ArrayTextDrawer extends AbstractTextDrawer {
+    private readonly _cells: Array<Cell> = [];
+
+    drawCell(cell: Cell): void {
+        this._cells.push(cell);
+    }
+
+    get cells(): Array<Cell> {
+        return this._cells;
+    }
+}
+
 export class GridTextDrawer extends AbstractTextDrawer {
     private readonly grid: Grid;
 

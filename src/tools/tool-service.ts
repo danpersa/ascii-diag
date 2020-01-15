@@ -7,7 +7,6 @@ import {SelectBoxDrawer} from "../drawers/select-box-drawer";
 import {SelectTool} from "./select-tool";
 import {BoxDrawer} from "../drawers/box-drawer";
 import {ShapeIdService} from "../shapes/shape-id-service";
-import {ShapeSelectionService} from "./shape-selection-service";
 import {BoxEditTool} from "./box-edit-tool";
 import {BoxShape} from "../shapes/box-shape";
 import {TextShape} from "../shapes/text-shape";
@@ -24,6 +23,7 @@ import {ArrowShape} from "../shapes/arrow-shape";
 import {ArrowFlipTool} from "./arrow-flip-tool";
 import {ArrowVertexFactory} from "./arrow-vertex-factory";
 import {ArrowModifyTool, ArrowModifyType} from "./arrow-modify-tool";
+import {CellToShapeService} from "../cell-to-shape-service";
 
 export class ToolService {
 
@@ -32,7 +32,6 @@ export class ToolService {
     private readonly textTool: Tool;
     private readonly layerService: LayerService;
     private readonly selectTool: SelectTool;
-    private readonly shapeSelectionService: ShapeSelectionService;
     private readonly boxDrawer: BoxDrawer;
     private readonly selectBoxDrawer: SelectBoxDrawer;
     private readonly shapeIdService: ShapeIdService;
@@ -41,12 +40,13 @@ export class ToolService {
     private readonly vertexDrawer: VertexDrawer;
     private readonly arrowDrawer: ArrowDrawer;
     private readonly arrowVertexFactory: ArrowVertexFactory;
+    private readonly cellToShapeService: CellToShapeService;
     private toolStack: Array<Tool> = [];
     private toolChangeCallback: () => void = () => {
     };
 
     constructor(layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, shapeIdService: ShapeIdService,
-                textDrawer: TextDrawer, cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, arrowDrawer: ArrowDrawer) {
+                textDrawer: TextDrawer, cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, arrowDrawer: ArrowDrawer, cellToShapeService: CellToShapeService) {
         this.layerService = layerService;
         this.cursorDrawer = cursorDrawer;
         this.textDrawer = textDrawer;
@@ -54,13 +54,13 @@ export class ToolService {
         this.boxTool = new BoxCreateTool(layerService, boxDrawer, shapeIdService);
         this.arrowCreateTool = new ArrowCreateTool(layerService, shapeIdService, arrowDrawer);
         this.textTool = new TextCreateTool(layerService, shapeIdService, textDrawer, cursorDrawer);
-        this.shapeSelectionService = new ShapeSelectionService(this.layerService, shapeIdService, this);
         this.arrowVertexFactory = new ArrowVertexFactory();
-        this.selectTool = new SelectTool(this.shapeSelectionService);
+        this.selectTool = new SelectTool(this);
         this.selectBoxDrawer = selectBoxDrawer;
         this.boxDrawer = boxDrawer;
         this.vertexDrawer = vertexDrawer;
         this.shapeIdService = shapeIdService;
+        this.cellToShapeService = cellToShapeService;
         this.toolStack.push(this.boxTool);
     }
 
@@ -116,12 +116,12 @@ export class ToolService {
     }
 
     selectBoxEditTool(shape: BoxShape): void {
-        const boxEditTool = new BoxEditTool(this, this.layerService, this.shapeSelectionService, this.selectBoxDrawer, shape);
+        const boxEditTool = new BoxEditTool(this, this.layerService, this.selectBoxDrawer, shape);
         this.setTool(boxEditTool);
     }
 
     selectArrowEditTool(shape: ArrowShape): void {
-        const arrowEditTool = new ArrowEditTool(this, this.layerService, this.shapeSelectionService, this.vertexDrawer, this.arrowVertexFactory, shape);
+        const arrowEditTool = new ArrowEditTool(this, this.layerService, this.vertexDrawer, this.arrowVertexFactory, shape);
         this.setTool(arrowEditTool);
     }
 
@@ -137,7 +137,7 @@ export class ToolService {
 
     selectTextEditTool(shape: TextShape): void {
         const textEditTool = new TextEditTool(this.layerService, this, this.shapeIdService, this.textDrawer, this.cursorDrawer,
-            this.vertexDrawer, this.shapeSelectionService, shape);
+            this.vertexDrawer, this.cellToShapeService, shape);
         this.setTool(textEditTool);
     }
 
@@ -159,5 +159,20 @@ export class ToolService {
 
     private onToolChange() {
         this.toolChangeCallback();
+    }
+
+    selectShapeFor(row: number, column: number) {
+        const shape = this.cellToShapeService.getShape(row, column);
+        console.log("Found Shape: " + shape);
+
+        if (shape && shape instanceof TextShape) {
+            this.selectTextEditTool(shape);
+        } else if (shape && shape instanceof BoxShape) {
+            this.selectBoxEditTool(shape);
+        } else if (shape && shape instanceof ArrowShape) {
+            this.selectArrowEditTool(shape);
+        } else {
+            this.selectSelectTool();
+        }
     }
 }

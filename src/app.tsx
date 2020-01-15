@@ -18,6 +18,8 @@ import {DiagToSvg} from "./renderers/diag-to-svg";
 import {Tools} from "./tools/tool";
 import Constants from "./constants";
 import {ShapeUpdateNotificationService} from "./shape-update-notification-service";
+import {CellToShapeService} from "./cell-to-shape-service";
+import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
 
 
 const appStyles = (theme: Theme) => createStyles({
@@ -52,6 +54,8 @@ const AppWithStyles = withStyles(appStyles)(
         private readonly grid: Grid;
         private readonly layerService: LayerService;
         private readonly shapeUpdateNotificationService: ShapeUpdateNotificationService;
+        private readonly cellToShapeService: CellToShapeService;
+        private readonly arrowTipDirectionService: ArrowTipDirectionService;
 
         constructor(props: AppProps) {
             super(props);
@@ -61,6 +65,10 @@ const AppWithStyles = withStyles(appStyles)(
             this.grid = Grid.create(Constants.numberOfRows, Constants.numberOfColumns);
             this.shapeUpdateNotificationService = new ShapeUpdateNotificationService();
             this.layerService = new LayerService(this.shapeUpdateNotificationService);
+            this.arrowTipDirectionService = new ArrowTipDirectionService();
+            this.cellToShapeService = new CellToShapeService(Constants.numberOfRows, Constants.numberOfColumns,
+                this.arrowTipDirectionService, this.layerService);
+            this.shapeUpdateNotificationService.register(this.cellToShapeService);
         }
 
         render() {
@@ -110,6 +118,8 @@ const AppWithStyles = withStyles(appStyles)(
                                 <DiagCanvas canvasRef={this.canvasDivRef}
                                             currentTool={this.state.currentTool}
                                             layerService={this.layerService}
+                                            shapeUpdateNotificationService={this.shapeUpdateNotificationService}
+                                            cellToShapeService={this.cellToShapeService}
                                             grid={this.grid} diagToSvg={diagToSvg}/>
                             </Paper>
                         </UIGrid>
@@ -124,7 +134,6 @@ const AppWithStyles = withStyles(appStyles)(
         }
     }
 );
-
 
 window.addEventListener('keydown', function (e) {
     if (e.keyCode == 32 && e.target == document.body) {
