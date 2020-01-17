@@ -9,7 +9,7 @@ export interface TextDrawer extends Drawer<Text> {
     draw(text: Text): void;
 }
 
-abstract class AbstractTextDrawer implements TextDrawer {
+abstract class AbstractTextDrawer implements Drawer<Text> {
 
     draw(text: Text): void {
         for (let i = 0; i < text.text.length; ++i) {
@@ -46,8 +46,12 @@ export class ArrayTextDrawer extends AbstractTextDrawer {
     }
 }
 
-export class GridTextDrawer extends AbstractTextDrawer {
+export class GridTextDrawer extends AbstractTextDrawer implements Drawer<Text> {
     private readonly grid: Grid;
+
+    static create(grid: Grid): Drawer<Text> {
+        return new GridTextDrawer(grid);
+    }
 
     constructor(grid: Grid) {
         super();

@@ -1,4 +1,6 @@
-export class Text {
+import {Entity} from "./entity";
+
+export class Text implements Entity {
     private readonly _row: number;
     private readonly _column: number;
     private _text: string;
