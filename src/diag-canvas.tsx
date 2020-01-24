@@ -18,6 +18,7 @@ import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
 import {CanvasBoxDrawer} from "./drawers/box-drawer";
 import {ShapeUpdateNotificationService} from "./shape-update-notification-service";
 import {CellToShapeService} from "./cell-to-shape-service";
+import {GridDrawerFactory} from "./drawers/drawer-factory";
 
 type DiagCanvasProps = {
     canvasRef: RefObject<HTMLCanvasElement>,
@@ -52,10 +53,13 @@ export default class DiagCanvas extends React.Component<DiagCanvasProps> {
         const arrowDrawer = new CanvasArrowDrawer(cellDrawer, arrowTipDirectionService);
         const textDrawer = new CanvasTextDrawer(cellDrawer);
         const cursorDrawer = new CanvasCursorDrawer(context);
+        const gridDrawerFactory = new GridDrawerFactory(arrowTipDirectionService);
 
-        this.toolService = new ToolService(layerService, selectBoxDrawer, boxDrawer, entityIdService, textDrawer, cursorDrawer, vertexDrawer, arrowDrawer, this.props.cellToShapeService);
+        this.toolService = new ToolService(layerService, selectBoxDrawer, boxDrawer, entityIdService, textDrawer,
+            cursorDrawer, vertexDrawer, arrowDrawer, this.props.cellToShapeService);
 
-        new AsciiDiag(canvas, this.props.layerService, this.props.diagToSvg, cellDrawer, this.toolService, context);
+        new AsciiDiag(canvas, this.props.layerService, gridDrawerFactory,
+            this.props.diagToSvg, cellDrawer, this.toolService, context);
     }
 
     render() {
