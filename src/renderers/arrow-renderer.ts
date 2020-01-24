@@ -16,15 +16,17 @@ export class ArrowRenderer implements SvgRenderer {
     }
 
     render(shape: ArrowShape, svg: Svg): void {
-        const tipDirection = this.arrowTipDirectionService.endTipDirection(shape);
-        const {rowsOffset, columnsOffset} = ArrowRenderer.endArrowOffset(tipDirection);
+        const startTipDirection = this.arrowTipDirectionService.startTipDirection(shape);
+        const endTipDirection = this.arrowTipDirectionService.endTipDirection(shape);
+        const startOffset = ArrowRenderer.arrowOffset(startTipDirection);
+        const endOffset = ArrowRenderer.arrowOffset(endTipDirection);
 
 
-        const startX = shape.startColumn * Constants.densityX;
-        const startY = shape.startRow * Constants.densityY;
+        const startX = (shape.startColumn + startOffset.columnsOffset) * Constants.densityX;
+        const startY = (shape.startRow + startOffset.rowsOffset) * Constants.densityY;
 
-        const endX = (shape.endColumn + columnsOffset) * Constants.densityX;
-        const endY = (shape.endRow + rowsOffset) * Constants.densityY;
+        const endX = (shape.endColumn + endOffset.columnsOffset) * Constants.densityX;
+        const endY = (shape.endRow + endOffset.rowsOffset) * Constants.densityY;
 
         const midX = shape.startDirection === ArrowDirection.Horizontal ? endX : startX;
         const midY = shape.startDirection === ArrowDirection.Horizontal ? startY : endY;
@@ -32,10 +34,10 @@ export class ArrowRenderer implements SvgRenderer {
         svg.polyline([startX, startY, midX, midY, endX, endY]).fill('none')
             .stroke({color: '#333333', width: 1.5, linecap: 'round', linejoin: 'round'});
 
-        if (tipDirection !== null) {
+        if (endTipDirection !== null) {
             const arrowTip = ArrowRenderer.renderArrowTip(endX, endY, svg);
 
-            switch (tipDirection) {
+            switch (endTipDirection) {
                 case ArrowTipDirection.North:
                     arrowTip.rotate(0)
                         .move(endX - 3, endY);
@@ -53,9 +55,31 @@ export class ArrowRenderer implements SvgRenderer {
                     break;
             }
         }
+
+        if (startTipDirection !== null) {
+            const arrowTip = ArrowRenderer.renderArrowTip(startX, startY, svg);
+
+            switch (startTipDirection) {
+                case ArrowTipDirection.North:
+                    arrowTip.rotate(0)
+                        .move(startX - 3, startY);
+                    break;
+                case ArrowTipDirection.South:
+                    arrowTip.rotate(180);
+                    break;
+                case ArrowTipDirection.East:
+                    arrowTip.rotate(90)
+                        .move(startX + 3, startY - 6);
+                    break;
+                case ArrowTipDirection.West:
+                    arrowTip.rotate(270)
+                        .move(startX - 9, startY - 6);
+                    break;
+            }
+        }
     }
 
-    private static endArrowOffset(tipDirection: ArrowTipDirection | null): ArrowTipOffset {
+    private static arrowOffset(tipDirection: ArrowTipDirection | null): ArrowTipOffset {
         if (tipDirection != null) {
             switch (tipDirection) {
                 case ArrowTipDirection.North:

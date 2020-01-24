@@ -16,7 +16,7 @@ describe('create', () => {
 
     beforeEach(() => {
         const arrowTipDirectionServiceMock = new ArrowTipDirectionServiceMock();
-        grid = Grid.create(3, 3)
+        grid = Grid.create(3, 3);
         gridDrawerFactory = new GridDrawerFactory(arrowTipDirectionServiceMock);
     });
 
