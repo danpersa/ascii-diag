@@ -10,11 +10,11 @@ import {ToolService} from "./tools/tool-service";
 import {CanvasCellDrawer} from "./drawers/cell-drawer";
 import {CanvasVertexDrawer} from "./drawers/vertex-drawer";
 import {CanvasSelectBoxDrawer} from "./drawers/select-box-drawer";
-import {CanvasArrowDrawer} from "./drawers/arrow-drawer";
+import {CanvasConnectorDrawer} from "./drawers/connector-drawer";
 import {CanvasTextDrawer} from "./drawers/text-drawer";
 import {CanvasCursorDrawer} from "./drawers/cursor-drawer";
 import {ShapeIdService} from "./shapes/shape-id-service";
-import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
+import {ConnectorTipDirectionService} from "./connector-tip-direction-service";
 import {CanvasBoxDrawer} from "./drawers/box-drawer";
 import {ShapeUpdateNotificationService} from "./shape-update-notification-service";
 import {CellToShapeService} from "./cell-to-shape-service";
@@ -45,12 +45,12 @@ export default class DiagCanvas extends React.Component<DiagCanvasProps> {
         const layerService = this.props.layerService;
         const context = canvas.getContext("2d")!;
 
-        const arrowTipDirectionService = new ArrowTipDirectionService();
+        const arrowTipDirectionService = new ConnectorTipDirectionService();
         const cellDrawer = new CanvasCellDrawer(context);
         const vertexDrawer = new CanvasVertexDrawer(context);
         const selectBoxDrawer = new CanvasSelectBoxDrawer(context, vertexDrawer);
         const boxDrawer = new CanvasBoxDrawer(cellDrawer);
-        const arrowDrawer = new CanvasArrowDrawer(cellDrawer, arrowTipDirectionService);
+        const arrowDrawer = new CanvasConnectorDrawer(cellDrawer, arrowTipDirectionService);
         const textDrawer = new CanvasTextDrawer(cellDrawer);
         const cursorDrawer = new CanvasCursorDrawer(context);
         const gridDrawerFactory = new GridDrawerFactory(arrowTipDirectionService);

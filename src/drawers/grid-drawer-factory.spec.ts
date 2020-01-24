@@ -1,9 +1,9 @@
 import {GridDrawerFactory} from "./drawer-factory";
-import {ArrowTipDirectionServiceMock} from "./__mocks__/arrow-tip-direction-service-mock";
+import {ConnectorTipDirectionServiceMock} from "./__mocks__/connector-tip-direction-service-mock";
 import Grid from "./grid";
-import {ArrowDirection} from "./arrow";
-import {ArrowShape} from "../shapes/arrow-shape";
-import {GridArrowDrawer} from "./arrow-drawer";
+import {ConnectorDirection} from "./connector";
+import {ConnectorShape} from "../shapes/connector-shape";
+import {GridConnectorDrawer} from "./connector-drawer";
 import {TextShape} from "../shapes/text-shape";
 import {GridTextDrawer} from "./text-drawer";
 import {BoxShape} from "../shapes/box-shape";
@@ -15,15 +15,15 @@ let grid: Grid;
 describe('create', () => {
 
     beforeEach(() => {
-        const arrowTipDirectionServiceMock = new ArrowTipDirectionServiceMock();
+        const connectorTipDirectionServiceMock = new ConnectorTipDirectionServiceMock();
         grid = Grid.create(3, 3);
-        gridDrawerFactory = new GridDrawerFactory(arrowTipDirectionServiceMock);
+        gridDrawerFactory = new GridDrawerFactory(connectorTipDirectionServiceMock);
     });
 
-    it('should create a drawer for an arrow shape', () => {
-        const arrow = new ArrowShape(1, 1, 1, 2, 2, ArrowDirection.Horizontal);
-        const drawer = gridDrawerFactory.create(arrow, grid);
-        expect(drawer instanceof GridArrowDrawer).toBe(true);
+    it('should create a drawer for an connector shape', () => {
+        const connector = new ConnectorShape(1, 1, 1, 2, 2, ConnectorDirection.Horizontal);
+        const drawer = gridDrawerFactory.create(connector, grid);
+        expect(drawer instanceof GridConnectorDrawer).toBe(true);
     });
 
     it('should create a drawer for a text shape', () => {

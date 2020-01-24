@@ -1,4 +1,4 @@
-import {ArrowDirection} from "./drawers/arrow";
+import {ConnectorDirection} from "./drawers/connector";
 
 export default class Constants {
     static readonly canvasWidth = 900;
@@ -13,5 +13,5 @@ export default class Constants {
     static readonly accentColor = `rgb(255, 165, 0, 1.0)`;
     static readonly vertexRadius = 8;
     static readonly halfVertexRadius = Constants.vertexRadius / 2;
-    static readonly arrowStartDirection = ArrowDirection.Horizontal;
+    static readonly connectorStartDirection = ConnectorDirection.Horizontal;
 }

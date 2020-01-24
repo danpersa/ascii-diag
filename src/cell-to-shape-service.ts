@@ -4,9 +4,9 @@ import {TextShape} from "./shapes/text-shape";
 import {ArrayTextDrawer} from "./drawers/text-drawer";
 import {BoxShape} from "./shapes/box-shape";
 import {ArrayBoxDrawer} from "./drawers/box-drawer";
-import {ArrowShape} from "./shapes/arrow-shape";
-import {ArrayArrowDrawer} from "./drawers/arrow-drawer";
-import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
+import {ConnectorShape} from "./shapes/connector-shape";
+import {ArrayConnectorDrawer} from "./drawers/connector-drawer";
+import {ConnectorTipDirectionService} from "./connector-tip-direction-service";
 import {Domain} from "./drawers/cell";
 import {LayerService} from "./layer-service";
 import Cell = Domain.Cell;
@@ -14,15 +14,15 @@ import Cell = Domain.Cell;
 export class CellToShapeService implements ShapeUpdateListener {
 
     private readonly shapeMatrix: Array<Array<Shape | undefined>> = [];
-    private readonly arrowTipDirectionService: ArrowTipDirectionService;
+    private readonly connectorTipDirectionService: ConnectorTipDirectionService;
     private readonly layerService: LayerService;
     private readonly rows: number;
     private readonly columns: number;
 
     constructor(rows: number, columns: number,
-                arrowTipDirectionService: ArrowTipDirectionService,
+                connectorTipDirectionService: ConnectorTipDirectionService,
                 layerService: LayerService) {
-        this.arrowTipDirectionService = arrowTipDirectionService;
+        this.connectorTipDirectionService = connectorTipDirectionService;
         this.layerService = layerService;
         this.rows = rows;
         this.columns = columns;
@@ -64,10 +64,10 @@ export class CellToShapeService implements ShapeUpdateListener {
             const boxDrawer = new ArrayBoxDrawer();
             boxDrawer.draw(shape);
             this.addShapeToMatrix(boxDrawer.cells, shape);
-        } else if (shape && shape instanceof ArrowShape) {
-            const arrowDrawer = new ArrayArrowDrawer(this.arrowTipDirectionService);
-            arrowDrawer.draw(shape);
-            this.addShapeToMatrix(arrowDrawer.cells, shape);
+        } else if (shape && shape instanceof ConnectorShape) {
+            const connectorDrawer = new ArrayConnectorDrawer(this.connectorTipDirectionService);
+            connectorDrawer.draw(shape);
+            this.addShapeToMatrix(connectorDrawer.cells, shape);
         } else {
             throw new Error("No drawer for shape");
         }

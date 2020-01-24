@@ -1,23 +1,23 @@
-export enum ArrowDirection {
+export enum ConnectorDirection {
     Horizontal,
     Vertical
 }
 
-export enum ArrowTipDirection {
+export enum ConnectorTipDirection {
     North,
     South,
     East,
     West
 }
 
-export class Arrow {
+export class Connector {
     protected readonly _startRow: number;
     protected readonly _startColumn: number;
     protected readonly _endRow: number;
     protected readonly _endColumn: number;
-    protected readonly _startDirection: ArrowDirection;
+    protected readonly _startDirection: ConnectorDirection;
 
-    constructor(startRow: number, startColumn: number, endRow: number, endColumn: number, startDirection: ArrowDirection) {
+    constructor(startRow: number, startColumn: number, endRow: number, endColumn: number, startDirection: ConnectorDirection) {
         this._startRow = startRow;
         this._startColumn = startColumn;
         this._endRow = endRow;
@@ -42,7 +42,7 @@ export class Arrow {
         return this._endColumn;
     }
 
-    get startDirection(): ArrowDirection {
+    get startDirection(): ConnectorDirection {
         return this._startDirection;
     }
 }

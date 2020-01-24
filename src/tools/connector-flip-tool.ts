@@ -1,30 +1,30 @@
 import {Tool} from "./tool";
 import {ToolService} from "./tool-service";
 import {VertexDrawer} from "../drawers/vertex-drawer";
-import {ArrowShape} from "../shapes/arrow-shape";
+import {ConnectorShape} from "../shapes/connector-shape";
 import {Vertex} from "../drawers/vertex";
-import {ArrowDirection} from "../drawers/arrow";
+import {ConnectorDirection} from "../drawers/connector";
 import {LayerService} from "../layer-service";
-import {ArrowVertexFactory} from "./arrow-vertex-factory";
+import {ConnectorVertexFactory} from "./connector-vertex-factory";
 
-export class ArrowFlipTool implements Tool {
+export class ConnectorFlipTool implements Tool {
 
     private readonly vertexDrawer: VertexDrawer;
     private readonly toolService: ToolService;
     private readonly layerService: LayerService;
-    private readonly arrowVertexFactory: ArrowVertexFactory;
+    private readonly connectorVertexFactory: ConnectorVertexFactory;
 
-    private readonly shape: ArrowShape;
+    private readonly shape: ConnectorShape;
     private readonly flipVertex: Vertex | null;
 
     constructor(toolService: ToolService, layerService: LayerService, vertexDrawer: VertexDrawer,
-                arrowVertexFactory: ArrowVertexFactory, shape: ArrowShape) {
+                connectorVertexFactory: ConnectorVertexFactory, shape: ConnectorShape) {
         this.toolService = toolService;
         this.vertexDrawer = vertexDrawer;
         this.shape = shape;
         this.layerService = layerService;
-        this.arrowVertexFactory = arrowVertexFactory;
-        this.flipVertex = arrowVertexFactory.createFlipVertex(shape);
+        this.connectorVertexFactory = connectorVertexFactory;
+        this.flipVertex = connectorVertexFactory.createFlipVertex(shape);
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {
@@ -41,19 +41,19 @@ export class ArrowFlipTool implements Tool {
     }
 
     mouseUp(row: number, column: number): void {
-        const newArrowDirection = this.shape.startDirection === ArrowDirection.Horizontal ? ArrowDirection.Vertical : ArrowDirection.Horizontal;
+        const newConnectorDirection = this.shape.startDirection === ConnectorDirection.Horizontal ? ConnectorDirection.Vertical : ConnectorDirection.Horizontal;
 
-        const shape = new ArrowShape(
+        const shape = new ConnectorShape(
             this.shape.id(),
             this.shape.startRow,
             this.shape.startColumn,
             this.shape.endRow,
             this.shape.endColumn,
-            newArrowDirection
+            newConnectorDirection
         );
 
         this.layerService.updateShape(shape);
-        this.toolService.selectArrowEditTool(shape);
+        this.toolService.selectConnectorEditTool(shape);
     }
 
     keyDown(key: string): void {

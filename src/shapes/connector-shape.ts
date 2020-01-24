@@ -1,12 +1,12 @@
 import {Shape} from "./shape";
-import {Arrow, ArrowDirection} from "../drawers/arrow";
+import {Connector, ConnectorDirection} from "../drawers/connector";
 
-export class ArrowShape extends Arrow implements Shape {
+export class ConnectorShape extends Connector implements Shape {
 
     private readonly _id: number;
     private _editing: boolean = false;
 
-    constructor(id: number, startRow: number, startColumn: number, endRow: number, endColumn: number, startDirection: ArrowDirection) {
+    constructor(id: number, startRow: number, startColumn: number, endRow: number, endColumn: number, startDirection: ConnectorDirection) {
         super(startRow, startColumn, endRow, endColumn, startDirection);
         this._id = id;
     }

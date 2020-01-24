@@ -2,7 +2,7 @@ export enum Tools {
     select = "select",
     text = "text",
     box = "box",
-    arrow = "arrow",
+    connector = "connector",
 }
 
 

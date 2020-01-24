@@ -1,62 +1,62 @@
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
-import {ArrowDrawer} from "../drawers/arrow-drawer";
+import {ConnectorDrawer} from "../drawers/connector-drawer";
 import {ShapeIdService} from "../shapes/shape-id-service";
-import {Arrow} from "../drawers/arrow";
-import {ArrowShape} from "../shapes/arrow-shape";
+import {Connector} from "../drawers/connector";
+import {ConnectorShape} from "../shapes/connector-shape";
 import Constants from "../constants";
 
-export class ArrowCreateTool implements Tool {
+export class ConnectorCreateTool implements Tool {
 
-    private readonly arrowDrawer: ArrowDrawer;
+    private readonly connectorDrawer: ConnectorDrawer;
     private readonly layerService: LayerService;
     private readonly shapeIdService: ShapeIdService;
     private startRow: number = 0;
     private startColumn: number = 0;
     private endRow: number = 0;
     private endColumn: number = 0;
-    private arrow: Arrow | null = null;
+    private connector: Connector | null = null;
 
-    constructor(layerService: LayerService, shapeIdService: ShapeIdService, arrowDrawer: ArrowDrawer) {
+    constructor(layerService: LayerService, shapeIdService: ShapeIdService, connectorDrawer: ConnectorDrawer) {
         this.layerService = layerService;
-        this.arrowDrawer = arrowDrawer;
+        this.connectorDrawer = connectorDrawer;
         this.shapeIdService = shapeIdService;
     }
 
     mouseDown(row: number, column: number, x: number, y: number): void {
         this.startRow = row;
         this.startColumn = column;
-        this.arrow = new Arrow(row, column, row, column, Constants.arrowStartDirection);
+        this.connector = new Connector(row, column, row, column, Constants.connectorStartDirection);
     }
 
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
-        this.arrow = new Arrow(startRow, startColumn, row, column, Constants.arrowStartDirection);
+        this.connector = new Connector(startRow, startColumn, row, column, Constants.connectorStartDirection);
     }
 
     mouseUp(row: number, column: number): void {
         this.endRow = row;
         this.endColumn = column;
         this.persist();
-        this.arrow = null;
+        this.connector = null;
     }
 
     keyDown(key: string): void {
     }
 
     persist(): void {
-        const shape = new ArrowShape(
+        const shape = new ConnectorShape(
             this.shapeIdService.nextId(),
             this.startRow,
             this.startColumn,
             this.endRow,
             this.endColumn,
-            Constants.arrowStartDirection);
+            Constants.connectorStartDirection);
         this.layerService.createShape(shape);
     }
 
     render(): void {
-        if (this.arrow) {
-            this.arrowDrawer.draw(this.arrow);
+        if (this.connector) {
+            this.connectorDrawer.draw(this.connector);
         }
     }
 

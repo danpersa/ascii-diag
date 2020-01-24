@@ -1,5 +1,5 @@
 import {Tool, Tools} from "./tool";
-import {ArrowCreateTool} from "./arrow-create-tool";
+import {ConnectorCreateTool} from "./connector-create-tool";
 import {BoxCreateTool} from "./box-create-tool";
 import {TextCreateTool} from "./text-create-tool";
 import {LayerService} from "../layer-service";
@@ -17,18 +17,18 @@ import {CursorDrawer} from "../drawers/cursor-drawer";
 import {BoxMoveTool} from "./box-move-tool";
 import {VertexDrawer} from "../drawers/vertex-drawer";
 import {TextMoveTool} from "./text-move-tool";
-import {ArrowDrawer} from "../drawers/arrow-drawer";
-import {ArrowEditTool} from "./arrow-edit-tool";
-import {ArrowShape} from "../shapes/arrow-shape";
-import {ArrowFlipTool} from "./arrow-flip-tool";
-import {ArrowVertexFactory} from "./arrow-vertex-factory";
-import {ArrowModifyTool, ArrowModifyType} from "./arrow-modify-tool";
+import {ConnectorDrawer} from "../drawers/connector-drawer";
+import {ConnectorEditTool} from "./connector-edit-tool";
+import {ConnectorShape} from "../shapes/connector-shape";
+import {ConnectorFlipTool} from "./connector-flip-tool";
+import {ConnectorVertexFactory} from "./connector-vertex-factory";
+import {ConnectorModifyTool, ConnectorMoveType} from "./connector-modify-tool";
 import {CellToShapeService} from "../cell-to-shape-service";
 
 export class ToolService {
 
     private readonly boxTool: Tool;
-    private readonly arrowCreateTool: Tool;
+    private readonly connectorCreateTool: Tool;
     private readonly textTool: Tool;
     private readonly layerService: LayerService;
     private readonly selectTool: SelectTool;
@@ -38,23 +38,23 @@ export class ToolService {
     private readonly cursorDrawer: CursorDrawer;
     private readonly textDrawer: TextDrawer;
     private readonly vertexDrawer: VertexDrawer;
-    private readonly arrowDrawer: ArrowDrawer;
-    private readonly arrowVertexFactory: ArrowVertexFactory;
+    private readonly connectorDrawer: ConnectorDrawer;
+    private readonly connectorVertexFactory: ConnectorVertexFactory;
     private readonly cellToShapeService: CellToShapeService;
     private toolStack: Array<Tool> = [];
     private toolChangeCallback: () => void = () => {
     };
 
     constructor(layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, shapeIdService: ShapeIdService,
-                textDrawer: TextDrawer, cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, arrowDrawer: ArrowDrawer, cellToShapeService: CellToShapeService) {
+                textDrawer: TextDrawer, cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, connectorDrawer: ConnectorDrawer, cellToShapeService: CellToShapeService) {
         this.layerService = layerService;
         this.cursorDrawer = cursorDrawer;
         this.textDrawer = textDrawer;
-        this.arrowDrawer = arrowDrawer;
+        this.connectorDrawer = connectorDrawer;
         this.boxTool = new BoxCreateTool(layerService, boxDrawer, shapeIdService);
-        this.arrowCreateTool = new ArrowCreateTool(layerService, shapeIdService, arrowDrawer);
+        this.connectorCreateTool = new ConnectorCreateTool(layerService, shapeIdService, connectorDrawer);
         this.textTool = new TextCreateTool(layerService, shapeIdService, textDrawer, cursorDrawer);
-        this.arrowVertexFactory = new ArrowVertexFactory();
+        this.connectorVertexFactory = new ConnectorVertexFactory();
         this.selectTool = new SelectTool(this);
         this.selectBoxDrawer = selectBoxDrawer;
         this.boxDrawer = boxDrawer;
@@ -66,8 +66,8 @@ export class ToolService {
 
     setCurrentTool(tool: Tools): void {
         switch (tool) {
-            case Tools.arrow:
-                this.selectArrowTool();
+            case Tools.connector:
+                this.selectConnectorTool();
                 break;
             case Tools.box:
                 this.selectBoxTool();
@@ -93,8 +93,8 @@ export class ToolService {
         this.setTool(this.boxTool);
     }
 
-    selectArrowTool(): void {
-        this.setTool(this.arrowCreateTool);
+    selectConnectorTool(): void {
+        this.setTool(this.connectorCreateTool);
     }
 
     selectTextTool(): void {
@@ -120,19 +120,19 @@ export class ToolService {
         this.setTool(boxEditTool);
     }
 
-    selectArrowEditTool(shape: ArrowShape): void {
-        const arrowEditTool = new ArrowEditTool(this, this.layerService, this.vertexDrawer, this.arrowVertexFactory, shape);
-        this.setTool(arrowEditTool);
+    selectConnectorEditTool(shape: ConnectorShape): void {
+        const connectorEditTool = new ConnectorEditTool(this, this.layerService, this.vertexDrawer, this.connectorVertexFactory, shape);
+        this.setTool(connectorEditTool);
     }
 
-    selectArrowFlipTool(shape: ArrowShape): void {
-        const arrowFlipTool = new ArrowFlipTool(this, this.layerService, this.vertexDrawer, this.arrowVertexFactory, shape);
-        this.setTool(arrowFlipTool);
+    selectConnectorFlipTool(shape: ConnectorShape): void {
+        const connectorFlipTool = new ConnectorFlipTool(this, this.layerService, this.vertexDrawer, this.connectorVertexFactory, shape);
+        this.setTool(connectorFlipTool);
     }
 
-    selectArrowModifyTool(shape: ArrowShape, moveType: ArrowModifyType): void {
-        const arrowModifyTool = new ArrowModifyTool(this, this.layerService, this.vertexDrawer, this.arrowVertexFactory, this.arrowDrawer, shape, moveType);
-        this.setTool(arrowModifyTool);
+    selectConnectorModifyTool(shape: ConnectorShape, moveType: ConnectorMoveType): void {
+        const connectorModifyTool = new ConnectorModifyTool(this, this.layerService, this.vertexDrawer, this.connectorVertexFactory, this.connectorDrawer, shape, moveType);
+        this.setTool(connectorModifyTool);
     }
 
     selectTextEditTool(shape: TextShape): void {
@@ -169,8 +169,8 @@ export class ToolService {
             this.selectTextEditTool(shape);
         } else if (shape && shape instanceof BoxShape) {
             this.selectBoxEditTool(shape);
-        } else if (shape && shape instanceof ArrowShape) {
-            this.selectArrowEditTool(shape);
+        } else if (shape && shape instanceof ConnectorShape) {
+            this.selectConnectorEditTool(shape);
         } else {
             this.selectSelectTool();
         }

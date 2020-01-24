@@ -19,7 +19,7 @@ import {Tools} from "./tools/tool";
 import Constants from "./constants";
 import {ShapeUpdateNotificationService} from "./shape-update-notification-service";
 import {CellToShapeService} from "./cell-to-shape-service";
-import {ArrowTipDirectionService} from "./arrow-tip-direction-service";
+import {ConnectorTipDirectionService} from "./connector-tip-direction-service";
 
 
 const appStyles = (theme: Theme) => createStyles({
@@ -55,7 +55,7 @@ const AppWithStyles = withStyles(appStyles)(
         private readonly layerService: LayerService;
         private readonly shapeUpdateNotificationService: ShapeUpdateNotificationService;
         private readonly cellToShapeService: CellToShapeService;
-        private readonly arrowTipDirectionService: ArrowTipDirectionService;
+        private readonly arrowTipDirectionService: ConnectorTipDirectionService;
 
         constructor(props: AppProps) {
             super(props);
@@ -65,7 +65,7 @@ const AppWithStyles = withStyles(appStyles)(
             this.grid = Grid.create(Constants.numberOfRows, Constants.numberOfColumns);
             this.shapeUpdateNotificationService = new ShapeUpdateNotificationService();
             this.layerService = new LayerService(this.shapeUpdateNotificationService);
-            this.arrowTipDirectionService = new ArrowTipDirectionService();
+            this.arrowTipDirectionService = new ConnectorTipDirectionService();
             this.cellToShapeService = new CellToShapeService(Constants.numberOfRows, Constants.numberOfColumns,
                 this.arrowTipDirectionService, this.layerService);
             this.shapeUpdateNotificationService.register(this.cellToShapeService);
@@ -105,7 +105,7 @@ const AppWithStyles = withStyles(appStyles)(
                                     <ToggleButton value={Tools.box}>
                                         <CheckboxBlankOutline/>
                                     </ToggleButton>
-                                    <ToggleButton value={Tools.arrow}>
+                                    <ToggleButton value={Tools.connector}>
                                         <RayStartArrow/>
                                     </ToggleButton>
                                 </ToggleButtonGroup>

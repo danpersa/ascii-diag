@@ -3,17 +3,17 @@ import {TextShape} from "../shapes/text-shape";
 import {GridTextDrawer} from "./text-drawer";
 import {BoxShape} from "../shapes/box-shape";
 import {GridBoxDrawer} from "./box-drawer";
-import {ArrowShape} from "../shapes/arrow-shape";
-import {GridArrowDrawer} from "./arrow-drawer";
+import {ConnectorShape} from "../shapes/connector-shape";
+import {GridConnectorDrawer} from "./connector-drawer";
 import {Shape} from "../shapes/shape";
 import Grid from "./grid";
-import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
+import {ConnectorTipDirectionService} from "../connector-tip-direction-service";
 
 export class GridDrawerFactory {
-    private readonly arrowTipDirectionService: ArrowTipDirectionService;
+    private readonly connectorTipDirectionService: ConnectorTipDirectionService;
 
-    constructor(arrowTipDirectionService: ArrowTipDirectionService) {
-        this.arrowTipDirectionService = arrowTipDirectionService;
+    constructor(connectorTipDirectionService: ConnectorTipDirectionService) {
+        this.connectorTipDirectionService = connectorTipDirectionService;
     }
 
     create<T extends Shape>(shape: T, grid: Grid): Drawer<T> {
@@ -21,8 +21,8 @@ export class GridDrawerFactory {
             return new GridTextDrawer(grid) as any as Drawer<T>;
         } else if (shape && shape instanceof BoxShape) {
             return new GridBoxDrawer(grid) as any as Drawer<T>;
-        } else if (shape && shape instanceof ArrowShape) {
-            return new GridArrowDrawer(this.arrowTipDirectionService, grid) as any as Drawer<T>;
+        } else if (shape && shape instanceof ConnectorShape) {
+            return new GridConnectorDrawer(this.connectorTipDirectionService, grid) as any as Drawer<T>;
         } else {
             throw new Error("No drawer for shape");
         }
