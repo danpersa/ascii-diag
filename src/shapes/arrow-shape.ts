@@ -11,26 +11,6 @@ export class ArrowShape extends Arrow implements Shape {
         this._id = id;
     }
 
-    get startRow(): number {
-        return this._startRow;
-    }
-
-    get startColumn(): number {
-        return this._startColumn;
-    }
-
-    get endRow(): number {
-        return this._endRow;
-    }
-
-    get endColumn(): number {
-        return this._endColumn;
-    }
-
-    get startDirection(): ArrowDirection {
-        return this._startDirection;
-    }
-
     id(): number {
         return this._id;
     }
