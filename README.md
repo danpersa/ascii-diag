@@ -1,5 +1,7 @@
 # ASCII Diag
 
+[![Build Status](https://travis-ci.org/danpersa/ascii-diag.svg?branch=master)](https://travis-ci.org/danpersa/ascii-diag)
+
 <div align="center">
   <h3><strong>ASCII Diag</strong> is a tool that allows you to easily draw beautiful ASCII diagrams in the browser and render them as SVGs</h3>
 </div>
