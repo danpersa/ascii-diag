@@ -19,8 +19,8 @@ export class SvgRendererService {
     private readonly arrowRenderer: SvgRenderer;
     private readonly textRenderer: SvgRenderer;
 
-    constructor() {
-        this.arrowRenderer = new ArrowRenderer(new ArrowTipDirectionService());
+    constructor(arrowTipDirectionService: ArrowTipDirectionService) {
+        this.arrowRenderer = new ArrowRenderer(arrowTipDirectionService);
         this.boxRenderer = new BoxRenderer();
         this.textRenderer = new TextRenderer();
     }

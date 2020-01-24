@@ -5,6 +5,8 @@ import {ArrowDirection, ArrowTipDirection} from "../drawers/arrow";
 import {ArrowShape} from "../shapes/arrow-shape";
 import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
 
+type ArrowTipOffset = { rowsOffset: number, columnsOffset: number };
+
 export class ArrowRenderer implements SvgRenderer {
 
     private readonly arrowTipDirectionService: ArrowTipDirectionService;
@@ -14,13 +16,15 @@ export class ArrowRenderer implements SvgRenderer {
     }
 
     render(shape: ArrowShape, svg: Svg): void {
+        const tipDirection = this.arrowTipDirectionService.endTipDirection(shape);
+        const {rowsOffset, columnsOffset} = ArrowRenderer.endArrowOffset(tipDirection);
+
 
         const startX = shape.startColumn * Constants.densityX;
         const startY = shape.startRow * Constants.densityY;
 
-
-        const endX = shape.endColumn * Constants.densityX;
-        const endY = shape.endRow * Constants.densityY;
+        const endX = (shape.endColumn + columnsOffset) * Constants.densityX;
+        const endY = (shape.endRow + rowsOffset) * Constants.densityY;
 
         const midX = shape.startDirection === ArrowDirection.Horizontal ? endX : startX;
         const midY = shape.startDirection === ArrowDirection.Horizontal ? startY : endY;
@@ -28,10 +32,8 @@ export class ArrowRenderer implements SvgRenderer {
         svg.polyline([startX, startY, midX, midY, endX, endY]).fill('none')
             .stroke({color: '#333333', width: 1.5, linecap: 'round', linejoin: 'round'});
 
-        const tipDirection = this.arrowTipDirectionService.endTipDirection(shape);
-
         if (tipDirection !== null) {
-            const arrowTip = this.renderArrowTip(endX, endY, svg);
+            const arrowTip = ArrowRenderer.renderArrowTip(endX, endY, svg);
 
             switch (tipDirection) {
                 case ArrowTipDirection.North:
@@ -53,8 +55,23 @@ export class ArrowRenderer implements SvgRenderer {
         }
     }
 
+    private static endArrowOffset(tipDirection: ArrowTipDirection | null): ArrowTipOffset {
+        if (tipDirection != null) {
+            switch (tipDirection) {
+                case ArrowTipDirection.North:
+                    return {rowsOffset: -1, columnsOffset: 0};
+                case ArrowTipDirection.South:
+                    return {rowsOffset: 1, columnsOffset: 0};
+                case ArrowTipDirection.East:
+                    return {rowsOffset: 0, columnsOffset: 1};
+                case ArrowTipDirection.West:
+                    return {rowsOffset: 0, columnsOffset: -1};
+            }
+        }
+        return {rowsOffset: 0, columnsOffset: 0};
+    }
 
-    private renderArrowTip(x: number, y: number, svg: Svg): Polygon {
+    private static renderArrowTip(x: number, y: number, svg: Svg): Polygon {
         return svg.polygon([x, y - 12, x + 3, y, x - 3, y])
             .stroke({color: '#333333', width: 1.5, linecap: 'round', linejoin: 'round'})
     }

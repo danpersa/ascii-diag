@@ -4,16 +4,18 @@ import Constants from "../constants";
 import {RefObject} from "react";
 import {LayerService} from "../layer-service";
 import {SvgRendererService} from "./svg-renderer";
+import {ArrowTipDirectionService} from "../arrow-tip-direction-service";
 
 export class DiagToSvg {
     private readonly layerService: LayerService;
     private readonly ref: RefObject<HTMLDivElement>;
     private readonly svgRendererService: SvgRendererService;
 
-    constructor(ref: RefObject<HTMLDivElement>, layerService: LayerService) {
+    constructor(ref: RefObject<HTMLDivElement>, layerService: LayerService,
+                arrowTipDirectionService: ArrowTipDirectionService) {
         this.ref = ref;
         this.layerService = layerService;
-        this.svgRendererService = new SvgRendererService();
+        this.svgRendererService = new SvgRendererService(arrowTipDirectionService);
     }
 
     render(): void {
