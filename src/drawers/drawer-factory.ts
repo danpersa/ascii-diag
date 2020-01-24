@@ -16,7 +16,7 @@ export class GridDrawerFactory {
         this.arrowTipDirectionService = arrowTipDirectionService;
     }
 
-    create4<T extends Shape>(shape: T, grid: Grid): Drawer<T> {
+    create<T extends Shape>(shape: T, grid: Grid): Drawer<T> {
         if (shape && shape instanceof TextShape) {
             return new GridTextDrawer(grid) as any as Drawer<T>;
         } else if (shape && shape instanceof BoxShape) {
