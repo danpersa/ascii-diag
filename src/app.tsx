@@ -80,7 +80,7 @@ const AppWithStyles = withStyles(appStyles)(
                 }
             };
 
-            const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService);
+            const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
 
             return (
                 <div className={this.props.classes.root}>
