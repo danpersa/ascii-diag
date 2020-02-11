@@ -21,14 +21,14 @@ import {
     RayStartArrow
 } from "mdi-material-ui";
 import SvgCanvas from "./svg-diag";
-import {LayerService} from "./layer-service";
-import Grid from "./drawers/grid";
-import {DiagToSvg} from "./renderers/diag-to-svg";
-import {Tools} from "./tools/tool";
-import Constants from "./constants";
-import {ShapeUpdateNotificationService} from "./shape-update-notification-service";
-import {CellToShapeService} from "./cell-to-shape-service";
-import {ConnectorTipDirectionService} from "./connector-tip-direction-service";
+import {LayerService} from "../layer-service";
+import Grid from "../drawers/grid";
+import {DiagToSvg} from "../renderers/diag-to-svg";
+import {Tools} from "../tools/tool";
+import Constants from "../constants";
+import {ShapeUpdateNotificationService} from "../shape-update-notification-service";
+import {CellToShapeService} from "../cell-to-shape-service";
+import {ConnectorTipDirectionService} from "../connector-tip-direction-service";
 import IconMenu from "./icon-menu";
 
 

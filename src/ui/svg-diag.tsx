@@ -1,5 +1,5 @@
 import * as React from "react";
-import Constants from "./constants";
+import Constants from "../constants";
 import {RefObject} from "react";
 
 type SvgCanvasProps = {
