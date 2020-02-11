@@ -6,14 +6,13 @@ import {CanvasGridDrawer, GridDrawer} from "./drawers/grid-drawer";
 import {LayerService} from "./layer-service";
 import {Shape} from "./shapes/shape";
 import {ShapeIdService} from "./shapes/shape-id-service";
-import {DiagToSvg} from "./renderers/diag-to-svg";
 import {GridDrawerFactory} from "./drawers/drawer-factory";
 import {StateProvider} from "./ui/state-provider";
 import Has2DContext from "./has-2d-context";
-import {RefObject} from "react";
 import DiagToSvgProvider from "./ui/diag-to-svg-provider";
+import {Tool, ToolChangedListener} from "./tools/tool";
 
-export default class AsciiDiag implements Has2DContext {
+export default class AsciiDiag implements Has2DContext, ToolChangedListener {
     readonly canvasRef: React.RefObject<HTMLCanvasElement>;
     private paint: boolean;
 
@@ -43,11 +42,7 @@ export default class AsciiDiag implements Has2DContext {
         this.gridDrawer = new CanvasGridDrawer(this.cellDrawer);
         this.toolService = toolService;
         this.appState = appState;
-
-        this.toolService.setToolChangeCallback(() => {
-            this.redraw();
-        });
-
+        this.toolService.registerToolChangedListener(this);
         this.redraw();
         this.createUserEvents(appState);
     }
@@ -165,5 +160,9 @@ export default class AsciiDiag implements Has2DContext {
 
     getCanvas(): HTMLCanvasElement {
         return this.canvasRef.current!;
+    }
+
+    toolUpdated(newTool: Tool): void {
+        this.redraw();
     }
 }

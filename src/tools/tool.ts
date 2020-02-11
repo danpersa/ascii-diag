@@ -1,5 +1,4 @@
 import {AppState} from "../ui/app-state";
-import {StateProvider} from "../ui/state-provider";
 
 export enum Tools {
     select = "select",
@@ -8,6 +7,9 @@ export enum Tools {
     connector = "connector",
 }
 
+export interface ToolChangedListener {
+    toolUpdated(newTool: Tool): void;
+}
 
 export interface Tool {
 

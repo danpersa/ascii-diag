@@ -1,4 +1,4 @@
-import {Tool, Tools} from "./tool";
+import {Tool, ToolChangedListener, Tools} from "./tool";
 import {ConnectorCreateTool} from "./connector-create-tool";
 import {BoxCreateTool} from "./box-create-tool";
 import {TextCreateTool} from "./text-create-tool";
@@ -42,9 +42,7 @@ export class ToolService {
     private readonly connectorVertexFactory: ConnectorVertexFactory;
     private readonly cellToShapeService: CellToShapeService;
     private toolStack: Array<Tool> = [];
-
-    private toolChangeCallback: () => void = () => {
-    };
+    private readonly listeners: Array<ToolChangedListener> = [];
 
     constructor(layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, shapeIdService: ShapeIdService,
                 textDrawer: TextDrawer, cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, connectorDrawer: ConnectorDrawer, cellToShapeService: CellToShapeService) {
@@ -152,20 +150,16 @@ export class ToolService {
     private setTool(tool: Tool): void {
         this.popTool();
         this.toolStack.push(tool);
-        this.onToolChange();
-    }
-
-    setToolChangeCallback(callback: () => void) {
-        this.toolChangeCallback = callback;
-    }
-
-    private onToolChange() {
-        this.toolChangeCallback();
+        this.notifyToolChangedListeners(tool);
     }
 
     selectShapeFor(row: number, column: number) {
         const shape = this.cellToShapeService.getShape(row, column);
-        console.log("Found Shape: " + shape);
+        if (shape) {
+            console.log("Found shape: " + shape.constructor.name);
+        } else {
+            console.log("Didn't find shape");
+        }
 
         if (shape && shape instanceof TextShape) {
             this.selectTextEditTool(shape);
@@ -176,5 +170,15 @@ export class ToolService {
         } else {
             this.selectSelectTool();
         }
+    }
+
+    registerToolChangedListener(listener: ToolChangedListener): void {
+        this.listeners.push(listener);
+    }
+
+    notifyToolChangedListeners(tool: Tool): void {
+        this.listeners.forEach((listener: ToolChangedListener) => {
+            listener.toolUpdated(tool);
+        });
     }
 }

@@ -1,21 +1,25 @@
-import {Tools} from "../tools/tool";
+import {Tool, Tools} from "../tools/tool";
 import {ConnectorTipStyle, LineStyle} from "../drawers/connector";
 
 
 export class AppState {
-    private _currentTool: Tools;
+    private _currentTool: Tool;
     private _connectorLineStyle: LineStyle;
     private _connectorStartTipStyle: ConnectorTipStyle;
     private _connectorEndTipStyle: ConnectorTipStyle;
 
-    constructor(currentTool: Tools, connectorLineStyle: LineStyle, connectorStartTipStyle: ConnectorTipStyle, connectorEndTipStyle: ConnectorTipStyle) {
+    constructor(currentTool: Tool,
+                connectorLineStyle: LineStyle,
+                connectorStartTipStyle: ConnectorTipStyle,
+                connectorEndTipStyle: ConnectorTipStyle) {
+
         this._currentTool = currentTool;
         this._connectorLineStyle = connectorLineStyle;
         this._connectorStartTipStyle = connectorStartTipStyle;
         this._connectorEndTipStyle = connectorEndTipStyle;
     }
 
-    get currentTool(): Tools {
+    get currentTool(): Tool {
         return this._currentTool;
     }
 
@@ -32,7 +36,7 @@ export class AppState {
     }
 
 
-    set currentTool(value: Tools) {
+    set currentTool(value: Tool) {
         this._currentTool = value;
     }
 

@@ -24,7 +24,7 @@ import SvgCanvas from "./svg-diag";
 import {LayerService} from "../layer-service";
 import Grid from "../drawers/grid";
 import {DiagToSvg} from "../renderers/diag-to-svg";
-import {Tools} from "../tools/tool";
+import {Tool, ToolChangedListener, Tools} from "../tools/tool";
 import Constants from "../constants";
 import {ShapeUpdateNotificationService} from "../shape-update-notification-service";
 import {CellToShapeService} from "../cell-to-shape-service";
@@ -45,6 +45,18 @@ import {GridDrawerFactory} from "../drawers/drawer-factory";
 import {ToolService} from "../tools/tool-service";
 import AsciiDiag from "../ascii-diag";
 import DiagToSvgProvider from "./diag-to-svg-provider";
+import {ConnectorEditTool} from "../tools/connector-edit-tool";
+import {ConnectorCreateTool} from "../tools/connector-create-tool";
+import {ConnectorModifyTool} from "../tools/connector-modify-tool";
+import {TextCreateTool} from "../tools/text-create-tool";
+import {BoxCreateTool} from "../tools/box-create-tool";
+import {SelectTool} from "../tools/select-tool";
+import {TextEditTool} from "../tools/text-edit-tool";
+import {BoxEditTool} from "../tools/box-edit-tool";
+import {BoxMoveTool} from "../tools/box-move-tool";
+import {TextMoveTool} from "../tools/text-move-tool";
+import {BoxResizeTool} from "../tools/box-resize-tool";
+import {ConnectorFlipTool} from "../tools/connector-flip-tool";
 
 const appStyles = (theme: Theme) => createStyles({
     root: {
@@ -81,7 +93,7 @@ interface AppProps extends WithStyles<typeof appStyles> {
 }
 
 const AppWithStyles = withStyles(appStyles)(
-    class extends React.Component<AppProps, AppState> {
+    class extends React.Component<AppProps, AppState> implements ToolChangedListener {
 
         private readonly canvasDivRef: RefObject<HTMLCanvasElement> = React.createRef();
         private readonly svgDivRef: RefObject<HTMLDivElement> = React.createRef();
@@ -98,10 +110,6 @@ const AppWithStyles = withStyles(appStyles)(
 
         constructor(props: AppProps) {
             super(props);
-            this.state = new AppState(Tools.connector,
-                LineStyle.Continuous, ConnectorTipStyle.Flat,
-                ConnectorTipStyle.Flat);
-
             this.grid = Grid.create(Constants.numberOfRows, Constants.numberOfColumns);
             this.shapeUpdateNotificationService = new ShapeUpdateNotificationService();
             this.layerService = new LayerService(this.shapeUpdateNotificationService);
@@ -133,6 +141,11 @@ const AppWithStyles = withStyles(appStyles)(
                 vertexDrawer,
                 arrowDrawer,
                 this.cellToShapeService);
+            this.toolService.registerToolChangedListener(this);
+
+            this.state = new AppState(this.toolService.currentTool(),
+                LineStyle.Continuous, ConnectorTipStyle.Flat,
+                ConnectorTipStyle.Flat);
 
             const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
             this.diagToSvgProvider = new DiagToSvgProvider(diagToSvg);
@@ -144,18 +157,16 @@ const AppWithStyles = withStyles(appStyles)(
         }
 
         shouldShowConnectorOptions(): boolean {
-            return this.state.currentTool === Tools.connector;
+            return this.toolService.currentTool() instanceof ConnectorCreateTool
+                || this.toolService.currentTool() instanceof ConnectorEditTool
+                || this.toolService.currentTool() instanceof ConnectorModifyTool
+                || this.toolService.currentTool() instanceof ConnectorFlipTool;
         }
 
         private handleToolChange = (event: React.MouseEvent<HTMLElement>, newTool: Tools) => {
             console.log("handle tool change: " + newTool);
             this.toolService.setCurrentTool(newTool);
-            this.setState({
-                currentTool: newTool,
-                connectorLineStyle: this.state.connectorLineStyle,
-                connectorStartTipStyle: this.state.connectorStartTipStyle,
-                connectorEndTipStyle: this.state.connectorEndTipStyle,
-            });
+            this.toolUpdated(this.toolService.currentTool());
         };
 
         private handleConnectorLineStyleChange = (event: React.MouseEvent<HTMLElement>, newLineStyle: LineStyle) => {
@@ -190,7 +201,7 @@ const AppWithStyles = withStyles(appStyles)(
         };
 
         render() {
-            const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
+            new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
 
             return (
                 <div className={this.props.classes.root}>
@@ -208,16 +219,18 @@ const AppWithStyles = withStyles(appStyles)(
                                            exclusive
                                            onChange={this.handleToolChange}
                                            style={margin}>
-                            <ToggleButton value={Tools.select} style={padding}>
+                            <ToggleButton value={Tools.select} style={padding}
+                                          selected={this.isSelectToolButtonSelected()}>
                                 <CursorDefault/>
                             </ToggleButton>
-                            <ToggleButton value={Tools.text} style={padding}>
+                            <ToggleButton value={Tools.text} style={padding} selected={this.isTextToolButtonSelected()}>
                                 <FormatText/>
                             </ToggleButton>
-                            <ToggleButton value={Tools.box} style={padding}>
+                            <ToggleButton value={Tools.box} style={padding} selected={this.isBoxToolButtonSelected()}>
                                 <CheckboxBlankOutline/>
                             </ToggleButton>
-                            <ToggleButton value={Tools.connector} style={padding}>
+                            <ToggleButton value={Tools.connector} style={padding}
+                                          selected={this.isConnectorToolButtonSelected()}>
                                 <RayStartArrow/>
                             </ToggleButton>
                         </ToggleButtonGroup>
@@ -257,6 +270,41 @@ const AppWithStyles = withStyles(appStyles)(
                     </UIGrid>
                 </div>
             );
+        }
+
+        toolUpdated(newTool: Tool): void {
+            console.log("Update tool: " + newTool.constructor.name);
+            this.setState({
+                currentTool: newTool,
+                connectorLineStyle: this.state.connectorLineStyle,
+                connectorStartTipStyle: this.state.connectorStartTipStyle,
+                connectorEndTipStyle: this.state.connectorEndTipStyle,
+            });
+        }
+
+        private isSelectToolButtonSelected() {
+            return this.toolService.currentTool() instanceof SelectTool
+                || this.toolService.currentTool() instanceof TextEditTool
+                || this.toolService.currentTool() instanceof TextMoveTool
+                || this.toolService.currentTool() instanceof BoxEditTool
+                || this.toolService.currentTool() instanceof BoxMoveTool
+                || this.toolService.currentTool() instanceof BoxResizeTool
+                || this.toolService.currentTool() instanceof ConnectorEditTool
+                || this.toolService.currentTool() instanceof ConnectorModifyTool
+                || this.toolService.currentTool() instanceof ConnectorFlipTool;
+        }
+
+        private isConnectorToolButtonSelected() {
+            return this.toolService.currentTool() instanceof ConnectorCreateTool;
+        }
+
+        private isTextToolButtonSelected() {
+            return this.toolService.currentTool() instanceof TextCreateTool &&
+                !(this.toolService.currentTool() instanceof TextEditTool);
+        }
+
+        private isBoxToolButtonSelected() {
+            return this.toolService.currentTool() instanceof BoxCreateTool;
         }
     }
 );
