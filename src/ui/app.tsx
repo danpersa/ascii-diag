@@ -283,11 +283,21 @@ const AppWithStyles = withStyles(appStyles)(
 
         shapeChanged(newShape: Shape | undefined): void {
             console.log("Update selected shape: " + (newShape ? newShape.constructor.name : newShape));
+
+            let connectorStartTipStyle = this.state.connectorStartTipStyle;
+            let connectorEndTipStyle = this.state.connectorEndTipStyle;
+            let connectorLineStyle = this.state.connectorLineStyle;
+            if (newShape && newShape instanceof ConnectorShape) {
+                connectorStartTipStyle = newShape.startTipStyle;
+                connectorEndTipStyle = newShape.endTipStyle;
+                connectorLineStyle = newShape.lineStyle;
+            }
+
             this.setState({
                 currentTool: this.state.currentTool,
-                connectorLineStyle: this.state.connectorLineStyle,
-                connectorStartTipStyle: this.state.connectorStartTipStyle,
-                connectorEndTipStyle: this.state.connectorEndTipStyle,
+                connectorLineStyle: connectorLineStyle,
+                connectorStartTipStyle: connectorStartTipStyle,
+                connectorEndTipStyle: connectorEndTipStyle,
                 selectedShape: newShape,
             });
         }
