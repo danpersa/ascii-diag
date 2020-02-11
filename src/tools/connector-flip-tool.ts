@@ -7,7 +7,6 @@ import {ConnectorDirection} from "../drawers/connector";
 import {LayerService} from "../layer-service";
 import {ConnectorVertexFactory} from "./connector-vertex-factory";
 import {AppState} from "../ui/app-state";
-import {StateProvider} from "../ui/state-provider";
 
 export class ConnectorFlipTool implements Tool {
 
@@ -45,17 +44,9 @@ export class ConnectorFlipTool implements Tool {
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
         const newConnectorDirection = this.shape.startDirection === ConnectorDirection.Horizontal ? ConnectorDirection.Vertical : ConnectorDirection.Horizontal;
 
-        const shape = new ConnectorShape(
-            this.shape.id(),
-            this.shape.startRow,
-            this.shape.startColumn,
-            this.shape.endRow,
-            this.shape.endColumn,
-            newConnectorDirection,
-            this.shape.lineStyle,
-            this.shape.startTipStyle,
-            this.shape.endTipStyle
-        );
+        const shape = ConnectorShape.ShapeBuilder.from(this.shape)
+            .startDirection(newConnectorDirection)
+            .build();
 
         this.layerService.updateShape(shape);
         this.toolService.selectConnectorEditTool(shape);

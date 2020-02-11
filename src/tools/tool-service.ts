@@ -25,8 +25,11 @@ import {ConnectorVertexFactory} from "./connector-vertex-factory";
 import {ConnectorModifyTool, ConnectorMoveType} from "./connector-modify-tool";
 import {CellToShapeService} from "../cell-to-shape-service";
 import {Shape} from "../shapes/shape";
+import {ShapeUpdateEvent, ShapeUpdateListener} from "../shape-update-notification-service";
+import {ConnectorUpdateStylesTool} from "./connector-update-styles-tool";
+import {ConnectorTipStyle} from "../drawers/connector";
 
-export class ToolService {
+export class ToolService implements ShapeUpdateListener {
 
     private readonly boxCreateTool: Tool;
     private readonly connectorCreateTool: Tool;
@@ -143,6 +146,11 @@ export class ToolService {
         this.setTool(connectorModifyTool);
     }
 
+    selectConnectorUpdateStylesTool(shape: ConnectorShape): void {
+        const tool = new ConnectorUpdateStylesTool(this, this.layerService, shape);
+        this.setTool(tool);
+    }
+
     selectTextEditTool(shape: TextShape): void {
         const textEditTool = new TextEditTool(this.layerService, this, this.shapeIdService, this.textDrawer, this.cursorDrawer,
             this.vertexDrawer, this.cellToShapeService, shape);
@@ -198,7 +206,18 @@ export class ToolService {
     notifySelectedShapeChangedListeners(shape: Shape | undefined): void {
         this._currentShape = shape;
         this.selectedShapeChangedListeners.forEach((listener: SelectedShapeChangedListener) => {
-            listener.shapeChanged(shape);
+            listener.shapeSelected(shape);
         });
+    }
+
+    update(event: ShapeUpdateEvent, shape: Shape): void {
+        switch (event) {
+            case ShapeUpdateEvent.UPDATED:
+                this.notifySelectedShapeChangedListeners(shape);
+                break;
+            case ShapeUpdateEvent.DELETED:
+                this.notifySelectedShapeChangedListeners(undefined);
+                break;
+        }
     }
 }

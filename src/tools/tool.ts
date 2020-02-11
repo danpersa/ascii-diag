@@ -13,7 +13,7 @@ export interface ToolChangedListener {
 }
 
 export interface SelectedShapeChangedListener {
-    shapeChanged(newShape: Shape | undefined): void;
+    shapeSelected(newShape: Shape | undefined): void;
 }
 
 export interface Tool {

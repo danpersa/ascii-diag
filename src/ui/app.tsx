@@ -111,7 +111,7 @@ const AppWithStyles = withStyles(appStyles)(
             this.arrowTipDirectionService = new ConnectorTipDirectionService();
             this.cellToShapeService = new CellToShapeService(Constants.numberOfRows, Constants.numberOfColumns,
                 this.arrowTipDirectionService, this.layerService);
-            this.shapeUpdateNotificationService.register(this.cellToShapeService);
+
             this.stateProvider = new StateProvider(this);
 
             const entityIdService = new ShapeIdService();
@@ -138,6 +138,8 @@ const AppWithStyles = withStyles(appStyles)(
                 this.cellToShapeService);
             this.toolService.registerToolChangedListener(this);
             this.toolService.registerSelectedShapeChangedListeners(this);
+            this.shapeUpdateNotificationService.register(this.cellToShapeService);
+            this.shapeUpdateNotificationService.register(this.toolService);
 
             this.state = new AppState(this.toolService.currentTool(),
                 LineStyle.Continuous, ConnectorTipStyle.Flat,
@@ -182,11 +184,8 @@ const AppWithStyles = withStyles(appStyles)(
             const shape = this.toolService.currentShape();
             let newShape: Shape | undefined = undefined;
             if (shape && shape instanceof ConnectorShape) {
-                newShape = ConnectorShape.ShapeBuilder.from(shape)
-                    .startTipStyle(newConnectorTipStyle)
-                    .build();
-
-                this.layerService.updateShape(newShape);
+                const newShape = ConnectorShape.ShapeBuilder.from(shape).startTipStyle(newConnectorTipStyle).build();
+                this.toolService.selectConnectorUpdateStylesTool(newShape);
             }
 
             this.setState({
@@ -200,6 +199,13 @@ const AppWithStyles = withStyles(appStyles)(
 
         private handleConnectorEndTipStyleChange = (event: React.MouseEvent<HTMLElement>, newConnectorTipStyle: ConnectorTipStyle) => {
             console.log("handle connector end tip type change: " + newConnectorTipStyle);
+
+            const shape = this.toolService.currentShape();
+            if (shape && shape instanceof ConnectorShape) {
+                const newShape = ConnectorShape.ShapeBuilder.from(shape).endTipStyle(newConnectorTipStyle).build();
+                this.toolService.selectConnectorUpdateStylesTool(newShape);
+            }
+
             this.setState({
                 currentTool: this.state.currentTool,
                 connectorLineStyle: this.state.connectorLineStyle,
@@ -292,7 +298,7 @@ const AppWithStyles = withStyles(appStyles)(
             });
         }
 
-        shapeChanged(newShape: Shape | undefined): void {
+        shapeSelected(newShape: Shape | undefined): void {
             console.log("Update selected shape: " + (newShape ? newShape.constructor.name : newShape));
 
             let connectorStartTipStyle = this.state.connectorStartTipStyle;
@@ -314,7 +320,7 @@ const AppWithStyles = withStyles(appStyles)(
         }
 
         private isSelectToolButtonSelected() {
-            console.log("is selected button selected shape: " + (this.state.selectedShape ? this.state.selectedShape.constructor.name : this.state.selectedShape));
+            console.log("is selected button selected shape: " + (this.toolService.currentShape() ? this.toolService.currentShape()!.constructor.name : this.toolService.currentShape()));
             return this.toolService.currentTool() instanceof SelectTool
                 || this.toolService.currentShape() !== undefined;
         }
