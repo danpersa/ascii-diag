@@ -35,7 +35,8 @@ import IconMenu from "./icon-menu";
 const appStyles = (theme: Theme) => createStyles({
     root: {
         flexGrow: 1,
-        margin: 10
+        margin: 10,
+        minWidth: '600px',
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -45,6 +46,7 @@ const appStyles = (theme: Theme) => createStyles({
     },
     paperStyles: {
         marginTop: theme.spacing(1),
+        maxWidth: 900
     }
 });
 
@@ -138,7 +140,7 @@ const AppWithStyles = withStyles(appStyles)(
 
                         <IconMenu title="End" options={["Flat", "Arrow"]} icons={[<Minus/>, <ArrowRight/>]}/>
                     </Paper>
-                    <UIGrid container spacing={2}>
+                    <UIGrid container>
                         <UIGrid item sm={12} md={6}>
                             <Paper className={this.props.classes.paperStyles} style={{overflow: 'auto'}}>
                                 <DiagCanvas canvasRef={this.canvasDivRef}
