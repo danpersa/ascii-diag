@@ -1,13 +1,16 @@
 import {Shape} from "./shape";
-import {Connector, ConnectorDirection} from "../drawers/connector";
+import {Connector, ConnectorDirection, ConnectorTipStyle, LineStyle} from "../drawers/connector";
 
 export class ConnectorShape extends Connector implements Shape {
 
     private readonly _id: number;
     private _editing: boolean = false;
 
-    constructor(id: number, startRow: number, startColumn: number, endRow: number, endColumn: number, startDirection: ConnectorDirection) {
-        super(startRow, startColumn, endRow, endColumn, startDirection);
+    constructor(id: number, startRow: number, startColumn: number, endRow: number, endColumn: number, startDirection: ConnectorDirection,
+                lineStyle: LineStyle = LineStyle.Continuous,
+                startTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat,
+                endTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat) {
+        super(startRow, startColumn, endRow, endColumn, startDirection, lineStyle, startTipStyle, endTipStyle);
         this._id = id;
     }
 

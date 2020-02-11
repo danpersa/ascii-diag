@@ -4,6 +4,7 @@ import {BoxShape} from "../shapes/box-shape";
 import {BoxDrawer} from "../drawers/box-drawer";
 import {Box} from "../drawers/box";
 import {ShapeIdService} from "../shapes/shape-id-service";
+import {AppState} from "../ui/app-state";
 
 export class BoxCreateTool implements Tool {
 
@@ -22,13 +23,13 @@ export class BoxCreateTool implements Tool {
         this.shapeIdService = shapeIdService;
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): void {
+    mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         this.startRow = row;
         this.startColumn = column;
         this.box = new Box(row, column, row, column);
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
 
         const minRow = Math.min(startRow, row);
         const maxRow = Math.max(startRow, row);
@@ -38,17 +39,17 @@ export class BoxCreateTool implements Tool {
         this.box = new Box(minRow, minColumn, maxRow, maxColumn);
     }
 
-    mouseUp(row: number, column: number): void {
+    mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
         this.endRow = row;
         this.endColumn = column;
-        this.persist();
+        this.persist(appState);
         this.box = null;
     }
 
     keyDown(key: string): void {
     }
 
-    persist(): void {
+    persist(appState: Readonly<AppState>): void {
         const shape = new BoxShape(
             this.shapeIdService.nextId(),
             Math.min(this.startRow, this.endRow),
@@ -64,6 +65,6 @@ export class BoxCreateTool implements Tool {
         }
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): void {
+    mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 }

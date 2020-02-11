@@ -19,6 +19,8 @@ import {CanvasBoxDrawer} from "../drawers/box-drawer";
 import {ShapeUpdateNotificationService} from "../shape-update-notification-service";
 import {CellToShapeService} from "../cell-to-shape-service";
 import {GridDrawerFactory} from "../drawers/drawer-factory";
+import {AppState} from "./app-state";
+import {StateProvider} from "./state-provider";
 
 type DiagCanvasProps = {
     canvasRef: RefObject<HTMLCanvasElement>,
@@ -27,7 +29,8 @@ type DiagCanvasProps = {
     layerService: LayerService,
     shapeUpdateNotificationService: ShapeUpdateNotificationService,
     cellToShapeService: CellToShapeService,
-    diagToSvg: DiagToSvg
+    diagToSvg: DiagToSvg,
+    appState: StateProvider
 }
 
 export default class DiagCanvas extends React.Component<DiagCanvasProps> {
@@ -59,7 +62,7 @@ export default class DiagCanvas extends React.Component<DiagCanvasProps> {
             cursorDrawer, vertexDrawer, arrowDrawer, this.props.cellToShapeService);
 
         new AsciiDiag(canvas, this.props.layerService, gridDrawerFactory,
-            this.props.diagToSvg, cellDrawer, this.toolService, context);
+            this.props.diagToSvg, cellDrawer, this.toolService, context, this.props.appState);
     }
 
     render() {

@@ -8,6 +8,7 @@ import {Shape} from "./shapes/shape";
 import {ShapeIdService} from "./shapes/shape-id-service";
 import {DiagToSvg} from "./renderers/diag-to-svg";
 import {GridDrawerFactory} from "./drawers/drawer-factory";
+import {StateProvider} from "./ui/state-provider";
 
 export default class AsciiDiag {
     private readonly canvas: HTMLCanvasElement;
@@ -25,9 +26,11 @@ export default class AsciiDiag {
     private readonly shapeIdService: ShapeIdService;
     private readonly diagToSvg: DiagToSvg;
     private readonly gridDrawerFactory: GridDrawerFactory;
+    private readonly appState: StateProvider;
 
     constructor(canvas: HTMLCanvasElement, layerService: LayerService, gridDrawerFactory: GridDrawerFactory,
-                diagToSvg: DiagToSvg, cellDrawer: CellDrawer, toolService: ToolService, context: CanvasRenderingContext2D) {
+                diagToSvg: DiagToSvg, cellDrawer: CellDrawer, toolService: ToolService, context: CanvasRenderingContext2D,
+                appState: StateProvider) {
         this.diagToSvg = diagToSvg;
         this.canvas = canvas;
         this.context = context;
@@ -38,6 +41,7 @@ export default class AsciiDiag {
         this.cellDrawer = cellDrawer;
         this.gridDrawer = new CanvasGridDrawer(this.cellDrawer);
         this.toolService = toolService;
+        this.appState = appState;
 
         this.toolService.setToolChangeCallback(() => {
             this.redraw();
@@ -99,7 +103,7 @@ export default class AsciiDiag {
     private releaseEventHandler = (e: MouseEvent | TouchEvent) => {
         let [mouseX, mouseY] = this.mousePosition(e);
         let [row, column] = this.fromCanvasToGrid(mouseX, mouseY);
-        this.toolService.currentTool().mouseUp(row, column);
+        this.toolService.currentTool().mouseUp(row, column, this.appState.get());
 
         this.lastPress = [-1, -1];
         this.paint = false;
@@ -126,7 +130,7 @@ export default class AsciiDiag {
         let [mouseX, mouseY] = this.mousePosition(e);
         this.lastPress = this.fromCanvasToGrid(mouseX, mouseY);
         let [row, column] = this.fromCanvasToGrid(mouseX, mouseY);
-        this.toolService.currentTool().mouseDown(row, column, mouseX, mouseY);
+        this.toolService.currentTool().mouseDown(row, column, mouseX, mouseY, this.appState.get());
 
         this.paint = true;
         this.addClick(mouseX, mouseY, false);
@@ -140,9 +144,9 @@ export default class AsciiDiag {
         document.body.style.cursor = 'default';
         if (this.lastPress[0] != -1) {
             const [startRow, startColumn] = this.lastPress;
-            this.toolService.currentTool().drag(startRow, startColumn, row, column, mouseX, mouseY);
+            this.toolService.currentTool().drag(startRow, startColumn, row, column, mouseX, mouseY, this.appState.get());
         } else {
-            this.toolService.currentTool().mouseMove(row, column, mouseX, mouseY);
+            this.toolService.currentTool().mouseMove(row, column, mouseX, mouseY, this.appState.get() );
         }
 
         this.redraw();

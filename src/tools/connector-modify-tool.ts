@@ -7,6 +7,7 @@ import {Connector} from "../drawers/connector";
 import {LayerService} from "../layer-service";
 import {ConnectorVertexFactory} from "./connector-vertex-factory";
 import {ConnectorDrawer} from "../drawers/connector-drawer";
+import {AppState} from "../ui/app-state";
 
 export enum ConnectorMoveType {
     StartMove,
@@ -40,12 +41,18 @@ export class ConnectorModifyTool implements Tool {
         this.moveType = moveType;
         this.startConnectorVertex = connectorVertexFactory.createStartVertex(shape);
         this.endConnectorVertex = connectorVertexFactory.createEndVertex(shape);
-        this.connector = new Connector(this.shape.startRow, this.shape.startColumn, this.shape.endRow,
-            this.shape.endColumn, this.shape.startDirection);
+        this.connector = new Connector(this.shape.startRow,
+            this.shape.startColumn,
+            this.shape.endRow,
+            this.shape.endColumn,
+            this.shape.startDirection,
+            this.shape.lineStyle,
+            this.shape.startTipStyle,
+            this.shape.endTipStyle);
         this.shape.startEditing();
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): void {
+    mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 
     render() {
@@ -57,18 +64,32 @@ export class ConnectorModifyTool implements Tool {
         }
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         document.body.style.cursor = 'move';
         if (this.moveType === ConnectorMoveType.StartMove) {
-            this.connector = new Connector(row, column, this.shape.endRow, this.shape.endColumn, this.shape.startDirection);
+            this.connector = new Connector(row,
+                column,
+                this.shape.endRow,
+                this.shape.endColumn,
+                this.shape.startDirection,
+                this.shape.lineStyle,
+                this.shape.startTipStyle,
+                this.shape.endTipStyle);
             this.startConnectorVertex = this.connectorVertexFactory.createStartVertex(this.connector);
         } else {
-            this.connector = new Connector(this.shape.startRow, this.shape.startColumn, row, column, this.shape.startDirection);
+            this.connector = new Connector(this.shape.startRow,
+                this.shape.startColumn,
+                row,
+                column,
+                this.shape.startDirection,
+                this.shape.lineStyle,
+                this.shape.startTipStyle,
+                this.shape.endTipStyle);
             this.endConnectorVertex = this.connectorVertexFactory.createEndVertex(this.connector);
         }
     }
 
-    mouseUp(row: number, column: number): void {
+    mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
         if (this.moveType === ConnectorMoveType.StartMove) {
             const shape = new ConnectorShape(
                 this.shape.id(),
@@ -76,7 +97,10 @@ export class ConnectorModifyTool implements Tool {
                 this.connector.startColumn,
                 this.shape.endRow,
                 this.shape.endColumn,
-                this.shape.startDirection
+                this.shape.startDirection,
+                this.shape.lineStyle,
+                this.shape.startTipStyle,
+                this.shape.endTipStyle
             );
             this.layerService.updateShape(shape);
             this.toolService.selectConnectorEditTool(shape);
@@ -87,7 +111,10 @@ export class ConnectorModifyTool implements Tool {
                 this.shape.startColumn,
                 this.connector.endRow,
                 this.connector.endColumn,
-                this.shape.startDirection
+                this.shape.startDirection,
+                this.shape.lineStyle,
+                this.shape.startTipStyle,
+                this.shape.endTipStyle
             );
             this.layerService.updateShape(shape);
             this.toolService.selectConnectorEditTool(shape);
@@ -98,10 +125,10 @@ export class ConnectorModifyTool implements Tool {
     keyDown(key: string): void {
     }
 
-    persist(): void {
+    persist(appState: Readonly<AppState>): void {
 
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): void {
+    mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 }

@@ -11,6 +11,7 @@ import {Vertex} from "../drawers/vertex";
 import {VertexDrawer} from "../drawers/vertex-drawer";
 import {ToolService} from "./tool-service";
 import {CellToShapeService} from "../cell-to-shape-service";
+import {AppState} from "../ui/app-state";
 
 export class TextEditTool extends TextCreateTool implements Tool {
 
@@ -36,7 +37,7 @@ export class TextEditTool extends TextCreateTool implements Tool {
         this.shape.startEditing();
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): void {
+    mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         const shape = this.cellToShapeService.getShape(row, column);
         console.log("Shape found: " + shape);
 
@@ -45,7 +46,7 @@ export class TextEditTool extends TextCreateTool implements Tool {
             this.toolService.selectTextMoveTool(this.shape);
         } else {
             if (this.currentText) {
-                this.persist();
+                this.persist(appState);
             }
             this.toolService.selectShapeFor(row, column);
         }
@@ -74,7 +75,7 @@ export class TextEditTool extends TextCreateTool implements Tool {
         }
     }
 
-    persist(): void {
+    persist(appState: Readonly<AppState>): void {
         if (!this.currentText) {
             return;
         }
@@ -93,7 +94,7 @@ export class TextEditTool extends TextCreateTool implements Tool {
         }
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): void {
+    mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         if (this.moveVertex.containsPoint(x, y)) {
             document.body.style.cursor = 'move';
         }

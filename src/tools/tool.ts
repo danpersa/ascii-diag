@@ -1,3 +1,5 @@
+import {AppState} from "../ui/app-state";
+
 export enum Tools {
     select = "select",
     text = "text",
@@ -8,17 +10,17 @@ export enum Tools {
 
 export interface Tool {
 
-    mouseDown(row: number, column: number, x: number, y: number): void;
+    mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void;
 
-    mouseMove(row: number, column: number, x: number, y: number): void;
+    mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void;
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void;
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void;
 
     keyDown(key: string): void;
 
-    mouseUp(row: number, column: number): void;
+    mouseUp(row: number, column: number, appState: Readonly<AppState>): void;
 
-    persist(): void;
+    persist(appState: Readonly<AppState>): void;
 
     render(): void;
 }

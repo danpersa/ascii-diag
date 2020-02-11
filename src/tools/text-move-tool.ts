@@ -9,6 +9,7 @@ import {Vertex} from "../drawers/vertex";
 import {VertexDrawer} from "../drawers/vertex-drawer";
 import {Text} from "../drawers/text";
 import {TextDrawer} from "../drawers/text-drawer";
+import {AppState} from "../ui/app-state";
 
 export class TextMoveTool implements Tool {
 
@@ -44,26 +45,26 @@ export class TextMoveTool implements Tool {
         return [Math.round(y / Constants.densityY), Math.round(x / Constants.densityX)];
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         const [vertexRow, vertexColumn] = this.fromCanvasToGridPos(x, y);
         this.moveVertex = Vertex.fromGrid(vertexRow, vertexColumn);
         this.currentText = Text.fromGrid(vertexRow, vertexColumn, this.currentShape.text);
         document.body.style.cursor = 'move';
     }
 
-    mouseUp(row: number, column: number): void {
+    mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
         console.log("End moving text");
         this.currentShape.endEditing();
-        this.persist();
+        this.persist(appState);
     }
 
     keyDown(key: string): void {
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): void {
+    mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 
-    persist(): void {
+    persist(appState: Readonly<AppState>): void {
         const shape = new TextShape(
             this.currentShape.id(),
             this.currentText.row,
@@ -78,6 +79,6 @@ export class TextMoveTool implements Tool {
         this.vertexDrawer.draw(this.moveVertex);
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): void {
+    mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 }

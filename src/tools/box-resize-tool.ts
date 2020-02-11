@@ -7,6 +7,7 @@ import Constants from "../constants";
 import {BoxDrawer} from "../drawers/box-drawer";
 import {Box} from "../drawers/box";
 import {ToolService} from "./tool-service";
+import {AppState} from "../ui/app-state";
 
 export enum ResizeType {
     TopLeft,
@@ -43,7 +44,7 @@ export class BoxResizeTool implements Tool {
         return [Math.round(y / Constants.densityY), Math.round(x / Constants.densityX)];
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         const [vertexRow, vertexColumn] = this.fromCanvasToVertexPos(x, y);
 
         switch (this.resizeType) {
@@ -91,7 +92,7 @@ export class BoxResizeTool implements Tool {
             this.selectBox.rightColumn);
     }
 
-    mouseUp(row: number, column: number): void {
+    mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
         this.shape.endEditing();
 
         const shape = new BoxShape(
@@ -108,10 +109,10 @@ export class BoxResizeTool implements Tool {
     keyDown(key: string): void {
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): void {
+    mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 
-    persist(): void {
+    persist(appState: Readonly<AppState>): void {
     }
 
     render(): void {
@@ -121,6 +122,6 @@ export class BoxResizeTool implements Tool {
         this.selectBoxDrawer.draw(this.selectBox);
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): void {
+    mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 }

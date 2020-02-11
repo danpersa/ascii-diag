@@ -30,7 +30,9 @@ import {ShapeUpdateNotificationService} from "../shape-update-notification-servi
 import {CellToShapeService} from "../cell-to-shape-service";
 import {ConnectorTipDirectionService} from "../connector-tip-direction-service";
 import IconMenu from "./icon-menu";
-import {LineStyle} from "../drawers/connector";
+import {ConnectorTipStyle, LineStyle} from "../drawers/connector";
+import {AppState} from "./app-state";
+import {StateProvider} from "./state-provider";
 
 
 const appStyles = (theme: Theme) => createStyles({
@@ -67,11 +69,6 @@ interface AppProps extends WithStyles<typeof appStyles> {
 
 }
 
-type AppState = {
-    currentTool: Tools,
-    connectorLineStyle: LineStyle
-}
-
 const AppWithStyles = withStyles(appStyles)(
     class extends React.Component<AppProps, AppState> {
 
@@ -82,13 +79,15 @@ const AppWithStyles = withStyles(appStyles)(
         private readonly shapeUpdateNotificationService: ShapeUpdateNotificationService;
         private readonly cellToShapeService: CellToShapeService;
         private readonly arrowTipDirectionService: ConnectorTipDirectionService;
+        private readonly stateProvider: StateProvider;
+
 
         constructor(props: AppProps) {
             super(props);
-            this.state = {
-                currentTool: Tools.box,
-                connectorLineStyle: LineStyle.Continuous,
-            };
+            this.state = new AppState(Tools.box,
+                LineStyle.Continuous, ConnectorTipStyle.Flat,
+                ConnectorTipStyle.Flat);
+
             this.grid = Grid.create(Constants.numberOfRows, Constants.numberOfColumns);
             this.shapeUpdateNotificationService = new ShapeUpdateNotificationService();
             this.layerService = new LayerService(this.shapeUpdateNotificationService);
@@ -96,6 +95,7 @@ const AppWithStyles = withStyles(appStyles)(
             this.cellToShapeService = new CellToShapeService(Constants.numberOfRows, Constants.numberOfColumns,
                 this.arrowTipDirectionService, this.layerService);
             this.shapeUpdateNotificationService.register(this.cellToShapeService);
+            this.stateProvider = new StateProvider(this);
         }
 
         render() {
@@ -104,20 +104,44 @@ const AppWithStyles = withStyles(appStyles)(
                 console.log("handle tool change: " + newTool);
                 this.setState({
                     currentTool: newTool,
-                    connectorLineStyle: this.state.connectorLineStyle
+                    connectorLineStyle: this.state.connectorLineStyle,
+                    connectorStartTipStyle: this.state.connectorStartTipStyle,
+                    connectorEndTipStyle: this.state.connectorEndTipStyle,
                 });
             };
 
             const handleConnectorLineStyleChange = (event: React.MouseEvent<HTMLElement>, newLineStyle: LineStyle) => {
                 console.log("handle connector line style change: " + newLineStyle);
+                this.setState(
+                    {
+                        currentTool: this.state.currentTool,
+                        connectorLineStyle: newLineStyle,
+                        connectorStartTipStyle: this.state.connectorStartTipStyle,
+                        connectorEndTipStyle: this.state.connectorEndTipStyle,
+                    });
+            };
+
+            const handleConnectorStartTipStyleChange = (event: React.MouseEvent<HTMLElement>, newConnectorTipStyle: ConnectorTipStyle) => {
+                console.log("handle connector start tip type change: " + newConnectorTipStyle);
                 this.setState({
                     currentTool: this.state.currentTool,
-                    connectorLineStyle: newLineStyle
+                    connectorLineStyle: this.state.connectorLineStyle,
+                    connectorStartTipStyle: newConnectorTipStyle,
+                    connectorEndTipStyle: this.state.connectorEndTipStyle,
+                });
+            };
+
+            const handleConnectorEndTipStyleChange = (event: React.MouseEvent<HTMLElement>, newConnectorTipStyle: ConnectorTipStyle) => {
+                console.log("handle connector end tip type change: " + newConnectorTipStyle);
+                this.setState({
+                    currentTool: this.state.currentTool,
+                    connectorLineStyle: this.state.connectorLineStyle,
+                    connectorStartTipStyle: this.state.connectorStartTipStyle,
+                    connectorEndTipStyle: newConnectorTipStyle,
                 });
             };
 
             const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
-
             return (
                 <div className={this.props.classes.root}>
                     <AppBar position="static">
@@ -129,7 +153,8 @@ const AppWithStyles = withStyles(appStyles)(
                         </Toolbar>
                     </AppBar>
                     <Paper>
-                        <ToggleButtonGroup size="large" value={this.state.currentTool}
+                        <ToggleButtonGroup size="large"
+                                           value={this.state.currentTool}
                                            exclusive
                                            onChange={handleToolChange}
                                            style={margin}>
@@ -146,23 +171,27 @@ const AppWithStyles = withStyles(appStyles)(
                                 <RayStartArrow/>
                             </ToggleButton>
                         </ToggleButtonGroup>
-                        <IconMenu title="Start"
-                                  selectedIndex={this.state.connectorLineStyle}
-                                  onChange={handleConnectorLineStyleChange}
-                                  options={["Flat", "Arrow"]}
-                                  icons={[<Minus/>, <ArrowLeft/>]}/>
+                        {this.state.currentTool === Tools.connector &&
+                        <span>
+                            <IconMenu title="Start"
+                                      selectedIndex={this.state.connectorStartTipStyle}
+                                      onChange={handleConnectorStartTipStyleChange}
+                                      options={["Flat", "Arrow"]}
+                                      icons={[<Minus/>, <ArrowLeft/>]}/>
 
-                        <IconMenu title="Line Style"
-                                  selectedIndex={this.state.connectorLineStyle}
-                                  onChange={handleConnectorLineStyleChange}
-                                  options={["continuous", "dashed", "dotted"]}
-                                  icons={[<Minus/>, <CurrentDc/>, <DotsHorizontal/>]}/>
+                            <IconMenu title="Line Style"
+                                      selectedIndex={this.state.connectorLineStyle}
+                                      onChange={handleConnectorLineStyleChange}
+                                      options={["continuous", "dashed", "dotted"]}
+                                      icons={[<Minus/>, <CurrentDc/>, <DotsHorizontal/>]}/>
 
-                        <IconMenu title="End"
-                                  selectedIndex={this.state.connectorLineStyle}
-                                  onChange={handleConnectorLineStyleChange}
-                                  options={["Flat", "Arrow"]}
-                                  icons={[<Minus/>, <ArrowRight/>]}/>
+                            <IconMenu title="End"
+                                      selectedIndex={this.state.connectorEndTipStyle}
+                                      onChange={handleConnectorEndTipStyleChange}
+                                      options={["Flat", "Arrow"]}
+                                      icons={[<Minus/>, <ArrowRight/>]}/>
+                        </span>
+                        }
                     </Paper>
                     <UIGrid container>
                         <UIGrid item sm={12} md={6}>
@@ -172,7 +201,9 @@ const AppWithStyles = withStyles(appStyles)(
                                             layerService={this.layerService}
                                             shapeUpdateNotificationService={this.shapeUpdateNotificationService}
                                             cellToShapeService={this.cellToShapeService}
-                                            grid={this.grid} diagToSvg={diagToSvg}/>
+                                            grid={this.grid}
+                                            diagToSvg={diagToSvg}
+                                            appState={this.stateProvider}/>
                             </Paper>
                         </UIGrid>
                         <UIGrid item sm={12} md={6}>

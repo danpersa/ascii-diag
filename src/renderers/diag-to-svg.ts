@@ -11,7 +11,8 @@ export class DiagToSvg {
     private readonly ref: RefObject<HTMLDivElement>;
     private readonly svgRendererService: SvgRendererService;
 
-    constructor(ref: RefObject<HTMLDivElement>, layerService: LayerService,
+    constructor(ref: RefObject<HTMLDivElement>,
+                layerService: LayerService,
                 connectorTipDirectionService: ConnectorTipDirectionService) {
         this.ref = ref;
         this.layerService = layerService;

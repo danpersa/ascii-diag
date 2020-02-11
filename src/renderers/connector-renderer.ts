@@ -1,7 +1,7 @@
 import {SvgRenderer} from "./svg-renderer";
 import {Polygon, Svg} from "@svgdotjs/svg.js";
 import Constants from "../constants";
-import {ConnectorDirection, ConnectorTipDirection} from "../drawers/connector";
+import {ConnectorDirection, ConnectorTipDirection, ConnectorTipStyle} from "../drawers/connector";
 import {ConnectorShape} from "../shapes/connector-shape";
 import {ConnectorTipDirectionService} from "../connector-tip-direction-service";
 
@@ -34,7 +34,7 @@ export class ConnectorRenderer implements SvgRenderer {
         svg.polyline([startX, startY, midX, midY, endX, endY]).fill('none')
             .stroke({color: '#333333', width: 1.5, linecap: 'round', linejoin: 'round'});
 
-        if (endTipDirection !== null) {
+        if (endTipDirection !== null  && shape.endTipStyle === ConnectorTipStyle.Arrow) {
             const tip = ConnectorRenderer.renderTip(endX, endY, svg);
 
             switch (endTipDirection) {
@@ -56,7 +56,7 @@ export class ConnectorRenderer implements SvgRenderer {
             }
         }
 
-        if (startTipDirection !== null) {
+        if (startTipDirection !== null && shape.startTipStyle === ConnectorTipStyle.Arrow) {
             const tip = ConnectorRenderer.renderTip(startX, startY, svg);
 
             switch (startTipDirection) {

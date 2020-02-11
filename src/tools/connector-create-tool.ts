@@ -5,6 +5,7 @@ import {ShapeIdService} from "../shapes/shape-id-service";
 import {Connector} from "../drawers/connector";
 import {ConnectorShape} from "../shapes/connector-shape";
 import Constants from "../constants";
+import {AppState} from "../ui/app-state";
 
 export class ConnectorCreateTool implements Tool {
 
@@ -23,34 +24,52 @@ export class ConnectorCreateTool implements Tool {
         this.shapeIdService = shapeIdService;
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): void {
+    mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         this.startRow = row;
         this.startColumn = column;
-        this.connector = new Connector(row, column, row, column, Constants.connectorStartDirection);
+        this.connector = new Connector(row,
+            column,
+            row,
+            column,
+            Constants.connectorStartDirection,
+            appState.connectorLineStyle,
+            appState.connectorStartTipStyle,
+            appState.connectorEndTipStyle);
+        console.log("End tip style: " + this.connector.endTipStyle);
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
-        this.connector = new Connector(startRow, startColumn, row, column, Constants.connectorStartDirection);
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
+        this.connector = new Connector(startRow,
+            startColumn,
+            row,
+            column,
+            Constants.connectorStartDirection,
+            appState.connectorLineStyle,
+            appState.connectorStartTipStyle,
+            appState.connectorEndTipStyle);
     }
 
-    mouseUp(row: number, column: number): void {
+    mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
         this.endRow = row;
         this.endColumn = column;
-        this.persist();
+        this.persist(appState);
         this.connector = null;
     }
 
     keyDown(key: string): void {
     }
 
-    persist(): void {
+    persist(appState: Readonly<AppState>): void {
         const shape = new ConnectorShape(
             this.shapeIdService.nextId(),
             this.startRow,
             this.startColumn,
             this.endRow,
             this.endColumn,
-            Constants.connectorStartDirection);
+            Constants.connectorStartDirection,
+            appState.connectorLineStyle,
+            appState.connectorStartTipStyle,
+            appState.connectorEndTipStyle);
         this.layerService.createShape(shape);
     }
 
@@ -60,6 +79,6 @@ export class ConnectorCreateTool implements Tool {
         }
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): void {
+    mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 }

@@ -5,6 +5,7 @@ import {SelectBox} from "../drawers/select-box";
 import {ResizeType} from "./box-resize-tool";
 import {ToolService} from "./tool-service";
 import {LayerService} from "../layer-service";
+import {AppState} from "../ui/app-state";
 
 export class BoxEditTool implements Tool {
 
@@ -24,7 +25,7 @@ export class BoxEditTool implements Tool {
         this.selectBox = SelectBox.fromGrid(this.shape.topRow, this.shape.leftColumn, this.shape.bottomRow, this.shape.rightColumn);
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): void {
+    mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         console.log("Box Edit Tool click on row: " + row + " column=" + column);
 
         let resizeType: ResizeType | null = null;
@@ -52,10 +53,10 @@ export class BoxEditTool implements Tool {
         this.selectBoxDrawer.draw(this.selectBox);
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 
-    mouseUp(row: number, column: number): void {
+    mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
     }
 
     keyDown(key: string): void {
@@ -65,10 +66,10 @@ export class BoxEditTool implements Tool {
         }
     }
 
-    persist(): void {
+    persist(appState: Readonly<AppState>): void {
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): void {
+    mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         if (this.selectBox.topLeftVertex.containsPoint(x, y)) {
             document.body.style.cursor = 'nw-resize';
         } else if (this.selectBox.topRightVertex.containsPoint(x, y)) {

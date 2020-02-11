@@ -7,6 +7,7 @@ import {Text} from "../drawers/text";
 import {TextDrawer} from "../drawers/text-drawer";
 import {CursorDrawer} from "../drawers/cursor-drawer";
 import {Cursor} from "../drawers/cursor";
+import {AppState} from "../ui/app-state";
 
 export class TextCreateTool implements Tool {
 
@@ -25,9 +26,9 @@ export class TextCreateTool implements Tool {
         this.currentText = null;
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): void {
+    mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         if (this.currentText) {
-            this.persist();
+            this.persist(appState);
         } else {
             this.currentText = Text.fromGrid(row, column, "");
         }
@@ -52,7 +53,7 @@ export class TextCreateTool implements Tool {
 
         if (key === "Enter") {
             console.log("Persist text");
-            this.persist();
+            this.persist(appState);
             this.currentText = null;
             return;
         }
@@ -68,13 +69,13 @@ export class TextCreateTool implements Tool {
         this.addChar(key);
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 
-    mouseUp(row: number, column: number): void {
+    mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
     }
 
-    persist(): void {
+    persist(appState: Readonly<AppState>): void {
         if (!this.currentText) {
             return;
         }
@@ -97,6 +98,6 @@ export class TextCreateTool implements Tool {
         }
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): void {
+    mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 }

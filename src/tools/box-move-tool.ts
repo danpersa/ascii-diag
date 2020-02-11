@@ -7,6 +7,7 @@ import Constants from "../constants";
 import {BoxDrawer} from "../drawers/box-drawer";
 import {Box} from "../drawers/box";
 import {ToolService} from "./tool-service";
+import {AppState} from "../ui/app-state";
 
 export class BoxMoveTool implements Tool {
 
@@ -33,7 +34,7 @@ export class BoxMoveTool implements Tool {
         return [Math.round(y / Constants.densityY), Math.round(x / Constants.densityX)];
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         const [vertexRow, vertexColumn] = this.fromCanvasToVertexPos(x, y);
 
         const numberOfRows = this.shape.bottomRow - this.shape.topRow;
@@ -63,18 +64,18 @@ export class BoxMoveTool implements Tool {
             this.selectBox.rightColumn);
     }
 
-    mouseUp(row: number, column: number): void {
+    mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
         this.shape.endEditing();
-        this.persist();
+        this.persist(appState);
     }
 
     keyDown(key: string): void {
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): void {
+    mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 
-    persist(): void {
+    persist(appState: Readonly<AppState>): void {
         const shape = new BoxShape(
             this.shape.id(),
             this.selectBox.topRow,
@@ -92,6 +93,6 @@ export class BoxMoveTool implements Tool {
         this.selectBoxDrawer.draw(this.selectBox);
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): void {
+    mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 }

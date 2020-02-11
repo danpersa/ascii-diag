@@ -6,6 +6,7 @@ import {Vertex} from "../drawers/vertex";
 import {ConnectorDirection} from "../drawers/connector";
 import {LayerService} from "../layer-service";
 import {ConnectorVertexFactory} from "./connector-vertex-factory";
+import {AppState} from "../ui/app-state";
 
 export class ConnectorFlipTool implements Tool {
 
@@ -27,7 +28,7 @@ export class ConnectorFlipTool implements Tool {
         this.flipVertex = connectorVertexFactory.createFlipVertex(shape);
     }
 
-    mouseDown(row: number, column: number, x: number, y: number): void {
+    mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 
     render() {
@@ -36,11 +37,11 @@ export class ConnectorFlipTool implements Tool {
         }
     }
 
-    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number): void {
+    drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         document.body.style.cursor = 'pointer';
     }
 
-    mouseUp(row: number, column: number): void {
+    mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
         const newConnectorDirection = this.shape.startDirection === ConnectorDirection.Horizontal ? ConnectorDirection.Vertical : ConnectorDirection.Horizontal;
 
         const shape = new ConnectorShape(
@@ -49,7 +50,10 @@ export class ConnectorFlipTool implements Tool {
             this.shape.startColumn,
             this.shape.endRow,
             this.shape.endColumn,
-            newConnectorDirection
+            newConnectorDirection,
+            this.shape.lineStyle,
+            this.shape.startTipStyle,
+            this.shape.endTipStyle
         );
 
         this.layerService.updateShape(shape);
@@ -59,9 +63,9 @@ export class ConnectorFlipTool implements Tool {
     keyDown(key: string): void {
     }
 
-    persist(): void {
+    persist(appState: Readonly<AppState>): void {
     }
 
-    mouseMove(row: number, column: number, x: number, y: number): void {
+    mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 }
