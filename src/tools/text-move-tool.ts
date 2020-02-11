@@ -36,7 +36,7 @@ export class TextMoveTool implements Tool {
         this.textDrawer = textDrawer;
 
         this.currentShape = shape;
-        this.currentText = Text.fromGrid(this.currentShape.row, this.currentShape.column, this.currentShape.text);
+        this.currentText = Text.Builder.fromShape(this.currentShape).build();
         this.moveVertex = Vertex.fromGrid(this.currentShape.row, this.currentShape.column);
         console.log("Start moving text");
         this.currentShape.startEditing();

@@ -32,7 +32,7 @@ export class TextEditTool extends TextCreateTool implements Tool {
         this.cellToShapeService = cellToShapeService;
 
         this.shape = shape;
-        this.currentText = Text.fromGrid(this.shape.row, this.shape.column, this.shape.text);
+        this.currentText = Text.Builder.fromShape(this.shape).build();
         this.moveVertex = Vertex.fromGrid(this.shape.row, this.shape.column);
         this.shape.startEditing();
     }

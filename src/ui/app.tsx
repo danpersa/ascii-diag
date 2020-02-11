@@ -182,17 +182,9 @@ const AppWithStyles = withStyles(appStyles)(
             const shape = this.toolService.currentShape();
             let newShape: Shape | undefined = undefined;
             if (shape && shape instanceof ConnectorShape) {
-                newShape = new ConnectorShape(
-                    shape.id(),
-                    shape.startRow,
-                    shape.startColumn,
-                    shape.endRow,
-                    shape.endColumn,
-                    shape.startDirection,
-                    shape.lineStyle,
-                    newConnectorTipStyle,
-                    shape.endTipStyle
-                );
+                newShape = ConnectorShape.ShapeBuilder.from(shape)
+                    .startTipStyle(newConnectorTipStyle)
+                    .build();
 
                 this.layerService.updateShape(newShape);
             }

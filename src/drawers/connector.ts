@@ -1,3 +1,5 @@
+import {ConnectorShape} from "../shapes/connector-shape";
+
 export enum ConnectorDirection {
     Horizontal,
     Vertical
@@ -75,5 +77,113 @@ export class Connector {
 
     get endTipStyle(): ConnectorTipStyle {
         return this._endTipStyle;
+    }
+}
+
+export namespace Connector {
+
+    export class Builder {
+        protected _startRow: number;
+        protected _startColumn: number;
+        protected _endRow: number;
+        protected _endColumn: number;
+        protected _startDirection: ConnectorDirection;
+        protected _lineStyle: LineStyle;
+        protected _startTipStyle: ConnectorTipStyle;
+        protected _endTipStyle: ConnectorTipStyle;
+
+        protected constructor(startRow: number,
+                              startColumn: number,
+                              endRow: number,
+                              endColumn: number,
+                              startDirection: ConnectorDirection,
+                              lineStyle: LineStyle,
+                              startTipStyle: ConnectorTipStyle,
+                              endTipStyle: ConnectorTipStyle) {
+            this._startRow = startRow;
+            this._startColumn = startColumn;
+            this._endRow = endRow;
+            this._endColumn = endColumn;
+            this._startDirection = startDirection;
+            this._lineStyle = lineStyle;
+            this._startTipStyle = startTipStyle;
+            this._endTipStyle = endTipStyle;
+        }
+
+        static from(connector: Connector): Builder {
+            return new Builder(
+                connector.startRow,
+                connector.startColumn,
+                connector.endRow,
+                connector.endColumn,
+                connector.startDirection,
+                connector.lineStyle,
+                connector.startTipStyle,
+                connector.endTipStyle);
+        }
+
+        static fromShape(shape: ConnectorShape): Builder {
+            return new Builder(
+                shape.startRow,
+                shape.startColumn,
+                shape.endRow,
+                shape.endColumn,
+                shape.startDirection,
+                shape.lineStyle,
+                shape.startTipStyle,
+                shape.endTipStyle);
+        }
+
+        build(): Connector {
+            return new Connector(
+                this._startRow,
+                this._startColumn,
+                this._endRow,
+                this._endColumn,
+                this._startDirection,
+                this._lineStyle,
+                this._startTipStyle,
+                this._endTipStyle);
+        }
+
+        startRow(value: number) {
+            this._startRow = value;
+            return this;
+        }
+
+        startColumn(value: number) {
+            this._startColumn = value;
+            return this;
+        }
+
+        endRow(value: number) {
+            this._endRow = value;
+            return this;
+        }
+
+        endColumn(value: number) {
+            this._endColumn = value;
+            return this;
+        }
+
+        startDirection(value: ConnectorDirection) {
+            this._startDirection = value;
+            return this;
+        }
+
+        lineStyle(value: LineStyle) {
+            this._lineStyle = value;
+            return this;
+        }
+
+        startTipStyle(value: ConnectorTipStyle) {
+            this._startTipStyle = value;
+            return this;
+        }
+
+        endTipStyle(value: ConnectorTipStyle) {
+            this._endTipStyle = value;
+            return this;
+        }
     }
 }

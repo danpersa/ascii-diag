@@ -86,11 +86,9 @@ export class BoxResizeTool implements Tool {
                 break;
             }
         }
-        this.box = new Box(
-            this.selectBox.topRow,
-            this.selectBox.leftColumn,
-            this.selectBox.bottomRow,
-            this.selectBox.rightColumn);
+        this.box = Box.Builder
+            .fromSelectBox(this.selectBox)
+            .build();
     }
 
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void {

@@ -1,4 +1,5 @@
 import Constants from "../constants";
+import {SelectBox} from "./select-box";
 
 export class Box {
     private readonly _canvasX: number;
@@ -53,5 +54,53 @@ export class Box {
 
     get canvasX(): number {
         return this._canvasX;
+    }
+}
+
+export namespace Box {
+    export class Builder {
+        protected _topRow: number;
+        protected _leftColumn: number;
+        protected _bottomRow: number;
+        protected _rightColumn: number;
+
+        protected constructor(topRow: number, leftColumn: number, bottomRow: number, rightColumn: number) {
+            this._topRow = topRow;
+            this._leftColumn = leftColumn;
+            this._bottomRow = bottomRow;
+            this._rightColumn = rightColumn;
+        }
+
+        static from(box: Box): Builder {
+            return new Builder(box.topRow, box.leftColumn, box.bottomRow, box.rightColumn);
+        }
+
+        static fromSelectBox(box: SelectBox): Builder {
+            return new Builder(box.topRow, box.leftColumn, box.bottomRow, box.rightColumn);
+        }
+
+        build(): Box {
+            return new Box(this._topRow, this._leftColumn, this._bottomRow, this._rightColumn);
+        }
+
+        topRow(value: number) {
+            this._topRow = value;
+            return this;
+        }
+
+        leftColumn(value: number) {
+            this._leftColumn = value;
+            return this;
+        }
+
+        bottomRow(value: number) {
+            this._bottomRow = value;
+            return this;
+        }
+
+        rightColumn(value: number) {
+            this._rightColumn = value;
+            return this;
+        }
     }
 }
