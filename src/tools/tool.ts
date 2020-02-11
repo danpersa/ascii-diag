@@ -1,4 +1,5 @@
 import {AppState} from "../ui/app-state";
+import {Shape} from "../shapes/shape";
 
 export enum Tools {
     select = "select",
@@ -8,7 +9,11 @@ export enum Tools {
 }
 
 export interface ToolChangedListener {
-    toolUpdated(newTool: Tool): void;
+    toolChanged(newTool: Tool): void;
+}
+
+export interface SelectedShapeChangedListener {
+    shapeChanged(newShape: Shape | undefined): void;
 }
 
 export interface Tool {

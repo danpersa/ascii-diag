@@ -1,7 +1,6 @@
 import {Tool} from "./tool";
 import {ToolService} from "./tool-service";
 import {AppState} from "../ui/app-state";
-import {StateProvider} from "../ui/state-provider";
 
 export class SelectTool implements Tool {
 

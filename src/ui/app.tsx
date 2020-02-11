@@ -24,7 +24,7 @@ import SvgCanvas from "./svg-diag";
 import {LayerService} from "../layer-service";
 import Grid from "../drawers/grid";
 import {DiagToSvg} from "../renderers/diag-to-svg";
-import {Tool, ToolChangedListener, Tools} from "../tools/tool";
+import {SelectedShapeChangedListener, Tool, ToolChangedListener, Tools} from "../tools/tool";
 import Constants from "../constants";
 import {ShapeUpdateNotificationService} from "../shape-update-notification-service";
 import {CellToShapeService} from "../cell-to-shape-service";
@@ -45,18 +45,13 @@ import {GridDrawerFactory} from "../drawers/drawer-factory";
 import {ToolService} from "../tools/tool-service";
 import AsciiDiag from "../ascii-diag";
 import DiagToSvgProvider from "./diag-to-svg-provider";
-import {ConnectorEditTool} from "../tools/connector-edit-tool";
 import {ConnectorCreateTool} from "../tools/connector-create-tool";
-import {ConnectorModifyTool} from "../tools/connector-modify-tool";
 import {TextCreateTool} from "../tools/text-create-tool";
 import {BoxCreateTool} from "../tools/box-create-tool";
 import {SelectTool} from "../tools/select-tool";
 import {TextEditTool} from "../tools/text-edit-tool";
-import {BoxEditTool} from "../tools/box-edit-tool";
-import {BoxMoveTool} from "../tools/box-move-tool";
-import {TextMoveTool} from "../tools/text-move-tool";
-import {BoxResizeTool} from "../tools/box-resize-tool";
-import {ConnectorFlipTool} from "../tools/connector-flip-tool";
+import {Shape} from "../shapes/shape";
+import {ConnectorShape} from "../shapes/connector-shape";
 
 const appStyles = (theme: Theme) => createStyles({
     root: {
@@ -93,7 +88,7 @@ interface AppProps extends WithStyles<typeof appStyles> {
 }
 
 const AppWithStyles = withStyles(appStyles)(
-    class extends React.Component<AppProps, AppState> implements ToolChangedListener {
+    class extends React.Component<AppProps, AppState> implements ToolChangedListener, SelectedShapeChangedListener {
 
         private readonly canvasDivRef: RefObject<HTMLCanvasElement> = React.createRef();
         private readonly svgDivRef: RefObject<HTMLDivElement> = React.createRef();
@@ -142,10 +137,12 @@ const AppWithStyles = withStyles(appStyles)(
                 arrowDrawer,
                 this.cellToShapeService);
             this.toolService.registerToolChangedListener(this);
+            this.toolService.registerSelectedShapeChangedListeners(this);
 
             this.state = new AppState(this.toolService.currentTool(),
                 LineStyle.Continuous, ConnectorTipStyle.Flat,
-                ConnectorTipStyle.Flat);
+                ConnectorTipStyle.Flat,
+                undefined);
 
             const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
             this.diagToSvgProvider = new DiagToSvgProvider(diagToSvg);
@@ -158,15 +155,13 @@ const AppWithStyles = withStyles(appStyles)(
 
         shouldShowConnectorOptions(): boolean {
             return this.toolService.currentTool() instanceof ConnectorCreateTool
-                || this.toolService.currentTool() instanceof ConnectorEditTool
-                || this.toolService.currentTool() instanceof ConnectorModifyTool
-                || this.toolService.currentTool() instanceof ConnectorFlipTool;
+                || this.toolService.currentShape() instanceof ConnectorShape;
         }
 
         private handleToolChange = (event: React.MouseEvent<HTMLElement>, newTool: Tools) => {
             console.log("handle tool change: " + newTool);
             this.toolService.setCurrentTool(newTool);
-            this.toolUpdated(this.toolService.currentTool());
+            this.toolChanged(this.toolService.currentTool());
         };
 
         private handleConnectorLineStyleChange = (event: React.MouseEvent<HTMLElement>, newLineStyle: LineStyle) => {
@@ -177,6 +172,7 @@ const AppWithStyles = withStyles(appStyles)(
                     connectorLineStyle: newLineStyle,
                     connectorStartTipStyle: this.state.connectorStartTipStyle,
                     connectorEndTipStyle: this.state.connectorEndTipStyle,
+                    selectedShape: this.state.selectedShape,
                 });
         };
 
@@ -187,6 +183,7 @@ const AppWithStyles = withStyles(appStyles)(
                 connectorLineStyle: this.state.connectorLineStyle,
                 connectorStartTipStyle: newConnectorTipStyle,
                 connectorEndTipStyle: this.state.connectorEndTipStyle,
+                selectedShape: this.state.selectedShape,
             });
         };
 
@@ -197,6 +194,7 @@ const AppWithStyles = withStyles(appStyles)(
                 connectorLineStyle: this.state.connectorLineStyle,
                 connectorStartTipStyle: this.state.connectorStartTipStyle,
                 connectorEndTipStyle: newConnectorTipStyle,
+                selectedShape: this.state.selectedShape,
             });
         };
 
@@ -272,26 +270,32 @@ const AppWithStyles = withStyles(appStyles)(
             );
         }
 
-        toolUpdated(newTool: Tool): void {
+        toolChanged(newTool: Tool): void {
             console.log("Update tool: " + newTool.constructor.name);
             this.setState({
                 currentTool: newTool,
                 connectorLineStyle: this.state.connectorLineStyle,
                 connectorStartTipStyle: this.state.connectorStartTipStyle,
                 connectorEndTipStyle: this.state.connectorEndTipStyle,
+                selectedShape: this.state.selectedShape,
+            });
+        }
+
+        shapeChanged(newShape: Shape | undefined): void {
+            console.log("Update selected shape: " + (newShape ? newShape.constructor.name : newShape));
+            this.setState({
+                currentTool: this.state.currentTool,
+                connectorLineStyle: this.state.connectorLineStyle,
+                connectorStartTipStyle: this.state.connectorStartTipStyle,
+                connectorEndTipStyle: this.state.connectorEndTipStyle,
+                selectedShape: newShape,
             });
         }
 
         private isSelectToolButtonSelected() {
+            console.log("is selected button selected shape: " + (this.state.selectedShape ? this.state.selectedShape.constructor.name : this.state.selectedShape));
             return this.toolService.currentTool() instanceof SelectTool
-                || this.toolService.currentTool() instanceof TextEditTool
-                || this.toolService.currentTool() instanceof TextMoveTool
-                || this.toolService.currentTool() instanceof BoxEditTool
-                || this.toolService.currentTool() instanceof BoxMoveTool
-                || this.toolService.currentTool() instanceof BoxResizeTool
-                || this.toolService.currentTool() instanceof ConnectorEditTool
-                || this.toolService.currentTool() instanceof ConnectorModifyTool
-                || this.toolService.currentTool() instanceof ConnectorFlipTool;
+                || this.toolService.currentShape() !== undefined;
         }
 
         private isConnectorToolButtonSelected() {

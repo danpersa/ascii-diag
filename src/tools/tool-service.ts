@@ -1,4 +1,4 @@
-import {Tool, ToolChangedListener, Tools} from "./tool";
+import {SelectedShapeChangedListener, Tool, ToolChangedListener, Tools} from "./tool";
 import {ConnectorCreateTool} from "./connector-create-tool";
 import {BoxCreateTool} from "./box-create-tool";
 import {TextCreateTool} from "./text-create-tool";
@@ -24,6 +24,7 @@ import {ConnectorFlipTool} from "./connector-flip-tool";
 import {ConnectorVertexFactory} from "./connector-vertex-factory";
 import {ConnectorModifyTool, ConnectorMoveType} from "./connector-modify-tool";
 import {CellToShapeService} from "../cell-to-shape-service";
+import {Shape} from "../shapes/shape";
 
 export class ToolService {
 
@@ -41,8 +42,10 @@ export class ToolService {
     private readonly connectorDrawer: ConnectorDrawer;
     private readonly connectorVertexFactory: ConnectorVertexFactory;
     private readonly cellToShapeService: CellToShapeService;
-    private toolStack: Array<Tool> = [];
-    private readonly listeners: Array<ToolChangedListener> = [];
+    private readonly toolStack: Array<Tool> = [];
+    private readonly toolChangedListeners: Array<ToolChangedListener> = [];
+    private readonly selectedShapeChangedListeners: Array<SelectedShapeChangedListener> = [];
+    private _currentShape: Shape | undefined;
 
     constructor(layerService: LayerService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, shapeIdService: ShapeIdService,
                 textDrawer: TextDrawer, cursorDrawer: CursorDrawer, vertexDrawer: VertexDrawer, connectorDrawer: ConnectorDrawer, cellToShapeService: CellToShapeService) {
@@ -79,6 +82,7 @@ export class ToolService {
                 this.selectTextTool();
                 break;
         }
+        this.notifySelectedShapeChangedListeners(undefined);
     }
 
     private popTool(): void {
@@ -87,6 +91,10 @@ export class ToolService {
 
     currentTool(): Tool {
         return this.toolStack[this.toolStack.length - 1];
+    }
+
+    currentShape(): Shape | undefined {
+        return this._currentShape;
     }
 
     selectBoxTool(): void {
@@ -170,15 +178,27 @@ export class ToolService {
         } else {
             this.selectSelectTool();
         }
+        this.notifySelectedShapeChangedListeners(shape);
+    }
+
+    registerSelectedShapeChangedListeners(listener: SelectedShapeChangedListener) {
+        this.selectedShapeChangedListeners.push(listener);
     }
 
     registerToolChangedListener(listener: ToolChangedListener): void {
-        this.listeners.push(listener);
+        this.toolChangedListeners.push(listener);
     }
 
     notifyToolChangedListeners(tool: Tool): void {
-        this.listeners.forEach((listener: ToolChangedListener) => {
-            listener.toolUpdated(tool);
+        this.toolChangedListeners.forEach((listener: ToolChangedListener) => {
+            listener.toolChanged(tool);
+        });
+    }
+
+    notifySelectedShapeChangedListeners(shape: Shape | undefined): void {
+        this._currentShape = shape;
+        this.selectedShapeChangedListeners.forEach((listener: SelectedShapeChangedListener) => {
+            listener.shapeChanged(shape);
         });
     }
 }
