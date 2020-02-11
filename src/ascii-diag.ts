@@ -11,8 +11,9 @@ import {StateProvider} from "./ui/state-provider";
 import Has2DContext from "./has-2d-context";
 import DiagToSvgProvider from "./ui/diag-to-svg-provider";
 import {Tool, ToolChangedListener} from "./tools/tool";
+import {ShapeUpdateEvent, ShapeUpdateListener} from "./shape-update-notification-service";
 
-export default class AsciiDiag implements Has2DContext, ToolChangedListener {
+export default class AsciiDiag implements Has2DContext, ToolChangedListener, ShapeUpdateListener {
     readonly canvasRef: React.RefObject<HTMLCanvasElement>;
     private paint: boolean;
 
@@ -163,6 +164,10 @@ export default class AsciiDiag implements Has2DContext, ToolChangedListener {
     }
 
     toolChanged(newTool: Tool): void {
+        this.redraw();
+    }
+
+    update(event: ShapeUpdateEvent, shape: Shape): void {
         this.redraw();
     }
 }

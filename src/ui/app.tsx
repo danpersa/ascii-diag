@@ -149,8 +149,9 @@ const AppWithStyles = withStyles(appStyles)(
         }
 
         componentDidMount(): void {
-            new AsciiDiag(this.canvasDivRef, this.layerService, this.gridDrawerFactory,
+            const diag = new AsciiDiag(this.canvasDivRef, this.layerService, this.gridDrawerFactory,
                 this.diagToSvgProvider, this.cellDrawer, this.toolService, this.stateProvider);
+            this.shapeUpdateNotificationService.register(diag);
         }
 
         shouldShowConnectorOptions(): boolean {
@@ -178,12 +179,30 @@ const AppWithStyles = withStyles(appStyles)(
 
         private handleConnectorStartTipStyleChange = (event: React.MouseEvent<HTMLElement>, newConnectorTipStyle: ConnectorTipStyle) => {
             console.log("handle connector start tip type change: " + newConnectorTipStyle);
+            const shape = this.toolService.currentShape();
+            let newShape: Shape | undefined = undefined;
+            if (shape && shape instanceof ConnectorShape) {
+                newShape = new ConnectorShape(
+                    shape.id(),
+                    shape.startRow,
+                    shape.startColumn,
+                    shape.endRow,
+                    shape.endColumn,
+                    shape.startDirection,
+                    shape.lineStyle,
+                    newConnectorTipStyle,
+                    shape.endTipStyle
+                );
+
+                this.layerService.updateShape(newShape);
+            }
+
             this.setState({
                 currentTool: this.state.currentTool,
                 connectorLineStyle: this.state.connectorLineStyle,
                 connectorStartTipStyle: newConnectorTipStyle,
                 connectorEndTipStyle: this.state.connectorEndTipStyle,
-                selectedShape: this.state.selectedShape,
+                selectedShape: newShape,
             });
         };
 
