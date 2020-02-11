@@ -143,8 +143,7 @@ const AppWithStyles = withStyles(appStyles)(
 
             this.state = new AppState(this.toolService.currentTool(),
                 LineStyle.Continuous, ConnectorTipStyle.Flat,
-                ConnectorTipStyle.Flat,
-                undefined);
+                ConnectorTipStyle.Flat);
 
             const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
             this.diagToSvgProvider = new DiagToSvgProvider(diagToSvg);
@@ -169,20 +168,26 @@ const AppWithStyles = withStyles(appStyles)(
 
         private handleConnectorLineStyleChange = (event: React.MouseEvent<HTMLElement>, newLineStyle: LineStyle) => {
             console.log("handle connector line style change: " + newLineStyle);
+
+            const shape = this.toolService.currentShape();
+            if (shape && shape instanceof ConnectorShape) {
+                const newShape = ConnectorShape.ShapeBuilder.from(shape).lineStyle(newLineStyle).build();
+                this.toolService.selectConnectorUpdateStylesTool(newShape);
+            }
+
             this.setState(
                 {
                     currentTool: this.state.currentTool,
                     connectorLineStyle: newLineStyle,
                     connectorStartTipStyle: this.state.connectorStartTipStyle,
-                    connectorEndTipStyle: this.state.connectorEndTipStyle,
-                    selectedShape: this.state.selectedShape,
+                    connectorEndTipStyle: this.state.connectorEndTipStyle
                 });
         };
 
         private handleConnectorStartTipStyleChange = (event: React.MouseEvent<HTMLElement>, newConnectorTipStyle: ConnectorTipStyle) => {
             console.log("handle connector start tip type change: " + newConnectorTipStyle);
+
             const shape = this.toolService.currentShape();
-            let newShape: Shape | undefined = undefined;
             if (shape && shape instanceof ConnectorShape) {
                 const newShape = ConnectorShape.ShapeBuilder.from(shape).startTipStyle(newConnectorTipStyle).build();
                 this.toolService.selectConnectorUpdateStylesTool(newShape);
@@ -192,8 +197,7 @@ const AppWithStyles = withStyles(appStyles)(
                 currentTool: this.state.currentTool,
                 connectorLineStyle: this.state.connectorLineStyle,
                 connectorStartTipStyle: newConnectorTipStyle,
-                connectorEndTipStyle: this.state.connectorEndTipStyle,
-                selectedShape: newShape,
+                connectorEndTipStyle: this.state.connectorEndTipStyle
             });
         };
 
@@ -210,8 +214,7 @@ const AppWithStyles = withStyles(appStyles)(
                 currentTool: this.state.currentTool,
                 connectorLineStyle: this.state.connectorLineStyle,
                 connectorStartTipStyle: this.state.connectorStartTipStyle,
-                connectorEndTipStyle: newConnectorTipStyle,
-                selectedShape: this.state.selectedShape,
+                connectorEndTipStyle: newConnectorTipStyle
             });
         };
 
@@ -294,7 +297,6 @@ const AppWithStyles = withStyles(appStyles)(
                 connectorLineStyle: this.state.connectorLineStyle,
                 connectorStartTipStyle: this.state.connectorStartTipStyle,
                 connectorEndTipStyle: this.state.connectorEndTipStyle,
-                selectedShape: this.state.selectedShape,
             });
         }
 
@@ -315,7 +317,6 @@ const AppWithStyles = withStyles(appStyles)(
                 connectorLineStyle: connectorLineStyle,
                 connectorStartTipStyle: connectorStartTipStyle,
                 connectorEndTipStyle: connectorEndTipStyle,
-                selectedShape: newShape,
             });
         }
 

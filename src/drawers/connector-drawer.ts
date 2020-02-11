@@ -1,5 +1,5 @@
 import {CellDrawer} from "./cell-drawer";
-import {Connector, ConnectorDirection, ConnectorTipDirection, ConnectorTipStyle} from "./connector";
+import {Connector, ConnectorDirection, ConnectorTipDirection, ConnectorTipStyle, LineStyle} from "./connector";
 import {Domain} from "./cell";
 import {ConnectorTipDirectionService} from "../connector-tip-direction-service";
 import {Drawer} from "./drawer";
@@ -21,6 +21,7 @@ export abstract class AbstractConnectorDrawer implements ConnectorDrawer {
 
     draw(connector: Connector): void {
         const startTipSymbol = this.startTipSymbol(connector);
+        const lineStyleSymbol = this.lineStyleSymbol(connector);
         let cell = Cell.Builder.from(connector.startRow, connector.startColumn)
             .text(startTipSymbol)
             .build();
@@ -34,8 +35,14 @@ export abstract class AbstractConnectorDrawer implements ConnectorDrawer {
 
         if (connector.startDirection === ConnectorDirection.Horizontal) {
             for (let column = minColumn + 1; column < maxColumn; ++column) {
-                const cell = Cell.Builder.from(connector.startRow, column).text("-").build();
-                this.drawCell(cell);
+                // draw the line style symbol first
+                if (column == minColumn + 1 && lineStyleSymbol) {
+                    const cell = Cell.Builder.from(connector.startRow, column).text(lineStyleSymbol).build();
+                    this.drawCell(cell);
+                } else {
+                    const cell = Cell.Builder.from(connector.startRow, column).text("-").build();
+                    this.drawCell(cell);
+                }
             }
             if (connector.startRow == connector.endRow) {
                 if (endTipSymbol) {
@@ -43,11 +50,25 @@ export abstract class AbstractConnectorDrawer implements ConnectorDrawer {
                     this.drawCell(cell);
                 }
             } else {
-                const cell = Cell.Builder.from(connector.startRow, connector.endColumn).text("+").build();
-                this.drawCell(cell);
-                for (let row = minRow + 1; row < maxRow; ++row) {
-                    const cell = Cell.Builder.from(row, connector.endColumn).text("|").build();
+                // if this is not a vertical connector
+                if (connector.startColumn != connector.endColumn) {
+                    const cell = Cell.Builder.from(connector.startRow, connector.endColumn).text("+").build();
                     this.drawCell(cell);
+                    for (let row = minRow + 1; row < maxRow; ++row) {
+                        const cell = Cell.Builder.from(row, connector.endColumn).text("|").build();
+                        this.drawCell(cell);
+                    }
+                } else {
+                    for (let row = minRow + 1; row < maxRow; ++row) {
+                        // draw the line style symbol first
+                        if (row == minRow + 1 && lineStyleSymbol) {
+                            const cell = Cell.Builder.from(row, connector.endColumn).text(lineStyleSymbol).build();
+                            this.drawCell(cell);
+                        } else {
+                            const cell = Cell.Builder.from(row, connector.endColumn).text("|").build();
+                            this.drawCell(cell);
+                        }
+                    }
                 }
                 if (endTipSymbol) {
                     const cell = Cell.Builder.from(connector.endRow, connector.endColumn).text(endTipSymbol).build();
@@ -56,8 +77,15 @@ export abstract class AbstractConnectorDrawer implements ConnectorDrawer {
             }
         } else if (connector.startDirection === ConnectorDirection.Vertical) {
             for (let row = minRow + 1; row < maxRow; ++row) {
-                const cell = Cell.Builder.from(row, connector.startColumn).text("|").build();
-                this.drawCell(cell);
+                // draw the line style symbol first
+                if (row == minRow + 1 && lineStyleSymbol) {
+                    const cell = Cell.Builder.from(row, connector.startColumn).text(lineStyleSymbol).build();
+                    this.drawCell(cell);
+                } else {
+                    const cell = Cell.Builder.from(row, connector.startColumn).text("|").build();
+                    this.drawCell(cell);
+                }
+
             }
             if (connector.startColumn == connector.endColumn) {
                 if (endTipSymbol) {
@@ -65,12 +93,27 @@ export abstract class AbstractConnectorDrawer implements ConnectorDrawer {
                     this.drawCell(cell);
                 }
             } else {
-                const cell = Cell.Builder.from(connector.endRow, connector.startColumn).text("+").build();
-                this.drawCell(cell);
-                for (let column = minColumn + 1; column < maxColumn; ++column) {
-                    const cell = Cell.Builder.from(connector.endRow, column).text("-").build();
+                // if it's not horizontal
+                if (connector.startRow != connector.endRow) {
+                    const cell = Cell.Builder.from(connector.endRow, connector.startColumn).text("+").build();
                     this.drawCell(cell);
+                    for (let column = minColumn + 1; column < maxColumn; ++column) {
+                        const cell = Cell.Builder.from(connector.endRow, column).text("-").build();
+                        this.drawCell(cell);
+                    }
+                } else {
+                    for (let column = minColumn + 1; column < maxColumn; ++column) {
+                        // draw the line style symbol first
+                        if (column == minColumn + 1) {
+                            const cell = Cell.Builder.from(connector.endRow, column).text(lineStyleSymbol).build();
+                            this.drawCell(cell);
+                        } else {
+                            const cell = Cell.Builder.from(connector.endRow, column).text("-").build();
+                            this.drawCell(cell);
+                        }
+                    }
                 }
+
                 if (endTipSymbol) {
                     const cell = Cell.Builder.from(connector.endRow, connector.endColumn).text(endTipSymbol).build();
                     this.drawCell(cell);
@@ -87,6 +130,17 @@ export abstract class AbstractConnectorDrawer implements ConnectorDrawer {
     private startTipSymbol(connector: Connector): string {
         const tipDirection = this.connectorTipDirectionService.startTipDirection(connector);
         return this.tipSymbol(tipDirection, connector.startTipStyle);
+    }
+
+    private lineStyleSymbol(connector: Connector): string {
+        switch (connector.lineStyle) {
+            case LineStyle.Dotted:
+                return ':';
+            case LineStyle.Dashed:
+                return ';';
+            case LineStyle.Continuous:
+                return '';
+        }
     }
 
     private tipSymbol(tipDirection: ConnectorTipDirection | null, tipStyle: ConnectorTipStyle) {

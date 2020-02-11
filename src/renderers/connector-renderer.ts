@@ -1,7 +1,7 @@
 import {SvgRenderer} from "./svg-renderer";
 import {Polygon, Svg} from "@svgdotjs/svg.js";
 import Constants from "../constants";
-import {ConnectorDirection, ConnectorTipDirection, ConnectorTipStyle} from "../drawers/connector";
+import {ConnectorDirection, ConnectorTipDirection, ConnectorTipStyle, LineStyle} from "../drawers/connector";
 import {ConnectorShape} from "../shapes/connector-shape";
 import {ConnectorTipDirectionService} from "../connector-tip-direction-service";
 
@@ -31,10 +31,13 @@ export class ConnectorRenderer implements SvgRenderer {
         const midX = shape.startDirection === ConnectorDirection.Horizontal ? endX : startX;
         const midY = shape.startDirection === ConnectorDirection.Horizontal ? startY : endY;
 
-        svg.polyline([startX, startY, midX, midY, endX, endY]).fill('none')
-            .stroke({color: '#333333', width: 1.5, linecap: 'round', linejoin: 'round'});
+        const dasharray = this.dasharray(shape);
+        const stroke = {color: '#333333', width: 1.5, linecap: 'round', linejoin: 'round', dasharray: dasharray};
 
-        if (endTipDirection !== null  && shape.endTipStyle === ConnectorTipStyle.Arrow) {
+        svg.polyline([startX, startY, midX, midY, endX, endY]).fill('none')
+            .stroke(stroke);
+
+        if (endTipDirection !== null && shape.endTipStyle === ConnectorTipStyle.Arrow) {
             const tip = ConnectorRenderer.renderTip(endX, endY, svg);
 
             switch (endTipDirection) {
@@ -77,6 +80,18 @@ export class ConnectorRenderer implements SvgRenderer {
                     break;
             }
         }
+    }
+
+    private dasharray(shape: ConnectorShape) {
+        switch (shape.lineStyle) {
+            case LineStyle.Continuous:
+                return '0';
+            case LineStyle.Dashed:
+                return '8,7';
+            case LineStyle.Dotted:
+                return '1,4';
+        }
+        return '0';
     }
 
     private static tipOffset(tipDirection: ConnectorTipDirection | null): TipOffset {
