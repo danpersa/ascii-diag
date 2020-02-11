@@ -27,7 +27,7 @@ import {CellToShapeService} from "../cell-to-shape-service";
 
 export class ToolService {
 
-    private readonly boxTool: Tool;
+    private readonly boxCreateTool: Tool;
     private readonly connectorCreateTool: Tool;
     private readonly textTool: Tool;
     private readonly layerService: LayerService;
@@ -42,6 +42,7 @@ export class ToolService {
     private readonly connectorVertexFactory: ConnectorVertexFactory;
     private readonly cellToShapeService: CellToShapeService;
     private toolStack: Array<Tool> = [];
+
     private toolChangeCallback: () => void = () => {
     };
 
@@ -51,7 +52,7 @@ export class ToolService {
         this.cursorDrawer = cursorDrawer;
         this.textDrawer = textDrawer;
         this.connectorDrawer = connectorDrawer;
-        this.boxTool = new BoxCreateTool(layerService, boxDrawer, shapeIdService);
+        this.boxCreateTool = new BoxCreateTool(layerService, boxDrawer, shapeIdService);
         this.connectorCreateTool = new ConnectorCreateTool(layerService, shapeIdService, connectorDrawer);
         this.textTool = new TextCreateTool(layerService, shapeIdService, textDrawer, cursorDrawer);
         this.connectorVertexFactory = new ConnectorVertexFactory();
@@ -61,10 +62,11 @@ export class ToolService {
         this.vertexDrawer = vertexDrawer;
         this.shapeIdService = shapeIdService;
         this.cellToShapeService = cellToShapeService;
-        this.toolStack.push(this.boxTool);
+        this.toolStack.push(this.connectorCreateTool);
     }
 
     setCurrentTool(tool: Tools): void {
+        console.log("Set current tool: " + tool);
         switch (tool) {
             case Tools.connector:
                 this.selectConnectorTool();
@@ -82,7 +84,7 @@ export class ToolService {
     }
 
     private popTool(): void {
-        const currentTool = this.toolStack.pop();
+        this.toolStack.pop();
     }
 
     currentTool(): Tool {
@@ -90,7 +92,7 @@ export class ToolService {
     }
 
     selectBoxTool(): void {
-        this.setTool(this.boxTool);
+        this.setTool(this.boxCreateTool);
     }
 
     selectConnectorTool(): void {

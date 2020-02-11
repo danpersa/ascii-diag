@@ -7,6 +7,7 @@ import {ConnectorVertexFactory} from "./connector-vertex-factory";
 import {ConnectorMoveType} from "./connector-modify-tool";
 import {LayerService} from "../layer-service";
 import {AppState} from "../ui/app-state";
+import {StateProvider} from "../ui/state-provider";
 
 export class ConnectorEditTool implements Tool {
 
@@ -59,7 +60,7 @@ export class ConnectorEditTool implements Tool {
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
     }
 
-    keyDown(key: string): void {
+    keyDown(key: string, appState: Readonly<AppState>): void {
         if (key === "Backspace" || key === "Delete") {
             this.layerService.deleteShape(this.shape.id());
             this.toolService.selectSelectTool();

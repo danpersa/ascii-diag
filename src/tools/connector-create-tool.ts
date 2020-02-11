@@ -6,6 +6,7 @@ import {Connector} from "../drawers/connector";
 import {ConnectorShape} from "../shapes/connector-shape";
 import Constants from "../constants";
 import {AppState} from "../ui/app-state";
+import {StateProvider} from "../ui/state-provider";
 
 export class ConnectorCreateTool implements Tool {
 
@@ -56,7 +57,7 @@ export class ConnectorCreateTool implements Tool {
         this.connector = null;
     }
 
-    keyDown(key: string): void {
+    keyDown(key: string, appState: Readonly<AppState>): void {
     }
 
     persist(appState: Readonly<AppState>): void {

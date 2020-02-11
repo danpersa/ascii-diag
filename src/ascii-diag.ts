@@ -9,10 +9,12 @@ import {ShapeIdService} from "./shapes/shape-id-service";
 import {DiagToSvg} from "./renderers/diag-to-svg";
 import {GridDrawerFactory} from "./drawers/drawer-factory";
 import {StateProvider} from "./ui/state-provider";
+import Has2DContext from "./has-2d-context";
+import {RefObject} from "react";
+import DiagToSvgProvider from "./ui/diag-to-svg-provider";
 
-export default class AsciiDiag {
-    private readonly canvas: HTMLCanvasElement;
-    private readonly context: CanvasRenderingContext2D;
+export default class AsciiDiag implements Has2DContext {
+    readonly canvasRef: React.RefObject<HTMLCanvasElement>;
     private paint: boolean;
 
     private clickX: number[] = [];
@@ -24,16 +26,15 @@ export default class AsciiDiag {
     private readonly layerService: LayerService;
     private lastPress: [number, number] = [-1, -1];
     private readonly shapeIdService: ShapeIdService;
-    private readonly diagToSvg: DiagToSvg;
+    private readonly diagToSvgProvider: DiagToSvgProvider;
     private readonly gridDrawerFactory: GridDrawerFactory;
     private readonly appState: StateProvider;
 
-    constructor(canvas: HTMLCanvasElement, layerService: LayerService, gridDrawerFactory: GridDrawerFactory,
-                diagToSvg: DiagToSvg, cellDrawer: CellDrawer, toolService: ToolService, context: CanvasRenderingContext2D,
+    constructor(canvas: React.RefObject<HTMLCanvasElement>, layerService: LayerService, gridDrawerFactory: GridDrawerFactory,
+                diagToSvgProvider: DiagToSvgProvider, cellDrawer: CellDrawer, toolService: ToolService,
                 appState: StateProvider) {
-        this.diagToSvg = diagToSvg;
-        this.canvas = canvas;
-        this.context = context;
+        this.diagToSvgProvider = diagToSvgProvider;
+        this.canvasRef = canvas;
         this.gridDrawerFactory = gridDrawerFactory;
         this.paint = false;
         this.shapeIdService = new ShapeIdService();
@@ -48,33 +49,28 @@ export default class AsciiDiag {
         });
 
         this.redraw();
-        this.createUserEvents();
+        this.createUserEvents(appState);
     }
 
-    private createUserEvents() {
-        let canvas = this.canvas;
+    private createUserEvents(appState: StateProvider) {
+        this.getCanvas().addEventListener("mousedown", this.pressEventHandler);
+        this.getCanvas().addEventListener("mousemove", this.dragEventHandler);
+        this.getCanvas().addEventListener("mouseup", this.releaseEventHandler);
+        this.getCanvas().addEventListener("mouseout", this.cancelEventHandler);
 
-        canvas.addEventListener("mousedown", this.pressEventHandler);
-        canvas.addEventListener("mousemove", this.dragEventHandler);
-        canvas.addEventListener("mouseup", this.releaseEventHandler);
-        canvas.addEventListener("mouseout", this.cancelEventHandler);
-
-        canvas.addEventListener("touchstart", this.pressEventHandler);
-        canvas.addEventListener("touchmove", this.dragEventHandler);
-        canvas.addEventListener("touchend", this.releaseEventHandler);
-        canvas.addEventListener("touchcancel", this.cancelEventHandler);
+        this.getCanvas().addEventListener("touchstart", this.pressEventHandler);
+        this.getCanvas().addEventListener("touchmove", this.dragEventHandler);
+        this.getCanvas().addEventListener("touchend", this.releaseEventHandler);
+        this.getCanvas().addEventListener("touchcancel", this.cancelEventHandler);
 
         document.addEventListener('keydown', (e: KeyboardEvent) => {
-            this.toolService.currentTool().keyDown(e.key);
+            this.toolService.currentTool().keyDown(e.key, appState.get());
             this.redraw();
         });
     }
 
     private redraw() {
-        let clickX = this.clickX;
-        let context = this.context;
-        let clickDrag = this.clickDrag;
-        let clickY = this.clickY;
+        let context = this.getContext();
 
         context.clearRect(0, 0, Constants.canvasWidth, Constants.canvasHeight);
         const grid = Grid.create(Constants.numberOfRows, Constants.numberOfColumns);
@@ -82,7 +78,7 @@ export default class AsciiDiag {
         this.gridDrawer.draw(grid);
 
         this.toolService.currentTool().render();
-        this.diagToSvg.render();
+        this.diagToSvgProvider.get().render();
     };
 
     private addShapesToGrid(grid: Grid) {
@@ -117,8 +113,8 @@ export default class AsciiDiag {
         let mouseY = (e as TouchEvent).changedTouches ?
             (e as TouchEvent).changedTouches[0].pageY :
             (e as MouseEvent).pageY;
-        mouseX -= this.canvas.offsetLeft;
-        mouseY -= this.canvas.offsetTop;
+        mouseX -= this.getCanvas().offsetLeft;
+        mouseY -= this.getCanvas().offsetTop;
         return [mouseX, mouseY];
     }
 
@@ -146,7 +142,7 @@ export default class AsciiDiag {
             const [startRow, startColumn] = this.lastPress;
             this.toolService.currentTool().drag(startRow, startColumn, row, column, mouseX, mouseY, this.appState.get());
         } else {
-            this.toolService.currentTool().mouseMove(row, column, mouseX, mouseY, this.appState.get() );
+            this.toolService.currentTool().mouseMove(row, column, mouseX, mouseY, this.appState.get());
         }
 
         this.redraw();
@@ -161,5 +157,13 @@ export default class AsciiDiag {
 
     private fromCanvasToGrid(x: number, y: number): [number, number] {
         return [Math.floor(y / Constants.densityY), Math.floor(x / Constants.densityX)];
+    }
+
+    getContext(): CanvasRenderingContext2D {
+        return this.canvasRef.current!.getContext("2d")!;
+    }
+
+    getCanvas(): HTMLCanvasElement {
+        return this.canvasRef.current!;
     }
 }

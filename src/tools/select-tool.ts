@@ -1,6 +1,7 @@
 import {Tool} from "./tool";
 import {ToolService} from "./tool-service";
 import {AppState} from "../ui/app-state";
+import {StateProvider} from "../ui/state-provider";
 
 export class SelectTool implements Tool {
 
@@ -24,7 +25,7 @@ export class SelectTool implements Tool {
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
     }
 
-    keyDown(key: string): void {
+    keyDown(key: string, appState: Readonly<AppState>): void {
     }
 
     persist(appState: Readonly<AppState>): void {

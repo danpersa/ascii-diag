@@ -8,6 +8,7 @@ import {BoxDrawer} from "../drawers/box-drawer";
 import {Box} from "../drawers/box";
 import {ToolService} from "./tool-service";
 import {AppState} from "../ui/app-state";
+import {StateProvider} from "../ui/state-provider";
 
 export class BoxMoveTool implements Tool {
 
@@ -69,7 +70,7 @@ export class BoxMoveTool implements Tool {
         this.persist(appState);
     }
 
-    keyDown(key: string): void {
+    keyDown(key: string, appState: Readonly<AppState>): void {
     }
 
     mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {

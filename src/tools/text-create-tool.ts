@@ -8,6 +8,7 @@ import {TextDrawer} from "../drawers/text-drawer";
 import {CursorDrawer} from "../drawers/cursor-drawer";
 import {Cursor} from "../drawers/cursor";
 import {AppState} from "../ui/app-state";
+import {StateProvider} from "../ui/state-provider";
 
 export class TextCreateTool implements Tool {
 
@@ -44,7 +45,7 @@ export class TextCreateTool implements Tool {
         }
     }
 
-    keyDown(key: string): void {
+    keyDown(key: string, appState: Readonly<AppState>): void {
         console.log("Pressed " + key);
 
         if (!this.currentText) {

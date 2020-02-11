@@ -5,6 +5,7 @@ import {BoxDrawer} from "../drawers/box-drawer";
 import {Box} from "../drawers/box";
 import {ShapeIdService} from "../shapes/shape-id-service";
 import {AppState} from "../ui/app-state";
+import {StateProvider} from "../ui/state-provider";
 
 export class BoxCreateTool implements Tool {
 
@@ -46,7 +47,7 @@ export class BoxCreateTool implements Tool {
         this.box = null;
     }
 
-    keyDown(key: string): void {
+    keyDown(key: string, appState: Readonly<AppState>): void {
     }
 
     persist(appState: Readonly<AppState>): void {

@@ -10,6 +10,7 @@ import {VertexDrawer} from "../drawers/vertex-drawer";
 import {Text} from "../drawers/text";
 import {TextDrawer} from "../drawers/text-drawer";
 import {AppState} from "../ui/app-state";
+import {StateProvider} from "../ui/state-provider";
 
 export class TextMoveTool implements Tool {
 
@@ -58,7 +59,7 @@ export class TextMoveTool implements Tool {
         this.persist(appState);
     }
 
-    keyDown(key: string): void {
+    keyDown(key: string, appState: Readonly<AppState>): void {
     }
 
     mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {

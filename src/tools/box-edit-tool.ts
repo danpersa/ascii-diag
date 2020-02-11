@@ -6,6 +6,7 @@ import {ResizeType} from "./box-resize-tool";
 import {ToolService} from "./tool-service";
 import {LayerService} from "../layer-service";
 import {AppState} from "../ui/app-state";
+import {StateProvider} from "../ui/state-provider";
 
 export class BoxEditTool implements Tool {
 
@@ -59,7 +60,7 @@ export class BoxEditTool implements Tool {
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
     }
 
-    keyDown(key: string): void {
+    keyDown(key: string, appState: Readonly<AppState>): void {
         if (key === "Backspace" || key === "Delete") {
             this.layerService.deleteShape(this.shape.id());
             this.toolService.selectSelectTool();

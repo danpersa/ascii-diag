@@ -1,19 +1,16 @@
 import 'jest-canvas-mock';
 import {CanvasVertexDrawer} from './vertex-drawer';
 import {Vertex} from "./vertex";
+import {default as React, RefObject} from "react";
+import {mockGetContext} from "./__mocks__/get-context";
 
 let ctx: CanvasRenderingContext2D;
 
-beforeEach(() => {
-    let canvas = document.createElement('canvas');
-    ctx = canvas.getContext('2d')!;
-    canvas.width = 400;
-    canvas.height = 300;
-});
-
 describe('draw', () => {
     beforeEach(() => {
-        let vertexDrawer = new CanvasVertexDrawer(ctx);
+        let canvasRef: RefObject<HTMLCanvasElement> = React.createRef();
+        let vertexDrawer = new CanvasVertexDrawer(canvasRef);
+        ctx = mockGetContext(vertexDrawer);
         vertexDrawer.draw(Vertex.fromCanvas(10, 10));
     });
 

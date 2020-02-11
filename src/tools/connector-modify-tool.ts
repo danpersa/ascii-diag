@@ -8,6 +8,7 @@ import {LayerService} from "../layer-service";
 import {ConnectorVertexFactory} from "./connector-vertex-factory";
 import {ConnectorDrawer} from "../drawers/connector-drawer";
 import {AppState} from "../ui/app-state";
+import {StateProvider} from "../ui/state-provider";
 
 export enum ConnectorMoveType {
     StartMove,
@@ -122,7 +123,7 @@ export class ConnectorModifyTool implements Tool {
         this.shape.endEditing();
     }
 
-    keyDown(key: string): void {
+    keyDown(key: string, appState: Readonly<AppState>): void {
     }
 
     persist(appState: Readonly<AppState>): void {

@@ -3,22 +3,20 @@ import {CanvasSelectBoxDrawer} from './select-box-drawer';
 import {SelectBox} from "./select-box";
 import {VertexDrawer} from './vertex-drawer';
 import {VertexDrawerMock} from "./__mocks__/vertex-drawer-mock";
+import * as React from "react";
+import {RefObject} from "react";
+import {mockGetContext} from "./__mocks__/get-context";
 
 let ctx: CanvasRenderingContext2D;
 let vertexDrawerMock: VertexDrawer;
-
-beforeEach(() => {
-    let canvas = document.createElement('canvas');
-    ctx = canvas.getContext('2d')!;
-    canvas.width = 400;
-    canvas.height = 300;
-});
 
 describe('draw', () => {
 
     beforeEach(() => {
         vertexDrawerMock = new VertexDrawerMock();
-        let selectBoxDrawer = new CanvasSelectBoxDrawer(ctx, vertexDrawerMock);
+        let canvasRef: RefObject<HTMLCanvasElement> = React.createRef();
+        let selectBoxDrawer = new CanvasSelectBoxDrawer(canvasRef, vertexDrawerMock);
+        ctx = mockGetContext(selectBoxDrawer);
         selectBoxDrawer.draw(SelectBox.fromGrid(5, 5, 10, 10));
     });
 

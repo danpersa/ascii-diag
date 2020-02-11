@@ -1,27 +1,32 @@
 import Constants from "../constants";
 import {Drawer} from "./drawer";
 import {Cursor} from "./cursor";
+import Has2DContext from "../has-2d-context";
 
-export interface CursorDrawer extends Drawer<Cursor> {
+export interface CursorDrawer extends Drawer<Cursor>, Has2DContext {
 }
 
 export class CanvasCursorDrawer implements CursorDrawer {
 
-    private readonly context: CanvasRenderingContext2D;
+    readonly canvasRef: React.RefObject<HTMLCanvasElement>;
 
-    constructor(context: CanvasRenderingContext2D) {
-        this.context = context;
+    constructor(canvasRef: React.RefObject<HTMLCanvasElement>) {
+        this.canvasRef = canvasRef;
     }
 
     draw(cursor: Cursor): void {
         const cursorX = cursor.column * Constants.densityX;
         const cursorY = cursor.row * Constants.densityY;
 
-        this.context.strokeStyle = Constants.accentColor;
-        this.context.lineWidth = 2;
-        this.context.beginPath();
-        this.context.moveTo(cursorX, cursorY);
-        this.context.lineTo(cursorX, cursorY + Constants.densityY);
-        this.context.stroke();
+        this.getContext().strokeStyle = Constants.accentColor;
+        this.getContext().lineWidth = 2;
+        this.getContext().beginPath();
+        this.getContext().moveTo(cursorX, cursorY);
+        this.getContext().lineTo(cursorX, cursorY + Constants.densityY);
+        this.getContext().stroke();
+    }
+
+    getContext(): CanvasRenderingContext2D {
+        return this.canvasRef.current!.getContext("2d")!;
     }
 }

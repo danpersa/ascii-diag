@@ -7,6 +7,7 @@ import {ConnectorDirection} from "../drawers/connector";
 import {LayerService} from "../layer-service";
 import {ConnectorVertexFactory} from "./connector-vertex-factory";
 import {AppState} from "../ui/app-state";
+import {StateProvider} from "../ui/state-provider";
 
 export class ConnectorFlipTool implements Tool {
 
@@ -60,7 +61,7 @@ export class ConnectorFlipTool implements Tool {
         this.toolService.selectConnectorEditTool(shape);
     }
 
-    keyDown(key: string): void {
+    keyDown(key: string, appState: Readonly<AppState>): void {
     }
 
     persist(appState: Readonly<AppState>): void {

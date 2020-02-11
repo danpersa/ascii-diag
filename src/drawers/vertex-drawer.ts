@@ -7,14 +7,22 @@ export interface VertexDrawer {
 
 export class CanvasVertexDrawer implements VertexDrawer {
 
-    private readonly context: CanvasRenderingContext2D;
+    readonly canvasRef: React.RefObject<HTMLCanvasElement>;
 
-    constructor(context: CanvasRenderingContext2D) {
-        this.context = context;
+    constructor(canvasRef: React.RefObject<HTMLCanvasElement>) {
+        this.canvasRef = canvasRef;
     }
 
     draw(vertex: Vertex) {
-        this.context.fillStyle = `rgb(255, 165, 0, 1.0)`;
-        this.context.fillRect(vertex.canvasX - Constants.halfVertexRadius, vertex.canvasY - Constants.halfVertexRadius, Constants.vertexRadius, Constants.vertexRadius);
+        this.getContext().fillStyle = `rgb(255, 165, 0, 1.0)`;
+        this.getContext().fillRect(vertex.canvasX - Constants.halfVertexRadius, vertex.canvasY - Constants.halfVertexRadius, Constants.vertexRadius, Constants.vertexRadius);
+    }
+
+    getContext(): CanvasRenderingContext2D {
+        return this.canvasRef.current!.getContext("2d")!;
+    }
+
+    getCanvas(): HTMLCanvasElement {
+        return this.canvasRef.current!;
     }
 }

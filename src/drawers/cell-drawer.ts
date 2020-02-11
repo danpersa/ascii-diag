@@ -1,17 +1,18 @@
 import Constants from "../constants";
 import {Domain} from "./cell";
 import Cell = Domain.Cell;
+import Has2DContext from "../has-2d-context";
 
 export interface CellDrawer {
     draw(cell: Cell): void;
 }
 
-export class CanvasCellDrawer implements CellDrawer {
+export class CanvasCellDrawer implements CellDrawer, Has2DContext {
 
-    private readonly context: CanvasRenderingContext2D;
+    readonly canvasRef: React.RefObject<HTMLCanvasElement>;
 
-    constructor(context: CanvasRenderingContext2D) {
-        this.context = context;
+    constructor(canvasRef: React.RefObject<HTMLCanvasElement>) {
+        this.canvasRef = canvasRef;
     }
 
     draw(cell: Cell) {
@@ -21,22 +22,26 @@ export class CanvasCellDrawer implements CellDrawer {
     }
 
     private drawBorder(cell: Cell) {
-        this.context.strokeStyle = `rgb(0, 0, 0, 0.3)`;
-        this.context.lineWidth = 0.5;
-        this.context.strokeRect(cell.canvasX, cell.canvasY, Constants.densityX, Constants.densityY);
+        this.getContext().strokeStyle = `rgb(0, 0, 0, 0.3)`;
+        this.getContext().lineWidth = 0.5;
+        this.getContext().strokeRect(cell.canvasX, cell.canvasY, Constants.densityX, Constants.densityY);
     }
 
     private drawSelected(cell: Cell) {
         if (!cell.selected) {
             return;
         }
-        this.context.fillStyle = `rgb(0, 0, 200, 0.3)`;
-        this.context.fillRect(cell.canvasX, cell.canvasY, Constants.densityX, Constants.densityY);
+        this.getContext().fillStyle = `rgb(0, 0, 200, 0.3)`;
+        this.getContext().fillRect(cell.canvasX, cell.canvasY, Constants.densityX, Constants.densityY);
     }
 
     private drawText(cell: Cell) {
-        this.context.fillStyle = `rgb(0, 0, 0)`;
-        this.context.font = Constants.font;
-        this.context.fillText(cell.text, cell.canvasX + 2, cell.canvasY + 15);
+        this.getContext().fillStyle = `rgb(0, 0, 0)`;
+        this.getContext().font = Constants.font;
+        this.getContext().fillText(cell.text, cell.canvasX + 2, cell.canvasY + 15);
+    }
+
+    getContext(): CanvasRenderingContext2D {
+        return this.canvasRef.current!.getContext("2d")!;
     }
 }

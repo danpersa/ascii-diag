@@ -1,4 +1,5 @@
 import {AppState} from "../ui/app-state";
+import {StateProvider} from "../ui/state-provider";
 
 export enum Tools {
     select = "select",
@@ -16,7 +17,7 @@ export interface Tool {
 
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void;
 
-    keyDown(key: string): void;
+    keyDown(key: string, appState: Readonly<AppState>): void;
 
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void;
 
