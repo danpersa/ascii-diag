@@ -10,6 +10,17 @@ export enum ConnectorTipDirection {
     West
 }
 
+export enum ConnectorTipType {
+    Flat,
+    Arrow
+}
+
+export enum LineStyle {
+    Continuous,
+    Dashed,
+    Dotted
+}
+
 export class Connector {
     protected readonly _startRow: number;
     protected readonly _startColumn: number;

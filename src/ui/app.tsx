@@ -30,6 +30,7 @@ import {ShapeUpdateNotificationService} from "../shape-update-notification-servi
 import {CellToShapeService} from "../cell-to-shape-service";
 import {ConnectorTipDirectionService} from "../connector-tip-direction-service";
 import IconMenu from "./icon-menu";
+import {LineStyle} from "../drawers/connector";
 
 
 const appStyles = (theme: Theme) => createStyles({
@@ -67,7 +68,8 @@ interface AppProps extends WithStyles<typeof appStyles> {
 }
 
 type AppState = {
-    currentTool: Tools
+    currentTool: Tools,
+    connectorLineStyle: LineStyle
 }
 
 const AppWithStyles = withStyles(appStyles)(
@@ -84,7 +86,8 @@ const AppWithStyles = withStyles(appStyles)(
         constructor(props: AppProps) {
             super(props);
             this.state = {
-                currentTool: Tools.box
+                currentTool: Tools.box,
+                connectorLineStyle: LineStyle.Continuous,
             };
             this.grid = Grid.create(Constants.numberOfRows, Constants.numberOfColumns);
             this.shapeUpdateNotificationService = new ShapeUpdateNotificationService();
@@ -99,9 +102,18 @@ const AppWithStyles = withStyles(appStyles)(
 
             const handleToolChange = (event: React.MouseEvent<HTMLElement>, newTool: Tools) => {
                 console.log("handle tool change: " + newTool);
-                if (newTool) {
-                    this.setState({currentTool: newTool});
-                }
+                this.setState({
+                    currentTool: newTool,
+                    connectorLineStyle: this.state.connectorLineStyle
+                });
+            };
+
+            const handleConnectorLineStyleChange = (event: React.MouseEvent<HTMLElement>, newLineStyle: LineStyle) => {
+                console.log("handle connector line style change: " + newLineStyle);
+                this.setState({
+                    currentTool: this.state.currentTool,
+                    connectorLineStyle: newLineStyle
+                });
             };
 
             const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
@@ -117,7 +129,8 @@ const AppWithStyles = withStyles(appStyles)(
                         </Toolbar>
                     </AppBar>
                     <Paper>
-                        <ToggleButtonGroup size="large" value={this.state.currentTool} exclusive
+                        <ToggleButtonGroup size="large" value={this.state.currentTool}
+                                           exclusive
                                            onChange={handleToolChange}
                                            style={margin}>
                             <ToggleButton value={Tools.select} style={padding}>
@@ -133,12 +146,23 @@ const AppWithStyles = withStyles(appStyles)(
                                 <RayStartArrow/>
                             </ToggleButton>
                         </ToggleButtonGroup>
-                        <IconMenu title="Start" options={["Flat", "Arrow"]} icons={[<Minus/>, <ArrowLeft/>]}/>
+                        <IconMenu title="Start"
+                                  selectedIndex={this.state.connectorLineStyle}
+                                  onChange={handleConnectorLineStyleChange}
+                                  options={["Flat", "Arrow"]}
+                                  icons={[<Minus/>, <ArrowLeft/>]}/>
 
-                        <IconMenu title="Line Style" options={["continuous", "dashed", "dotted"]}
+                        <IconMenu title="Line Style"
+                                  selectedIndex={this.state.connectorLineStyle}
+                                  onChange={handleConnectorLineStyleChange}
+                                  options={["continuous", "dashed", "dotted"]}
                                   icons={[<Minus/>, <CurrentDc/>, <DotsHorizontal/>]}/>
 
-                        <IconMenu title="End" options={["Flat", "Arrow"]} icons={[<Minus/>, <ArrowRight/>]}/>
+                        <IconMenu title="End"
+                                  selectedIndex={this.state.connectorLineStyle}
+                                  onChange={handleConnectorLineStyleChange}
+                                  options={["Flat", "Arrow"]}
+                                  icons={[<Minus/>, <ArrowRight/>]}/>
                     </Paper>
                     <UIGrid container>
                         <UIGrid item sm={12} md={6}>
