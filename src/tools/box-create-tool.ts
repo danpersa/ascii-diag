@@ -50,6 +50,7 @@ export class BoxCreateTool implements Tool {
             Math.max(this.startColumn, this.endColumn),
             appState.boxCornerStyle);
         this.layerService.createShape(shape);
+        this.box = null;
     }
 
     keyDown(key: string, appState: Readonly<AppState>): void {
