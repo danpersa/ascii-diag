@@ -92,6 +92,8 @@ export class TextEditTool extends TextCreateTool implements Tool {
             // we deleted all text, so we delete the shape
             this.layerService.deleteShape(this.shape.id());
         }
+
+        this.currentText = null;
     }
 
     mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {

@@ -55,7 +55,6 @@ export class TextCreateTool implements Tool {
         if (key === "Enter") {
             console.log("Persist text");
             this.persist(appState);
-            this.currentText = null;
             return;
         }
 
@@ -78,6 +77,11 @@ export class TextCreateTool implements Tool {
 
     persist(appState: Readonly<AppState>): void {
         if (!this.currentText) {
+            this.currentText = null;
+            return;
+        }
+        if (this.currentText!.text.length == 0) {
+            this.currentText = null;
             return;
         }
         const shape: Shape = new TextShape(
@@ -85,10 +89,9 @@ export class TextCreateTool implements Tool {
             this.currentText!.row,
             this.currentText!.column,
             this.currentText!.text);
-        if (this.currentText!.text.length == 0) {
-            return;
-        }
+
         this.layerService.createShape(shape);
+        this.currentText = null;
     }
 
     render(): void {

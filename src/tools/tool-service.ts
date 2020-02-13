@@ -34,7 +34,7 @@ export class ToolService implements ShapeUpdateListener {
 
     private readonly boxCreateTool: Tool;
     private readonly connectorCreateTool: Tool;
-    private readonly textTool: Tool;
+    private readonly textCreateTool: Tool;
     private readonly layerService: LayerService;
     private readonly selectTool: SelectTool;
     private readonly boxDrawer: BoxDrawer;
@@ -59,7 +59,7 @@ export class ToolService implements ShapeUpdateListener {
         this.connectorDrawer = connectorDrawer;
         this.boxCreateTool = new BoxCreateTool(layerService, boxDrawer, shapeIdService);
         this.connectorCreateTool = new ConnectorCreateTool(layerService, shapeIdService, connectorDrawer);
-        this.textTool = new TextCreateTool(layerService, shapeIdService, textDrawer, cursorDrawer);
+        this.textCreateTool = new TextCreateTool(layerService, shapeIdService, textDrawer, cursorDrawer);
         this.connectorVertexFactory = new ConnectorVertexFactory();
         this.selectTool = new SelectTool(this);
         this.selectBoxDrawer = selectBoxDrawer;
@@ -110,7 +110,7 @@ export class ToolService implements ShapeUpdateListener {
     }
 
     selectTextTool(): void {
-        this.setTool(this.textTool);
+        this.setTool(this.textCreateTool);
     }
 
     selectSelectTool(): void {
