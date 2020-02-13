@@ -18,7 +18,9 @@ import {
     DotsHorizontal,
     FormatText,
     Minus,
-    RayStartArrow
+    RayStartArrow,
+    RoundedCorner,
+    SquareOutline
 } from "mdi-material-ui";
 import SvgCanvas from "./svg-diag";
 import {LayerService} from "../layer-service";
@@ -52,6 +54,8 @@ import {SelectTool} from "../tools/select-tool";
 import {TextEditTool} from "../tools/text-edit-tool";
 import {Shape} from "../shapes/shape";
 import {ConnectorShape} from "../shapes/connector-shape";
+import {BoxShape} from "../shapes/box-shape";
+import {BoxCornerStyle} from "../drawers/box";
 
 const appStyles = (theme: Theme) => createStyles({
     root: {
@@ -141,9 +145,12 @@ const AppWithStyles = withStyles(appStyles)(
             this.shapeUpdateNotificationService.register(this.cellToShapeService);
             this.shapeUpdateNotificationService.register(this.toolService);
 
-            this.state = new AppState(this.toolService.currentTool(),
-                LineStyle.Continuous, ConnectorTipStyle.Flat,
-                ConnectorTipStyle.Flat);
+            this.state = new AppState(
+                this.toolService.currentTool(),
+                LineStyle.Continuous,
+                ConnectorTipStyle.Flat,
+                ConnectorTipStyle.Flat,
+                BoxCornerStyle.Square);
 
             const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
             this.diagToSvgProvider = new DiagToSvgProvider(diagToSvg);
@@ -158,6 +165,11 @@ const AppWithStyles = withStyles(appStyles)(
         shouldShowConnectorOptions(): boolean {
             return this.toolService.currentTool() instanceof ConnectorCreateTool
                 || this.toolService.currentShape() instanceof ConnectorShape;
+        }
+
+        shouldShowBoxOptions(): boolean {
+            return this.toolService.currentTool() instanceof BoxCreateTool
+                || this.toolService.currentShape() instanceof BoxShape;
         }
 
         private handleToolChange = (event: React.MouseEvent<HTMLElement>, newTool: Tools) => {
@@ -180,12 +192,13 @@ const AppWithStyles = withStyles(appStyles)(
                     currentTool: this.state.currentTool,
                     connectorLineStyle: newLineStyle,
                     connectorStartTipStyle: this.state.connectorStartTipStyle,
-                    connectorEndTipStyle: this.state.connectorEndTipStyle
+                    connectorEndTipStyle: this.state.connectorEndTipStyle,
+                    boxCornerStyle: this.state.boxCornerStyle,
                 });
         };
 
         private handleConnectorStartTipStyleChange = (event: React.MouseEvent<HTMLElement>, newConnectorTipStyle: ConnectorTipStyle) => {
-            console.log("handle connector start tip type change: " + newConnectorTipStyle);
+            console.log("handle connector start tip style change: " + newConnectorTipStyle);
 
             const shape = this.toolService.currentShape();
             if (shape && shape instanceof ConnectorShape) {
@@ -197,12 +210,13 @@ const AppWithStyles = withStyles(appStyles)(
                 currentTool: this.state.currentTool,
                 connectorLineStyle: this.state.connectorLineStyle,
                 connectorStartTipStyle: newConnectorTipStyle,
-                connectorEndTipStyle: this.state.connectorEndTipStyle
+                connectorEndTipStyle: this.state.connectorEndTipStyle,
+                boxCornerStyle: this.state.boxCornerStyle,
             });
         };
 
         private handleConnectorEndTipStyleChange = (event: React.MouseEvent<HTMLElement>, newConnectorTipStyle: ConnectorTipStyle) => {
-            console.log("handle connector end tip type change: " + newConnectorTipStyle);
+            console.log("handle connector end tip style change: " + newConnectorTipStyle);
 
             const shape = this.toolService.currentShape();
             if (shape && shape instanceof ConnectorShape) {
@@ -214,7 +228,26 @@ const AppWithStyles = withStyles(appStyles)(
                 currentTool: this.state.currentTool,
                 connectorLineStyle: this.state.connectorLineStyle,
                 connectorStartTipStyle: this.state.connectorStartTipStyle,
-                connectorEndTipStyle: newConnectorTipStyle
+                connectorEndTipStyle: newConnectorTipStyle,
+                boxCornerStyle: this.state.boxCornerStyle,
+            });
+        };
+
+        private handleBoxCornerStyleChange = (event: React.MouseEvent<HTMLElement>, boxCornerStyle: BoxCornerStyle) => {
+            console.log("handle box corner style change: " + boxCornerStyle);
+
+            const shape = this.toolService.currentShape();
+            if (shape && shape instanceof BoxShape) {
+                const newShape = BoxShape.ShapeBuilder.from(shape).cornerStyle(boxCornerStyle).build();
+                this.toolService.selectBoxUpdateStylesTool(newShape);
+            }
+
+            this.setState({
+                currentTool: this.state.currentTool,
+                connectorLineStyle: this.state.connectorLineStyle,
+                connectorStartTipStyle: this.state.connectorStartTipStyle,
+                connectorEndTipStyle: this.state.connectorEndTipStyle,
+                boxCornerStyle: boxCornerStyle,
             });
         };
 
@@ -273,6 +306,15 @@ const AppWithStyles = withStyles(appStyles)(
                                       icons={[<Minus/>, <ArrowRight/>]}/>
                         </span>
                         }
+                        {this.shouldShowBoxOptions() &&
+                        <span>
+                            <IconMenu title="Corner Style"
+                                      selectedIndex={this.state.boxCornerStyle}
+                                      onChange={this.handleBoxCornerStyleChange}
+                                      options={["Square Corners", "Rounded Corners"]}
+                                      icons={[<SquareOutline/>, <RoundedCorner/>]}/>
+                        </span>
+                        }
                     </Paper>
                     <UIGrid container>
                         <UIGrid item sm={12} md={6}>
@@ -297,6 +339,7 @@ const AppWithStyles = withStyles(appStyles)(
                 connectorLineStyle: this.state.connectorLineStyle,
                 connectorStartTipStyle: this.state.connectorStartTipStyle,
                 connectorEndTipStyle: this.state.connectorEndTipStyle,
+                boxCornerStyle: this.state.boxCornerStyle,
             });
         }
 
@@ -312,11 +355,17 @@ const AppWithStyles = withStyles(appStyles)(
                 connectorLineStyle = newShape.lineStyle;
             }
 
+            let boxCornerStyle = this.state.boxCornerStyle;
+            if (newShape && newShape instanceof BoxShape) {
+                boxCornerStyle = newShape.cornerStyle;
+            }
+
             this.setState({
                 currentTool: this.state.currentTool,
                 connectorLineStyle: connectorLineStyle,
                 connectorStartTipStyle: connectorStartTipStyle,
                 connectorEndTipStyle: connectorEndTipStyle,
+                boxCornerStyle: boxCornerStyle,
             });
         }
 

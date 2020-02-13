@@ -27,7 +27,7 @@ export class BoxCreateTool implements Tool {
     mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         this.startRow = row;
         this.startColumn = column;
-        this.box = new Box(row, column, row, column);
+        this.box = new Box(row, column, row, column, appState.boxCornerStyle);
     }
 
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
@@ -37,7 +37,7 @@ export class BoxCreateTool implements Tool {
         const minColumn = Math.min(startColumn, column);
         const maxColumn = Math.max(startColumn, column);
 
-        this.box = new Box(minRow, minColumn, maxRow, maxColumn);
+        this.box = new Box(minRow, minColumn, maxRow, maxColumn, appState.boxCornerStyle);
     }
 
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
@@ -56,7 +56,8 @@ export class BoxCreateTool implements Tool {
             Math.min(this.startRow, this.endRow),
             Math.min(this.startColumn, this.endColumn),
             Math.max(this.startRow, this.endRow),
-            Math.max(this.startColumn, this.endColumn));
+            Math.max(this.startColumn, this.endColumn),
+            appState.boxCornerStyle);
         this.layerService.createShape(shape);
     }
 

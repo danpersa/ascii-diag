@@ -1,6 +1,11 @@
 import Constants from "../constants";
 import {SelectBox} from "./select-box";
 
+export enum BoxCornerStyle {
+    Square,
+    Rounded
+}
+
 export class Box {
     private readonly _canvasX: number;
     private readonly _canvasY: number;
@@ -12,7 +17,9 @@ export class Box {
     private readonly _bottomRow: number;
     private readonly _rightColumn: number;
 
-    constructor(topRow: number, leftColumn: number, bottomRow: number, rightColumn: number) {
+    private readonly _cornerStyle: BoxCornerStyle;
+
+    constructor(topRow: number, leftColumn: number, bottomRow: number, rightColumn: number, cornerStyle: BoxCornerStyle) {
         this._topRow = topRow;
         this._leftColumn = leftColumn;
         this._bottomRow = bottomRow;
@@ -22,6 +29,8 @@ export class Box {
         this._canvasY = topRow * Constants.densityY;
         this._canvasWidth = (rightColumn - leftColumn + 1) * Constants.densityX;
         this._canvasHeight = (bottomRow - topRow + 1) * Constants.densityY;
+
+        this._cornerStyle = cornerStyle;
     }
 
     get rightColumn(): number {
@@ -55,6 +64,10 @@ export class Box {
     get canvasX(): number {
         return this._canvasX;
     }
+
+    get cornerStyle(): BoxCornerStyle {
+        return this._cornerStyle;
+    }
 }
 
 export namespace Box {
@@ -63,24 +76,28 @@ export namespace Box {
         protected _leftColumn: number;
         protected _bottomRow: number;
         protected _rightColumn: number;
+        protected _cornerStyle: BoxCornerStyle;
 
-        protected constructor(topRow: number, leftColumn: number, bottomRow: number, rightColumn: number) {
+
+        protected constructor(topRow: number, leftColumn: number, bottomRow: number, rightColumn: number,
+                              cornerStyle: BoxCornerStyle) {
             this._topRow = topRow;
             this._leftColumn = leftColumn;
             this._bottomRow = bottomRow;
             this._rightColumn = rightColumn;
+            this._cornerStyle = cornerStyle;
         }
 
         static from(box: Box): Builder {
-            return new Builder(box.topRow, box.leftColumn, box.bottomRow, box.rightColumn);
+            return new Builder(box.topRow, box.leftColumn, box.bottomRow, box.rightColumn, box.cornerStyle);
         }
 
         static fromSelectBox(box: SelectBox): Builder {
-            return new Builder(box.topRow, box.leftColumn, box.bottomRow, box.rightColumn);
+            return new Builder(box.topRow, box.leftColumn, box.bottomRow, box.rightColumn, box.cornerStyle);
         }
 
         build(): Box {
-            return new Box(this._topRow, this._leftColumn, this._bottomRow, this._rightColumn);
+            return new Box(this._topRow, this._leftColumn, this._bottomRow, this._rightColumn, this._cornerStyle);
         }
 
         topRow(value: number) {
@@ -100,6 +117,11 @@ export namespace Box {
 
         rightColumn(value: number) {
             this._rightColumn = value;
+            return this;
+        }
+
+        cornerStyle(value: BoxCornerStyle) {
+            this._cornerStyle = value;
             return this;
         }
     }

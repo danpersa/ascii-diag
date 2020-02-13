@@ -1,4 +1,4 @@
-import {Box} from "./box";
+import {Box, BoxCornerStyle} from "./box";
 import {CellDrawer} from "./cell-drawer";
 import {Domain} from "./cell";
 import {Drawer} from "./drawer";
@@ -18,8 +18,13 @@ export abstract class AbstractBoxDrawer implements BoxDrawer {
         const minColumn = box.leftColumn;
         const maxColumn = box.rightColumn;
 
+        const topLeftCornerSymbol = this.topLeftCornerSymbol(box.cornerStyle);
+        const topRightCornerSymbol = this.topRightCornerSymbol(box.cornerStyle);
+        const bottomLeftCornerSymbol = this.bottomLeftCornerSymbol(box.cornerStyle);
+        const bottomRightCornerSymbol = this.bottomRightCornerSymbol(box.cornerStyle);
+
         // start corner
-        let cell = Cell.Builder.from(box.topRow, box.leftColumn).text("+").build();
+        let cell = Cell.Builder.from(box.topRow, box.leftColumn).text(topLeftCornerSymbol).build();
         this.drawCell(cell);
 
         // horizontal edge
@@ -42,7 +47,7 @@ export abstract class AbstractBoxDrawer implements BoxDrawer {
             }
 
             // top right corner
-            let cell = Cell.Builder.from(box.topRow, box.rightColumn).text("+").build();
+            let cell = Cell.Builder.from(box.topRow, box.rightColumn).text(topRightCornerSymbol).build();
             this.drawCell(cell);
         }
 
@@ -54,15 +59,55 @@ export abstract class AbstractBoxDrawer implements BoxDrawer {
             }
 
             // bottom left corner
-            let cell = Cell.Builder.from(box.bottomRow, box.leftColumn).text("+").build();
+            let cell = Cell.Builder.from(box.bottomRow, box.leftColumn).text(bottomLeftCornerSymbol).build();
             this.drawCell(cell);
         }
 
         if (minRow != maxRow && minColumn != maxColumn) {
             // bottom right corner
-            let cell = Cell.Builder.from(box.bottomRow, box.rightColumn).text("+").build();
+            let cell = Cell.Builder.from(box.bottomRow, box.rightColumn).text(bottomRightCornerSymbol).build();
             this.drawCell(cell);
         }
+    }
+
+    private topLeftCornerSymbol(cornerStyle: BoxCornerStyle): string {
+        switch (cornerStyle) {
+            case BoxCornerStyle.Square:
+                return '+';
+            case BoxCornerStyle.Rounded:
+                return '/';
+        }
+        return '+';
+    }
+
+    private topRightCornerSymbol(cornerStyle: BoxCornerStyle): string {
+        switch (cornerStyle) {
+            case BoxCornerStyle.Square:
+                return '+';
+            case BoxCornerStyle.Rounded:
+                return '\\';
+        }
+        return '+';
+    }
+
+    private bottomLeftCornerSymbol(cornerStyle: BoxCornerStyle): string {
+        switch (cornerStyle) {
+            case BoxCornerStyle.Square:
+                return '+';
+            case BoxCornerStyle.Rounded:
+                return '\\';
+        }
+        return '+';
+    }
+
+    private bottomRightCornerSymbol(cornerStyle: BoxCornerStyle): string {
+        switch (cornerStyle) {
+            case BoxCornerStyle.Square:
+                return '+';
+            case BoxCornerStyle.Rounded:
+                return '/';
+        }
+        return '+';
     }
 }
 

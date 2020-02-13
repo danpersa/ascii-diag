@@ -1,12 +1,14 @@
 import {Shape} from "./shape";
-import {Box} from "../drawers/box";
+import {Box, BoxCornerStyle} from "../drawers/box";
 
 export class BoxShape extends Box implements Shape {
     private readonly _id: number;
     private _editing: boolean = false;
 
-    constructor(id: number, topRow: number, leftColumn: number, bottomRow: number, rightColumn: number, editing: boolean = false) {
-        super(topRow, leftColumn, bottomRow, rightColumn);
+    constructor(id: number, topRow: number, leftColumn: number, bottomRow: number, rightColumn: number,
+                cornerStyle: BoxCornerStyle,
+                editing: boolean = false) {
+        super(topRow, leftColumn, bottomRow, rightColumn, cornerStyle);
         this._id = id;
         this._editing = editing;
     }
@@ -33,18 +35,22 @@ export namespace BoxShape {
         protected _id: number;
         protected _editing: boolean = false;
 
-        protected constructor(id: number, topRow: number, leftColumn: number, bottomRow: number, rightColumn: number, editing: boolean = false) {
-            super(topRow, leftColumn, bottomRow, rightColumn);
+        protected constructor(id: number, topRow: number, leftColumn: number, bottomRow: number, rightColumn: number,
+                              cornerStyle: BoxCornerStyle,
+                              editing: boolean = false) {
+            super(topRow, leftColumn, bottomRow, rightColumn, cornerStyle);
             this._id = id;
             this._editing = editing;
         }
 
         static from(box: BoxShape): ShapeBuilder {
-            return new ShapeBuilder(box.id(), box.topRow, box.leftColumn, box.bottomRow, box.rightColumn, box.editing());
+            return new ShapeBuilder(box.id(), box.topRow, box.leftColumn, box.bottomRow,
+                box.rightColumn, box.cornerStyle, box.editing());
         }
 
         build(): BoxShape {
-            return new BoxShape(this._id, this._topRow, this._leftColumn, this._bottomRow, this._rightColumn, this._editing);
+            return new BoxShape(this._id, this._topRow, this._leftColumn, this._bottomRow, this._rightColumn,
+                this._cornerStyle, this._editing);
         }
 
         id(value: number) {

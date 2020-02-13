@@ -1,4 +1,4 @@
-import {Box} from "./box";
+import {Box, BoxCornerStyle} from "./box";
 import {Vertex} from "./vertex";
 import Constants from "../constants";
 
@@ -14,7 +14,7 @@ export class SelectBox extends Box {
     }
 
     private constructor(topRow: number, leftColumn: number, bottomRow: number, rightColumn: number) {
-        super(topRow, leftColumn, bottomRow, rightColumn);
+        super(topRow, leftColumn, bottomRow, rightColumn, BoxCornerStyle.Square);
         this._topLeftVertex = Vertex.fromGrid(this.topRow, this.leftColumn);
         this._topRightVertex = Vertex.fromGrid(this.topRow, this.rightColumn + 1);
         this._bottomLeftVertex = Vertex.fromGrid(this.bottomRow + 1, this.leftColumn);

@@ -60,6 +60,7 @@ export class BoxMoveTool implements Tool {
 
         this.box = Box.Builder
             .fromSelectBox(this.selectBox)
+            .cornerStyle(this.shape.cornerStyle)
             .build();
     }
 
@@ -80,7 +81,8 @@ export class BoxMoveTool implements Tool {
             this.selectBox.topRow,
             this.selectBox.leftColumn,
             this.selectBox.bottomRow,
-            this.selectBox.rightColumn);
+            this.selectBox.rightColumn,
+            this.shape.cornerStyle);
         this.layerService.updateShape(shape);
         this.toolService.selectBoxEditTool(shape);
     }

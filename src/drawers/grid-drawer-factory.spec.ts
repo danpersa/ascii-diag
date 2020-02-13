@@ -8,6 +8,7 @@ import {TextShape} from "../shapes/text-shape";
 import {GridTextDrawer} from "./text-drawer";
 import {BoxShape} from "../shapes/box-shape";
 import {GridBoxDrawer} from "./box-drawer";
+import {BoxCornerStyle} from "./box";
 
 let gridDrawerFactory: GridDrawerFactory;
 let grid: Grid;
@@ -33,7 +34,7 @@ describe('create', () => {
     });
 
     it('should create a drawer for a box shape', () => {
-        const box = new BoxShape(1, 1, 1, 2, 2);
+        const box = new BoxShape(1, 1, 1, 2, 2, BoxCornerStyle.Square);
         const drawer = gridDrawerFactory.create(box, grid);
         expect(drawer instanceof GridBoxDrawer).toBe(true);
     });

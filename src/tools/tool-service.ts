@@ -28,6 +28,7 @@ import {Shape} from "../shapes/shape";
 import {ShapeUpdateEvent, ShapeUpdateListener} from "../shape-update-notification-service";
 import {ConnectorUpdateStylesTool} from "./connector-update-styles-tool";
 import {ConnectorTipStyle} from "../drawers/connector";
+import {BoxUpdateStylesTool} from "./box-update-styles-tool";
 
 export class ToolService implements ShapeUpdateListener {
 
@@ -129,6 +130,11 @@ export class ToolService implements ShapeUpdateListener {
     selectBoxEditTool(shape: BoxShape): void {
         const boxEditTool = new BoxEditTool(this, this.layerService, this.selectBoxDrawer, shape);
         this.setTool(boxEditTool);
+    }
+
+    selectBoxUpdateStylesTool(shape: BoxShape): void {
+        const tool = new BoxUpdateStylesTool(this, this.layerService, shape);
+        this.setTool(tool);
     }
 
     selectConnectorEditTool(shape: ConnectorShape): void {
