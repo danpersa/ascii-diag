@@ -55,7 +55,12 @@ export class TextMoveTool implements Tool {
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
         console.log("End moving text");
         this.currentShape.endEditing();
-        this.persist(appState);
+        const shape = TextShape.ShapeBuilder.from(this.currentShape)
+            .row(this.currentText.row)
+            .column(this.currentText.column)
+            .build();
+        this.layerService.updateShape(shape);
+        this.toolService.selectTextEditTool(shape);
     }
 
     keyDown(key: string, appState: Readonly<AppState>): void {
@@ -64,17 +69,7 @@ export class TextMoveTool implements Tool {
     mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 
-    persist(appState: Readonly<AppState>): void {
-        const shape = new TextShape(
-            this.currentShape.id(),
-            this.currentText.row,
-            this.currentText.column,
-            this.currentShape.text);
-        this.layerService.updateShape(shape);
-        this.toolService.selectTextEditTool(shape);
-    }
-
-    beforeToolChange(): void {
+    beforeToolChange(tool: Tool): void {
     }
 
     render(): void {

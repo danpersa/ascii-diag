@@ -69,7 +69,7 @@ export class ConnectorCreateTool implements Tool {
     keyDown(key: string, appState: Readonly<AppState>): void {
     }
 
-    beforeToolChange(): void {
+    beforeToolChange(tool: Tool): void {
     }
 
     render(): void {

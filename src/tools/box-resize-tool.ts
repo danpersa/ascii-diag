@@ -116,7 +116,7 @@ export class BoxResizeTool implements Tool {
     mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 
-    beforeToolChange(): void {
+    beforeToolChange(tool: Tool): void {
     }
 
     render(): void {

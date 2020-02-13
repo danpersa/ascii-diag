@@ -27,7 +27,7 @@ export class SelectTool implements Tool {
     keyDown(key: string, appState: Readonly<AppState>): void {
     }
 
-    beforeToolChange(): void {
+    beforeToolChange(tool: Tool): void {
     }
 
     mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {

@@ -101,7 +101,7 @@ export class TextCreateTool implements Tool {
         }
     }
 
-    beforeToolChange(): void {
+    beforeToolChange(tool: Tool): void {
         this.persist();
     }
 

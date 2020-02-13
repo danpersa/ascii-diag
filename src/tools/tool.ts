@@ -28,7 +28,7 @@ export interface Tool {
 
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void;
 
-    beforeToolChange(): void;
+    beforeToolChange(nextTool: Tool): void;
 
     render(): void;
 }

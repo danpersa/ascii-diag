@@ -66,7 +66,7 @@ export class BoxEditTool implements Tool {
         }
     }
 
-    beforeToolChange(): void {
+    beforeToolChange(tool: Tool): void {
     }
 
     mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
