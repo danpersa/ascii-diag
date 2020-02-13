@@ -24,7 +24,7 @@ export class BoxResizeTool implements Tool {
     private readonly boxDrawer: BoxDrawer;
     private shape: BoxShape;
     private selectBox: SelectBox;
-    private box: Box | null = null;
+    private box: Box;
     private readonly resizeType: ResizeType;
 
     constructor(layerService: LayerService, toolService: ToolService, selectBoxDrawer: SelectBoxDrawer, boxDrawer: BoxDrawer, shape: BoxShape,
@@ -37,6 +37,10 @@ export class BoxResizeTool implements Tool {
         this.shape = shape;
         this.selectBox = SelectBox.fromGrid(this.shape.topRow, this.shape.leftColumn, this.shape.bottomRow, this.shape.rightColumn);
         this.shape.startEditing();
+        this.box = Box.Builder
+            .fromSelectBox(this.selectBox)
+            .cornerStyle(this.shape.cornerStyle)
+            .build();
         console.log("Create Box Resize Tool resizeType=" + resizeType + " shape: " + shape.topRow);
     }
 
@@ -116,9 +120,7 @@ export class BoxResizeTool implements Tool {
     }
 
     render(): void {
-        if (this.box) {
-            this.boxDrawer.draw(this.box);
-        }
+        this.boxDrawer.draw(this.box);
         this.selectBoxDrawer.draw(this.selectBox);
     }
 
