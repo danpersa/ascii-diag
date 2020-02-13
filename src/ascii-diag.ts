@@ -163,7 +163,8 @@ export default class AsciiDiag implements Has2DContext, ToolChangedListener, Sha
         return this.canvasRef.current!;
     }
 
-    toolChanged(newTool: Tool): void {
+    toolChanged(prevTool: Tool, tool: Tool): void {
+        prevTool.beforeToolChange();
         this.redraw();
     }
 

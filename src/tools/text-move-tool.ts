@@ -10,7 +10,6 @@ import {VertexDrawer} from "../drawers/vertex-drawer";
 import {Text} from "../drawers/text";
 import {TextDrawer} from "../drawers/text-drawer";
 import {AppState} from "../ui/app-state";
-import {StateProvider} from "../ui/state-provider";
 
 export class TextMoveTool implements Tool {
 
@@ -73,6 +72,9 @@ export class TextMoveTool implements Tool {
             this.currentShape.text);
         this.layerService.updateShape(shape);
         this.toolService.selectTextEditTool(shape);
+    }
+
+    beforeToolChange(): void {
     }
 
     render(): void {

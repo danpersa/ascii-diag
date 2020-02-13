@@ -9,7 +9,7 @@ export enum Tools {
 }
 
 export interface ToolChangedListener {
-    toolChanged(newTool: Tool): void;
+    toolChanged(prevTool: Tool, tool: Tool): void;
 }
 
 export interface SelectedShapeChangedListener {
@@ -28,7 +28,7 @@ export interface Tool {
 
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void;
 
-    persist(appState: Readonly<AppState>): void;
+    beforeToolChange(): void;
 
     render(): void;
 }

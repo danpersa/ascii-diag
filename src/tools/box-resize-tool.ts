@@ -8,7 +8,6 @@ import {BoxDrawer} from "../drawers/box-drawer";
 import {Box} from "../drawers/box";
 import {ToolService} from "./tool-service";
 import {AppState} from "../ui/app-state";
-import {StateProvider} from "../ui/state-provider";
 
 export enum ResizeType {
     TopLeft,
@@ -113,7 +112,7 @@ export class BoxResizeTool implements Tool {
     mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
     }
 
-    persist(appState: Readonly<AppState>): void {
+    beforeToolChange(): void {
     }
 
     render(): void {

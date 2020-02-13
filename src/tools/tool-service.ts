@@ -27,7 +27,6 @@ import {CellToShapeService} from "../cell-to-shape-service";
 import {Shape} from "../shapes/shape";
 import {ShapeUpdateEvent, ShapeUpdateListener} from "../shape-update-notification-service";
 import {ConnectorUpdateStylesTool} from "./connector-update-styles-tool";
-import {ConnectorTipStyle} from "../drawers/connector";
 import {BoxUpdateStylesTool} from "./box-update-styles-tool";
 
 export class ToolService implements ShapeUpdateListener {
@@ -89,8 +88,8 @@ export class ToolService implements ShapeUpdateListener {
         this.notifySelectedShapeChangedListeners(undefined);
     }
 
-    private popTool(): void {
-        this.toolStack.pop();
+    private popTool(): Tool {
+        return this.toolStack.pop()!;
     }
 
     currentTool(): Tool {
@@ -170,9 +169,9 @@ export class ToolService implements ShapeUpdateListener {
     }
 
     private setTool(tool: Tool): void {
-        this.popTool();
+        const prevTool = this.popTool();
         this.toolStack.push(tool);
-        this.notifyToolChangedListeners(tool);
+        this.notifyToolChangedListeners(prevTool, tool);
     }
 
     selectShapeFor(row: number, column: number) {
@@ -203,9 +202,9 @@ export class ToolService implements ShapeUpdateListener {
         this.toolChangedListeners.push(listener);
     }
 
-    notifyToolChangedListeners(tool: Tool): void {
+    notifyToolChangedListeners(prevTool: Tool, tool: Tool): void {
         this.toolChangedListeners.forEach((listener: ToolChangedListener) => {
-            listener.toolChanged(tool);
+            listener.toolChanged(prevTool, tool);
         });
     }
 

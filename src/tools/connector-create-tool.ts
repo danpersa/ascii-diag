@@ -6,7 +6,6 @@ import {Connector} from "../drawers/connector";
 import {ConnectorShape} from "../shapes/connector-shape";
 import Constants from "../constants";
 import {AppState} from "../ui/app-state";
-import {StateProvider} from "../ui/state-provider";
 
 export class ConnectorCreateTool implements Tool {
 
@@ -53,14 +52,6 @@ export class ConnectorCreateTool implements Tool {
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
         this.endRow = row;
         this.endColumn = column;
-        this.persist(appState);
-        this.connector = null;
-    }
-
-    keyDown(key: string, appState: Readonly<AppState>): void {
-    }
-
-    persist(appState: Readonly<AppState>): void {
         const shape = new ConnectorShape(
             this.shapeIdService.nextId(),
             this.startRow,
@@ -72,6 +63,13 @@ export class ConnectorCreateTool implements Tool {
             appState.connectorStartTipStyle,
             appState.connectorEndTipStyle);
         this.layerService.createShape(shape);
+        this.connector = null;
+    }
+
+    keyDown(key: string, appState: Readonly<AppState>): void {
+    }
+
+    beforeToolChange(): void {
     }
 
     render(): void {

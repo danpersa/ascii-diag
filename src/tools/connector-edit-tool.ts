@@ -7,7 +7,6 @@ import {ConnectorVertexFactory} from "./connector-vertex-factory";
 import {ConnectorMoveType} from "./connector-modify-tool";
 import {LayerService} from "../layer-service";
 import {AppState} from "../ui/app-state";
-import {StateProvider} from "../ui/state-provider";
 
 export class ConnectorEditTool implements Tool {
 
@@ -67,7 +66,7 @@ export class ConnectorEditTool implements Tool {
         }
     }
 
-    persist(appState: Readonly<AppState>): void {
+    beforeToolChange(): void {
     }
 
     mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {

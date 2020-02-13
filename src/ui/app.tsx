@@ -175,7 +175,7 @@ const AppWithStyles = withStyles(appStyles)(
         private handleToolChange = (event: React.MouseEvent<HTMLElement>, newTool: Tools) => {
             console.log("handle tool change: " + newTool);
             this.toolService.setCurrentTool(newTool);
-            this.toolChanged(this.toolService.currentTool());
+            this.toolChanged(this.toolService.currentTool(), this.toolService.currentTool());
         };
 
         private handleConnectorLineStyleChange = (event: React.MouseEvent<HTMLElement>, newLineStyle: LineStyle) => {
@@ -332,10 +332,10 @@ const AppWithStyles = withStyles(appStyles)(
             );
         }
 
-        toolChanged(newTool: Tool): void {
-            console.log("Update tool: " + newTool.constructor.name);
+        toolChanged(prevTool: Tool, tool: Tool): void {
+            console.log("Update tool: " + tool.constructor.name);
             this.setState({
-                currentTool: newTool,
+                currentTool: tool,
                 connectorLineStyle: this.state.connectorLineStyle,
                 connectorStartTipStyle: this.state.connectorStartTipStyle,
                 connectorEndTipStyle: this.state.connectorEndTipStyle,

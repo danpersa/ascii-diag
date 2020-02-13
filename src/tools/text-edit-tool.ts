@@ -75,7 +75,7 @@ export class TextEditTool extends TextCreateTool implements Tool {
         }
     }
 
-    persist(appState: Readonly<AppState>): void {
+    persist(): void {
         if (!this.currentText) {
             return;
         }
@@ -94,6 +94,10 @@ export class TextEditTool extends TextCreateTool implements Tool {
         }
 
         this.currentText = null;
+    }
+
+    beforeToolChange(): void {
+        this.persist();
     }
 
     mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {

@@ -55,7 +55,7 @@ export class ConnectorFlipTool implements Tool {
     keyDown(key: string, appState: Readonly<AppState>): void {
     }
 
-    persist(appState: Readonly<AppState>): void {
+    beforeToolChange(): void {
     }
 
     mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {

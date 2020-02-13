@@ -5,7 +5,6 @@ import {BoxDrawer} from "../drawers/box-drawer";
 import {Box} from "../drawers/box";
 import {ShapeIdService} from "../shapes/shape-id-service";
 import {AppState} from "../ui/app-state";
-import {StateProvider} from "../ui/state-provider";
 
 export class BoxCreateTool implements Tool {
 
@@ -43,14 +42,6 @@ export class BoxCreateTool implements Tool {
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
         this.endRow = row;
         this.endColumn = column;
-        this.persist(appState);
-        this.box = null;
-    }
-
-    keyDown(key: string, appState: Readonly<AppState>): void {
-    }
-
-    persist(appState: Readonly<AppState>): void {
         const shape = new BoxShape(
             this.shapeIdService.nextId(),
             Math.min(this.startRow, this.endRow),
@@ -59,6 +50,12 @@ export class BoxCreateTool implements Tool {
             Math.max(this.startColumn, this.endColumn),
             appState.boxCornerStyle);
         this.layerService.createShape(shape);
+    }
+
+    keyDown(key: string, appState: Readonly<AppState>): void {
+    }
+
+    beforeToolChange(): void {
     }
 
     render(): void {

@@ -1,6 +1,6 @@
 import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
-import {CanvasSelectBoxDrawer, SelectBoxDrawer} from "../drawers/select-box-drawer";
+import {SelectBoxDrawer} from "../drawers/select-box-drawer";
 import {BoxShape} from "../shapes/box-shape";
 import {SelectBox} from "../drawers/select-box";
 import Constants from "../constants";
@@ -8,7 +8,6 @@ import {BoxDrawer} from "../drawers/box-drawer";
 import {Box} from "../drawers/box";
 import {ToolService} from "./tool-service";
 import {AppState} from "../ui/app-state";
-import {StateProvider} from "../ui/state-provider";
 
 export class BoxMoveTool implements Tool {
 
@@ -66,16 +65,6 @@ export class BoxMoveTool implements Tool {
 
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
         this.shape.endEditing();
-        this.persist(appState);
-    }
-
-    keyDown(key: string, appState: Readonly<AppState>): void {
-    }
-
-    mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
-    }
-
-    persist(appState: Readonly<AppState>): void {
         const shape = new BoxShape(
             this.shape.id(),
             this.selectBox.topRow,
@@ -85,6 +74,15 @@ export class BoxMoveTool implements Tool {
             this.shape.cornerStyle);
         this.layerService.updateShape(shape);
         this.toolService.selectBoxEditTool(shape);
+    }
+
+    keyDown(key: string, appState: Readonly<AppState>): void {
+    }
+
+    mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
+    }
+
+    beforeToolChange(): void {
     }
 
     render(): void {

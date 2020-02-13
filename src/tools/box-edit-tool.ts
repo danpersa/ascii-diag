@@ -6,7 +6,6 @@ import {ResizeType} from "./box-resize-tool";
 import {ToolService} from "./tool-service";
 import {LayerService} from "../layer-service";
 import {AppState} from "../ui/app-state";
-import {StateProvider} from "../ui/state-provider";
 
 export class BoxEditTool implements Tool {
 
@@ -67,7 +66,7 @@ export class BoxEditTool implements Tool {
         }
     }
 
-    persist(appState: Readonly<AppState>): void {
+    beforeToolChange(): void {
     }
 
     mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
