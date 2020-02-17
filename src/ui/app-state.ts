@@ -8,18 +8,21 @@ export class AppState {
     private _connectorStartTipStyle: ConnectorTipStyle;
     private _connectorEndTipStyle: ConnectorTipStyle;
     private _boxCornerStyle: BoxCornerStyle;
+    private _exportDialogOpen: boolean;
 
     constructor(currentTool: Tool,
                 connectorLineStyle: LineStyle,
                 connectorStartTipStyle: ConnectorTipStyle,
                 connectorEndTipStyle: ConnectorTipStyle,
-                boxCornerStyle: BoxCornerStyle) {
+                boxCornerStyle: BoxCornerStyle,
+                exportDialogOpen: boolean = false) {
 
         this._currentTool = currentTool;
         this._connectorLineStyle = connectorLineStyle;
         this._connectorStartTipStyle = connectorStartTipStyle;
         this._connectorEndTipStyle = connectorEndTipStyle;
         this._boxCornerStyle = boxCornerStyle;
+        this._exportDialogOpen = exportDialogOpen;
     }
 
     get currentTool(): Tool {
@@ -42,6 +45,10 @@ export class AppState {
         return this._boxCornerStyle;
     }
 
+    get exportDialogOpen(): boolean {
+        return this._exportDialogOpen;
+    }
+
     set currentTool(value: Tool) {
         this._currentTool = value;
     }
@@ -60,5 +67,9 @@ export class AppState {
 
     set boxCornerStyle(value: BoxCornerStyle) {
         this._boxCornerStyle = value;
+    }
+
+    set exportDialogOpen(value: boolean) {
+        this._exportDialogOpen = value;
     }
 }

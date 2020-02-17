@@ -1,4 +1,3 @@
-import Constants from '../constants'
 import {Domain} from './cell'
 
 type CellMatrix = Array<Array<Domain.Cell>>;

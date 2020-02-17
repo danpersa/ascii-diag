@@ -1,8 +1,7 @@
 import React, {RefObject} from 'react';
 import ReactDOM from 'react-dom';
-import Button from '@material-ui/core/Button';
 import AppBar from '@material-ui/core/AppBar';
-import {createStyles, Theme, Toolbar, withStyles, WithStyles} from "@material-ui/core";
+import {Button, createStyles, Grid, Theme, Toolbar, withStyles, WithStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import UIGrid from "@material-ui/core/Grid";
@@ -15,7 +14,9 @@ import {
     ArrowRight,
     CheckboxBlankOutline,
     CurrentDc,
+    Delete,
     DotsHorizontal,
+    Export,
     FormatText,
     Minus,
     RayStartArrow,
@@ -24,7 +25,7 @@ import {
 } from "mdi-material-ui";
 import SvgCanvas from "./svg-diag";
 import {LayerService} from "../layer-service";
-import Grid from "../drawers/grid";
+import AsciiGrid from "../drawers/grid";
 import {DiagToSvg} from "../renderers/diag-to-svg";
 import {SelectedShapeChangedListener, Tool, ToolChangedListener, Tools} from "../tools/tool";
 import Constants from "../constants";
@@ -56,6 +57,7 @@ import {Shape} from "../shapes/shape";
 import {ConnectorShape} from "../shapes/connector-shape";
 import {BoxShape} from "../shapes/box-shape";
 import {BoxCornerStyle} from "../drawers/box";
+import ExportDialog from "./export-dialog";
 
 const appStyles = (theme: Theme) => createStyles({
     root: {
@@ -96,7 +98,7 @@ const AppWithStyles = withStyles(appStyles)(
 
         private readonly canvasDivRef: RefObject<HTMLCanvasElement> = React.createRef();
         private readonly svgDivRef: RefObject<HTMLDivElement> = React.createRef();
-        private readonly grid: Grid;
+        private readonly grid: AsciiGrid;
         private readonly layerService: LayerService;
         private readonly shapeUpdateNotificationService: ShapeUpdateNotificationService;
         private readonly cellToShapeService: CellToShapeService;
@@ -109,7 +111,7 @@ const AppWithStyles = withStyles(appStyles)(
 
         constructor(props: AppProps) {
             super(props);
-            this.grid = Grid.create(Constants.numberOfRows, Constants.numberOfColumns);
+            this.grid = AsciiGrid.create(Constants.numberOfRows, Constants.numberOfColumns);
             this.shapeUpdateNotificationService = new ShapeUpdateNotificationService();
             this.layerService = new LayerService(this.shapeUpdateNotificationService);
             this.arrowTipDirectionService = new ConnectorTipDirectionService();
@@ -154,6 +156,7 @@ const AppWithStyles = withStyles(appStyles)(
 
             const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
             this.diagToSvgProvider = new DiagToSvgProvider(diagToSvg);
+            this.handleExportDialogClose = this.handleExportDialogClose.bind(this);
         }
 
         componentDidMount(): void {
@@ -265,56 +268,80 @@ const AppWithStyles = withStyles(appStyles)(
                         </Toolbar>
                     </AppBar>
                     <Paper>
-                        <ToggleButtonGroup size="large"
-                                           value={this.state.currentTool}
-                                           exclusive
-                                           onChange={this.handleToolChange}
-                                           style={margin}>
-                            <ToggleButton value={Tools.select} style={padding}
-                                          selected={this.isSelectToolButtonSelected()}>
-                                <CursorDefault/>
-                            </ToggleButton>
-                            <ToggleButton value={Tools.text} style={padding} selected={this.isTextToolButtonSelected()}>
-                                <FormatText/>
-                            </ToggleButton>
-                            <ToggleButton value={Tools.box} style={padding} selected={this.isBoxToolButtonSelected()}>
-                                <CheckboxBlankOutline/>
-                            </ToggleButton>
-                            <ToggleButton value={Tools.connector} style={padding}
-                                          selected={this.isConnectorToolButtonSelected()}>
-                                <RayStartArrow/>
-                            </ToggleButton>
-                        </ToggleButtonGroup>
-                        {this.shouldShowConnectorOptions() &&
-                        <span>
-                            <IconMenu title="Start"
-                                      selectedIndex={this.state.connectorStartTipStyle}
-                                      onChange={this.handleConnectorStartTipStyleChange}
-                                      options={["Flat", "Arrow"]}
-                                      icons={[<Minus/>, <ArrowLeft/>]}/>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} sm={6} md={5}>
+                                <ToggleButtonGroup size="large"
+                                                   value={this.state.currentTool}
+                                                   exclusive
+                                                   onChange={this.handleToolChange}
+                                                   style={margin}>
+                                    <ToggleButton value={Tools.select} style={padding}
+                                                  selected={this.isSelectToolButtonSelected()}>
+                                        <CursorDefault/>
+                                    </ToggleButton>
+                                    <ToggleButton value={Tools.text} style={padding}
+                                                  selected={this.isTextToolButtonSelected()}>
+                                        <FormatText/>
+                                    </ToggleButton>
+                                    <ToggleButton value={Tools.box} style={padding}
+                                                  selected={this.isBoxToolButtonSelected()}>
+                                        <CheckboxBlankOutline/>
+                                    </ToggleButton>
+                                    <ToggleButton value={Tools.connector} style={padding}
+                                                  selected={this.isConnectorToolButtonSelected()}>
+                                        <RayStartArrow/>
+                                    </ToggleButton>
+                                </ToggleButtonGroup>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={5}>
+                                {this.shouldShowConnectorOptions() &&
+                                <span>
+                                        <IconMenu title="Start"
+                                                  selectedIndex={this.state.connectorStartTipStyle}
+                                                  onChange={this.handleConnectorStartTipStyleChange}
+                                                  options={["Flat", "Arrow"]}
+                                                  icons={[<Minus/>, <ArrowLeft/>]}/>
 
-                            <IconMenu title="Line Style"
-                                      selectedIndex={this.state.connectorLineStyle}
-                                      onChange={this.handleConnectorLineStyleChange}
-                                      options={["continuous", "dashed", "dotted"]}
-                                      icons={[<Minus/>, <CurrentDc/>, <DotsHorizontal/>]}/>
+                                        <IconMenu title="Line Style"
+                                                  selectedIndex={this.state.connectorLineStyle}
+                                                  onChange={this.handleConnectorLineStyleChange}
+                                                  options={["continuous", "dashed", "dotted"]}
+                                                  icons={[<Minus/>, <CurrentDc/>, <DotsHorizontal/>]}/>
 
-                            <IconMenu title="End"
-                                      selectedIndex={this.state.connectorEndTipStyle}
-                                      onChange={this.handleConnectorEndTipStyleChange}
-                                      options={["Flat", "Arrow"]}
-                                      icons={[<Minus/>, <ArrowRight/>]}/>
-                        </span>
-                        }
-                        {this.shouldShowBoxOptions() &&
-                        <span>
-                            <IconMenu title="Corner Style"
-                                      selectedIndex={this.state.boxCornerStyle}
-                                      onChange={this.handleBoxCornerStyleChange}
-                                      options={["Square Corners", "Rounded Corners"]}
-                                      icons={[<SquareOutline/>, <RoundedCorner/>]}/>
-                        </span>
-                        }
+                                        <IconMenu title="End"
+                                                  selectedIndex={this.state.connectorEndTipStyle}
+                                                  onChange={this.handleConnectorEndTipStyleChange}
+                                                  options={["Flat", "Arrow"]}
+                                                  icons={[<Minus/>, <ArrowRight/>]}/>
+                                    </span>
+                                }
+                                {this.shouldShowBoxOptions() &&
+                                <IconMenu title="Corner Style"
+                                          selectedIndex={this.state.boxCornerStyle}
+                                          onChange={this.handleBoxCornerStyleChange}
+                                          options={["Square Corners", "Rounded Corners"]}
+                                          icons={[<SquareOutline/>, <RoundedCorner/>]}/>
+                                }
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={2}>
+                                <ToggleButtonGroup size="large"
+                                                   value={this.state.currentTool}
+                                                   exclusive
+                                                   onChange={this.handleToolbar}
+                                                   style={margin}>
+                                    <ToggleButton value={Tools.delete}
+                                                  style={padding}
+                                                  selected={false}>
+                                        <Delete/>
+                                    </ToggleButton>
+                                    <ToggleButton value={Tools.export}
+                                                  style={padding}
+                                                  selected={false}>
+                                        <Export/>
+                                    </ToggleButton>
+                                </ToggleButtonGroup>
+                            </Grid>
+                        </Grid>
                     </Paper>
                     <UIGrid container>
                         <UIGrid item sm={12} md={6}>
@@ -328,9 +355,41 @@ const AppWithStyles = withStyles(appStyles)(
                             </Paper>
                         </UIGrid>
                     </UIGrid>
+                    <ExportDialog title="Export"
+                                  open={this.state.exportDialogOpen}
+                                  onClose={this.handleExportDialogClose}
+                                  text="the diagram"/>
                 </div>
             );
         }
+
+        handleExportDialogClose(): void {
+            this.setState({
+                currentTool: this.state.currentTool,
+                connectorLineStyle: this.state.connectorLineStyle,
+                connectorStartTipStyle: this.state.connectorStartTipStyle,
+                connectorEndTipStyle: this.state.connectorEndTipStyle,
+                boxCornerStyle: this.state.boxCornerStyle,
+                exportDialogOpen: false,
+            });
+        }
+
+
+        private handleToolbar = (event: React.MouseEvent<HTMLElement>, newTool: Tools) => {
+            console.log("handle toolbar change: " + newTool);
+            switch (newTool) {
+                case Tools.export:
+                    this.setState({
+                        currentTool: this.state.currentTool,
+                        connectorLineStyle: this.state.connectorLineStyle,
+                        connectorStartTipStyle: this.state.connectorStartTipStyle,
+                        connectorEndTipStyle: this.state.connectorEndTipStyle,
+                        boxCornerStyle: this.state.boxCornerStyle,
+                        exportDialogOpen: true,
+                    });
+                    break;
+            }
+        };
 
         toolChanged(prevTool: Tool, tool: Tool): void {
             console.log("Update tool: " + tool.constructor.name);

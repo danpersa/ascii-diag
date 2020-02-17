@@ -6,6 +6,8 @@ export enum Tools {
     text = "text",
     box = "box",
     connector = "connector",
+    delete = "delete",
+    export = "export",
 }
 
 export interface ToolChangedListener {
