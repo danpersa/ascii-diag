@@ -12,6 +12,10 @@ export class AppState {
     private _exportDialogOpen: boolean;
     private _diagramMarkup: string;
     private _grid: Grid;
+    private _isSelectToolButtonSelected: boolean;
+    private _isTextToolButtonSelected: boolean;
+    private _isBoxToolButtonSelected: boolean;
+    private _isConnectorToolButtonSelected: boolean;
 
     constructor(currentTool: Tool,
                 connectorLineStyle: LineStyle,
@@ -19,6 +23,10 @@ export class AppState {
                 connectorEndTipStyle: ConnectorTipStyle,
                 boxCornerStyle: BoxCornerStyle,
                 grid: Grid,
+                isSelectToolButtonSelected: boolean,
+                isTextToolButtonSelected: boolean,
+                isBoxToolButtonSelected: boolean,
+                isConnectorToolButtonSelected: boolean,
                 exportDialogOpen: boolean = false,
                 diagramMarkup: string = "") {
 
@@ -28,6 +36,10 @@ export class AppState {
         this._connectorEndTipStyle = connectorEndTipStyle;
         this._boxCornerStyle = boxCornerStyle;
         this._grid = grid;
+        this._isSelectToolButtonSelected = isSelectToolButtonSelected;
+        this._isTextToolButtonSelected = isTextToolButtonSelected;
+        this._isBoxToolButtonSelected = isBoxToolButtonSelected;
+        this._isConnectorToolButtonSelected = isConnectorToolButtonSelected;
         this._exportDialogOpen = exportDialogOpen;
         this._diagramMarkup = diagramMarkup;
     }
@@ -64,6 +76,23 @@ export class AppState {
         return this._grid;
     }
 
+    get isConnectorToolButtonSelected(): boolean {
+        return this._isConnectorToolButtonSelected;
+    }
+
+
+    get isSelectToolButtonSelected(): boolean {
+        return this._isSelectToolButtonSelected;
+    }
+
+    get isTextToolButtonSelected(): boolean {
+        return this._isTextToolButtonSelected;
+    }
+
+    get isBoxToolButtonSelected(): boolean {
+        return this._isBoxToolButtonSelected;
+    }
+
     set currentTool(value: Tool) {
         this._currentTool = value;
     }
@@ -94,5 +123,21 @@ export class AppState {
 
     set grid(value: Grid) {
         this._grid = value;
+    }
+
+    set isConnectorToolButtonSelected(value: boolean) {
+        this._isConnectorToolButtonSelected = value;
+    }
+
+    set isSelectToolButtonSelected(value: boolean) {
+        this._isSelectToolButtonSelected = value;
+    }
+
+    set isTextToolButtonSelected(value: boolean) {
+        this._isTextToolButtonSelected = value;
+    }
+
+    set isBoxToolButtonSelected(value: boolean) {
+        this._isBoxToolButtonSelected = value;
     }
 }

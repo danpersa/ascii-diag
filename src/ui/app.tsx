@@ -151,6 +151,10 @@ const AppWithStyles = withStyles(appStyles)(
                 connectorEndTipStyle: ConnectorTipStyle.Flat,
                 boxCornerStyle: BoxCornerStyle.Square,
                 grid: AsciiGrid.create(Constants.numberOfRows, Constants.numberOfColumns),
+                isSelectToolButtonSelected: false,
+                isTextToolButtonSelected: false,
+                isBoxToolButtonSelected: false,
+                isConnectorToolButtonSelected: true,
                 exportDialogOpen: false,
                 diagramMarkup: "",
             };
@@ -269,19 +273,19 @@ const AppWithStyles = withStyles(appStyles)(
                                                    onChange={this.handleToolChange}
                                                    style={margin}>
                                     <ToggleButton value={Tools.select} style={padding}
-                                                  selected={this.isSelectToolButtonSelected()}>
+                                                  selected={this.state.isSelectToolButtonSelected}>
                                         <CursorDefault/>
                                     </ToggleButton>
                                     <ToggleButton value={Tools.text} style={padding}
-                                                  selected={this.isTextToolButtonSelected()}>
+                                                  selected={this.state.isTextToolButtonSelected}>
                                         <FormatText/>
                                     </ToggleButton>
                                     <ToggleButton value={Tools.box} style={padding}
-                                                  selected={this.isBoxToolButtonSelected()}>
+                                                  selected={this.state.isBoxToolButtonSelected}>
                                         <CheckboxBlankOutline/>
                                     </ToggleButton>
                                     <ToggleButton value={Tools.connector} style={padding}
-                                                  selected={this.isConnectorToolButtonSelected()}>
+                                                  selected={this.state.isConnectorToolButtonSelected}>
                                         <RayStartArrow/>
                                     </ToggleButton>
                                 </ToggleButtonGroup>
@@ -378,8 +382,37 @@ const AppWithStyles = withStyles(appStyles)(
         toolChanged(prevTool: Tool, tool: Tool): void {
             console.log("Update tool: " + tool.constructor.name);
             this.setState({
-                currentTool: tool
+                currentTool: tool,
             });
+            if (tool instanceof ConnectorCreateTool) {
+                this.setState({
+                    isConnectorToolButtonSelected: true,
+                    isTextToolButtonSelected: false,
+                    isBoxToolButtonSelected: false,
+                    isSelectToolButtonSelected: false,
+                });
+            } else if (tool instanceof TextCreateTool && !(tool instanceof TextEditTool)) {
+                this.setState({
+                    isConnectorToolButtonSelected: false,
+                    isTextToolButtonSelected: true,
+                    isBoxToolButtonSelected: false,
+                    isSelectToolButtonSelected: false,
+                });
+            } else if (tool instanceof BoxCreateTool) {
+                this.setState({
+                    isConnectorToolButtonSelected: false,
+                    isTextToolButtonSelected: false,
+                    isBoxToolButtonSelected: true,
+                    isSelectToolButtonSelected: false,
+                });
+            } else if (tool instanceof SelectTool) {
+                this.setState({
+                    isConnectorToolButtonSelected: false,
+                    isTextToolButtonSelected: false,
+                    isBoxToolButtonSelected: false,
+                    isSelectToolButtonSelected: true,
+                });
+            }
         }
 
         shapeSelected(newShape: Shape | undefined): void {
@@ -411,19 +444,6 @@ const AppWithStyles = withStyles(appStyles)(
             console.log("is selected button selected shape: " + (this.toolService.currentShape() ? this.toolService.currentShape()!.constructor.name : this.toolService.currentShape()));
             return this.toolService.currentTool() instanceof SelectTool
                 || this.toolService.currentShape() !== undefined;
-        }
-
-        private isConnectorToolButtonSelected() {
-            return this.toolService.currentTool() instanceof ConnectorCreateTool;
-        }
-
-        private isTextToolButtonSelected() {
-            return this.toolService.currentTool() instanceof TextCreateTool &&
-                !(this.toolService.currentTool() instanceof TextEditTool);
-        }
-
-        private isBoxToolButtonSelected() {
-            return this.toolService.currentTool() instanceof BoxCreateTool;
         }
     }
 );
