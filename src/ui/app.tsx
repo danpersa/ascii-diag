@@ -4,7 +4,6 @@ import AppBar from '@material-ui/core/AppBar';
 import {Button, createStyles, Grid, Theme, Toolbar, withStyles, WithStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import UIGrid from "@material-ui/core/Grid";
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import DiagCanvas from "./diag-canvas";
@@ -25,7 +24,6 @@ import {
 } from "mdi-material-ui";
 import SvgCanvas from "./svg-diag";
 import {LayerService} from "../layer-service";
-import AsciiGrid from "../drawers/grid";
 import {DiagToSvg} from "../renderers/diag-to-svg";
 import {SelectedShapeChangedListener, Tool, ToolChangedListener, Tools} from "../tools/tool";
 import Constants from "../constants";
@@ -58,6 +56,7 @@ import {ConnectorShape} from "../shapes/connector-shape";
 import {BoxShape} from "../shapes/box-shape";
 import {BoxCornerStyle} from "../drawers/box";
 import ExportDialog from "./export-dialog";
+import AsciiGrid from "../drawers/grid";
 
 const appStyles = (theme: Theme) => createStyles({
     root: {
@@ -98,7 +97,6 @@ const AppWithStyles = withStyles(appStyles)(
 
         private readonly canvasDivRef: RefObject<HTMLCanvasElement> = React.createRef();
         private readonly svgDivRef: RefObject<HTMLDivElement> = React.createRef();
-        private readonly grid: AsciiGrid;
         private readonly layerService: LayerService;
         private readonly shapeUpdateNotificationService: ShapeUpdateNotificationService;
         private readonly cellToShapeService: CellToShapeService;
@@ -111,7 +109,6 @@ const AppWithStyles = withStyles(appStyles)(
 
         constructor(props: AppProps) {
             super(props);
-            this.grid = AsciiGrid.create(Constants.numberOfRows, Constants.numberOfColumns);
             this.shapeUpdateNotificationService = new ShapeUpdateNotificationService();
             this.layerService = new LayerService(this.shapeUpdateNotificationService);
             this.arrowTipDirectionService = new ConnectorTipDirectionService();
@@ -153,17 +150,21 @@ const AppWithStyles = withStyles(appStyles)(
                 connectorStartTipStyle: ConnectorTipStyle.Flat,
                 connectorEndTipStyle: ConnectorTipStyle.Flat,
                 boxCornerStyle: BoxCornerStyle.Square,
-                exportDialogOpen: false
+                grid: AsciiGrid.create(Constants.numberOfRows, Constants.numberOfColumns),
+                exportDialogOpen: false,
+                diagramMarkup: "",
             };
 
             const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
             this.diagToSvgProvider = new DiagToSvgProvider(diagToSvg);
             this.handleExportDialogClose = this.handleExportDialogClose.bind(this);
+            this.gridUpdated = this.gridUpdated.bind(this);
         }
 
         componentDidMount(): void {
             const diag = new AsciiDiag(this.canvasDivRef, this.layerService, this.gridDrawerFactory,
-                this.diagToSvgProvider, this.cellDrawer, this.toolService, this.stateProvider);
+                this.diagToSvgProvider, this.cellDrawer, this.toolService, this.stateProvider,
+                this.gridUpdated);
             this.shapeUpdateNotificationService.register(diag);
         }
 
@@ -182,6 +183,12 @@ const AppWithStyles = withStyles(appStyles)(
             this.toolService.setCurrentTool(newTool);
             this.toolChanged(this.toolService.currentTool(), this.toolService.currentTool());
         };
+
+        gridUpdated(grid: AsciiGrid): void {
+            this.setState({
+                grid: grid,
+            });
+        }
 
         private handleConnectorLineStyleChange = (event: React.MouseEvent<HTMLElement>, newLineStyle: LineStyle) => {
             console.log("handle connector line style change: " + newLineStyle);
@@ -329,39 +336,40 @@ const AppWithStyles = withStyles(appStyles)(
                             </Grid>
                         </Grid>
                     </Paper>
-                    <UIGrid container>
-                        <UIGrid item sm={12} md={6}>
+                    <Grid container>
+                        <Grid item sm={12} md={6}>
                             <Paper className={this.props.classes.paperStyles} style={{overflow: 'auto'}}>
                                 <DiagCanvas canvasRef={this.canvasDivRef}/>
                             </Paper>
-                        </UIGrid>
-                        <UIGrid item sm={12} md={6}>
+                        </Grid>
+                        <Grid item sm={12} md={6}>
                             <Paper className={this.props.classes.paperStyles}>
                                 <SvgCanvas divRef={this.svgDivRef}/>
                             </Paper>
-                        </UIGrid>
-                    </UIGrid>
+                        </Grid>
+                    </Grid>
                     <ExportDialog title="Export"
                                   open={this.state.exportDialogOpen}
                                   onClose={this.handleExportDialogClose}
-                                  text="the diagram"/>
+                                  text={this.state.diagramMarkup}/>
                 </div>
             );
         }
 
-        handleExportDialogClose(): void {
+        private handleExportDialogClose(): void {
             this.setState({
                 exportDialogOpen: false,
             });
         }
 
-
         private handleToolbar = (event: React.MouseEvent<HTMLElement>, newTool: Tools) => {
             console.log("handle toolbar change: " + newTool);
             switch (newTool) {
                 case Tools.export:
+                    const diagramMarkup = this.state.grid.toMarkup();
                     this.setState({
                         exportDialogOpen: true,
+                        diagramMarkup: diagramMarkup,
                     });
                     break;
             }

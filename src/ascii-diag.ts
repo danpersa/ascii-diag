@@ -29,10 +29,11 @@ export default class AsciiDiag implements Has2DContext, ToolChangedListener, Sha
     private readonly diagToSvgProvider: DiagToSvgProvider;
     private readonly gridDrawerFactory: GridDrawerFactory;
     private readonly appState: StateProvider;
+    private readonly gridUpdated: (grid: Grid) => void;
 
     constructor(canvas: React.RefObject<HTMLCanvasElement>, layerService: LayerService, gridDrawerFactory: GridDrawerFactory,
                 diagToSvgProvider: DiagToSvgProvider, cellDrawer: CellDrawer, toolService: ToolService,
-                appState: StateProvider) {
+                appState: StateProvider, gridUpdated: (grid: Grid) => void) {
         this.diagToSvgProvider = diagToSvgProvider;
         this.canvasRef = canvas;
         this.gridDrawerFactory = gridDrawerFactory;
@@ -44,6 +45,7 @@ export default class AsciiDiag implements Has2DContext, ToolChangedListener, Sha
         this.toolService = toolService;
         this.appState = appState;
         this.toolService.registerToolChangedListener(this);
+        this.gridUpdated = gridUpdated;
         this.redraw();
         this.createUserEvents(appState);
     }
@@ -72,6 +74,7 @@ export default class AsciiDiag implements Has2DContext, ToolChangedListener, Sha
         const grid = Grid.create(Constants.numberOfRows, Constants.numberOfColumns);
         this.addShapesToGrid(grid);
         this.gridDrawer.draw(grid);
+        this.gridUpdated(grid);
 
         this.toolService.currentTool().render();
         this.diagToSvgProvider.get().render();

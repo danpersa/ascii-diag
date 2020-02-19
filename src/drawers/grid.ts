@@ -55,4 +55,21 @@ export default class Grid {
     columns(): number {
         return this.cellMatrix[0].length;
     }
+
+    toMarkup(): string {
+        let result = "```diag\n";
+        for (let row = 0; row < this.cellMatrix.length; row++) {
+            for (let column = 0; column < this.cellMatrix[row].length; column++) {
+                const cell = this.cellMatrix[row][column];
+                if (cell.text) {
+                    result += cell.text;
+                } else {
+                    result += " ";
+                }
+            }
+            result += '\n';
+        }
+        result += '\n```';
+        return result;
+    }
 }
