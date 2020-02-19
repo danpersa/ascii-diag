@@ -147,12 +147,14 @@ const AppWithStyles = withStyles(appStyles)(
             this.shapeUpdateNotificationService.register(this.cellToShapeService);
             this.shapeUpdateNotificationService.register(this.toolService);
 
-            this.state = new AppState(
-                this.toolService.currentTool(),
-                LineStyle.Continuous,
-                ConnectorTipStyle.Flat,
-                ConnectorTipStyle.Flat,
-                BoxCornerStyle.Square);
+            this.state = {
+                currentTool: this.toolService.currentTool(),
+                connectorLineStyle: LineStyle.Continuous,
+                connectorStartTipStyle: ConnectorTipStyle.Flat,
+                connectorEndTipStyle: ConnectorTipStyle.Flat,
+                boxCornerStyle: BoxCornerStyle.Square,
+                exportDialogOpen: false
+            };
 
             const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
             this.diagToSvgProvider = new DiagToSvgProvider(diagToSvg);
@@ -192,11 +194,7 @@ const AppWithStyles = withStyles(appStyles)(
 
             this.setState(
                 {
-                    currentTool: this.state.currentTool,
                     connectorLineStyle: newLineStyle,
-                    connectorStartTipStyle: this.state.connectorStartTipStyle,
-                    connectorEndTipStyle: this.state.connectorEndTipStyle,
-                    boxCornerStyle: this.state.boxCornerStyle,
                 });
         };
 
@@ -210,11 +208,7 @@ const AppWithStyles = withStyles(appStyles)(
             }
 
             this.setState({
-                currentTool: this.state.currentTool,
-                connectorLineStyle: this.state.connectorLineStyle,
                 connectorStartTipStyle: newConnectorTipStyle,
-                connectorEndTipStyle: this.state.connectorEndTipStyle,
-                boxCornerStyle: this.state.boxCornerStyle,
             });
         };
 
@@ -228,11 +222,7 @@ const AppWithStyles = withStyles(appStyles)(
             }
 
             this.setState({
-                currentTool: this.state.currentTool,
-                connectorLineStyle: this.state.connectorLineStyle,
-                connectorStartTipStyle: this.state.connectorStartTipStyle,
                 connectorEndTipStyle: newConnectorTipStyle,
-                boxCornerStyle: this.state.boxCornerStyle,
             });
         };
 
@@ -246,10 +236,6 @@ const AppWithStyles = withStyles(appStyles)(
             }
 
             this.setState({
-                currentTool: this.state.currentTool,
-                connectorLineStyle: this.state.connectorLineStyle,
-                connectorStartTipStyle: this.state.connectorStartTipStyle,
-                connectorEndTipStyle: this.state.connectorEndTipStyle,
                 boxCornerStyle: boxCornerStyle,
             });
         };
@@ -293,7 +279,7 @@ const AppWithStyles = withStyles(appStyles)(
                                     </ToggleButton>
                                 </ToggleButtonGroup>
                             </Grid>
-                            <Grid item xs={12} sm={6} md={5}>
+                            <Grid item xs={12} sm={6} md={4}>
                                 {this.shouldShowConnectorOptions() &&
                                 <span>
                                         <IconMenu title="Start"
@@ -323,7 +309,7 @@ const AppWithStyles = withStyles(appStyles)(
                                           icons={[<SquareOutline/>, <RoundedCorner/>]}/>
                                 }
                             </Grid>
-                            <Grid item xs={12} sm={6} md={2}>
+                            <Grid item xs={12} sm={6} md={3}>
                                 <ToggleButtonGroup size="large"
                                                    value={this.state.currentTool}
                                                    exclusive
@@ -365,11 +351,6 @@ const AppWithStyles = withStyles(appStyles)(
 
         handleExportDialogClose(): void {
             this.setState({
-                currentTool: this.state.currentTool,
-                connectorLineStyle: this.state.connectorLineStyle,
-                connectorStartTipStyle: this.state.connectorStartTipStyle,
-                connectorEndTipStyle: this.state.connectorEndTipStyle,
-                boxCornerStyle: this.state.boxCornerStyle,
                 exportDialogOpen: false,
             });
         }
@@ -380,11 +361,6 @@ const AppWithStyles = withStyles(appStyles)(
             switch (newTool) {
                 case Tools.export:
                     this.setState({
-                        currentTool: this.state.currentTool,
-                        connectorLineStyle: this.state.connectorLineStyle,
-                        connectorStartTipStyle: this.state.connectorStartTipStyle,
-                        connectorEndTipStyle: this.state.connectorEndTipStyle,
-                        boxCornerStyle: this.state.boxCornerStyle,
                         exportDialogOpen: true,
                     });
                     break;
@@ -394,11 +370,7 @@ const AppWithStyles = withStyles(appStyles)(
         toolChanged(prevTool: Tool, tool: Tool): void {
             console.log("Update tool: " + tool.constructor.name);
             this.setState({
-                currentTool: tool,
-                connectorLineStyle: this.state.connectorLineStyle,
-                connectorStartTipStyle: this.state.connectorStartTipStyle,
-                connectorEndTipStyle: this.state.connectorEndTipStyle,
-                boxCornerStyle: this.state.boxCornerStyle,
+                currentTool: tool
             });
         }
 
@@ -420,7 +392,6 @@ const AppWithStyles = withStyles(appStyles)(
             }
 
             this.setState({
-                currentTool: this.state.currentTool,
                 connectorLineStyle: connectorLineStyle,
                 connectorStartTipStyle: connectorStartTipStyle,
                 connectorEndTipStyle: connectorEndTipStyle,
