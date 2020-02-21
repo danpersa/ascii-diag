@@ -144,27 +144,12 @@ const AppWithStyles = withStyles(appStyles)(
             this.toolService.registerSelectedShapeChangedListeners(this);
             this.shapeUpdateNotificationService.register(this.cellToShapeService);
             this.shapeUpdateNotificationService.register(this.toolService);
-
-            this.state = {
-                currentTool: this.toolService.currentTool(),
-                connectorLineStyle: LineStyle.Continuous,
-                connectorStartTipStyle: ConnectorTipStyle.Flat,
-                connectorEndTipStyle: ConnectorTipStyle.Flat,
-                boxCornerStyle: BoxCornerStyle.Square,
-                grid: AsciiGrid.create(Constants.numberOfRows, Constants.numberOfColumns),
-                isSelectToolButtonSelected: false,
-                isTextToolButtonSelected: false,
-                isBoxToolButtonSelected: false,
-                isConnectorToolButtonSelected: true,
-                showBoxOptions: false,
-                showConnectorOptions: true,
-                exportDialogOpen: false,
-                diagramMarkup: "",
-            };
+            this.appStateHelper = new AppStateHelper(this, this.toolService);
+            this.appStateHelper.initState();
 
             const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
             this.diagToSvgProvider = new DiagToSvgProvider(diagToSvg);
-            this.appStateHelper = new AppStateHelper(this);
+
             this.gridUpdated = this.gridUpdated.bind(this);
         }
 
@@ -336,11 +321,14 @@ const AppWithStyles = withStyles(appStyles)(
                                                    exclusive
                                                    onChange={this.handleToolbar}
                                                    style={margin}>
+
+                                    {this.state.showDeleteButton &&
                                     <ToggleButton value={Tools.delete}
                                                   style={padding}
                                                   selected={false}>
                                         <Delete/>
                                     </ToggleButton>
+                                    }
                                     <ToggleButton value={Tools.export}
                                                   style={padding}
                                                   selected={false}>
@@ -380,6 +368,10 @@ const AppWithStyles = withStyles(appStyles)(
                         diagramMarkup: diagramMarkup,
                     });
                     break;
+                case Tools.delete:
+                    const shape = this.toolService.currentShape()!;
+                    this.layerService.deleteShape(shape.id());
+                    this.toolService.selectSelectTool();
             }
         };
 
@@ -388,6 +380,7 @@ const AppWithStyles = withStyles(appStyles)(
 
             if (newShape === undefined) {
                 this.appStateHelper.hideToolOptions();
+                this.appStateHelper.hideDeleteButton();
                 return;
             }
 
@@ -396,6 +389,8 @@ const AppWithStyles = withStyles(appStyles)(
             } else if (newShape && newShape instanceof BoxShape) {
                 this.appStateHelper.showBoxToolOptions(newShape);
             }
+
+            this.appStateHelper.showDeleteButton();
         }
     }
 );

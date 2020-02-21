@@ -3,17 +3,43 @@ import {AppState} from "./app-state";
 import {AppProps} from "./app";
 import {ConnectorShape} from "../shapes/connector-shape";
 import {BoxShape} from "../shapes/box-shape";
+import {ConnectorTipStyle, LineStyle} from "../drawers/connector";
+import {BoxCornerStyle} from "../drawers/box";
+import AsciiGrid from "../drawers/grid";
+import Constants from "../constants";
+import {ToolService} from "../tools/tool-service";
 
 
 export default class AppStateHelper {
 
     private readonly component: React.Component<AppProps, AppState>;
+    private readonly toolService: ToolService;
 
-    constructor(component: React.Component<AppProps, AppState>) {
+    constructor(component: React.Component<AppProps, AppState>, toolService: ToolService) {
         this.component = component;
+        this.toolService = toolService;
         this.hideExportDialog = this.hideExportDialog.bind(this);
     }
 
+    initState() {
+        this.component.state = {
+            currentTool: this.toolService.currentTool(),
+            connectorLineStyle: LineStyle.Continuous,
+            connectorStartTipStyle: ConnectorTipStyle.Flat,
+            connectorEndTipStyle: ConnectorTipStyle.Flat,
+            boxCornerStyle: BoxCornerStyle.Square,
+            grid: AsciiGrid.create(Constants.numberOfRows, Constants.numberOfColumns),
+            isSelectToolButtonSelected: false,
+            isTextToolButtonSelected: false,
+            isBoxToolButtonSelected: false,
+            isConnectorToolButtonSelected: true,
+            showBoxOptions: false,
+            showConnectorOptions: true,
+            showDeleteButton: false,
+            exportDialogOpen: false,
+            diagramMarkup: "",
+        }
+    }
 
     selectConnectorTool() {
         this.unselectTools();
@@ -93,4 +119,17 @@ export default class AppStateHelper {
             showConnectorOptions: false
         });
     }
+
+    showDeleteButton() {
+        this.component.setState({
+            showDeleteButton: true
+        })
+    }
+
+    hideDeleteButton() {
+        this.component.setState({
+            showDeleteButton: false
+        })
+    }
+
 }
