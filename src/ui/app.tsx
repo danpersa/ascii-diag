@@ -25,7 +25,7 @@ import {
 import SvgCanvas from "./svg-diag";
 import {LayerService} from "../layer-service";
 import {DiagToSvg} from "../renderers/diag-to-svg";
-import {SelectedShapeChangedListener, Tool, ToolChangedListener, Tools} from "../tools/tool";
+import {SelectedShapeChangedListener, Tools} from "../tools/tool";
 import Constants from "../constants";
 import {ShapeUpdateNotificationService} from "../shape-update-notification-service";
 import {CellToShapeService} from "../cell-to-shape-service";
@@ -57,6 +57,7 @@ import {BoxShape} from "../shapes/box-shape";
 import {BoxCornerStyle} from "../drawers/box";
 import ExportDialog from "./export-dialog";
 import AsciiGrid from "../drawers/grid";
+import AppStateHelper from "./app-state-helper";
 
 const appStyles = (theme: Theme) => createStyles({
     root: {
@@ -88,12 +89,12 @@ const padding = {
     paddingRight: '20px',
 };
 
-interface AppProps extends WithStyles<typeof appStyles> {
+export interface AppProps extends WithStyles<typeof appStyles> {
 
 }
 
 const AppWithStyles = withStyles(appStyles)(
-    class extends React.Component<AppProps, AppState> implements ToolChangedListener, SelectedShapeChangedListener {
+    class extends React.Component<AppProps, AppState> implements SelectedShapeChangedListener {
 
         private readonly canvasDivRef: RefObject<HTMLCanvasElement> = React.createRef();
         private readonly svgDivRef: RefObject<HTMLDivElement> = React.createRef();
@@ -106,6 +107,7 @@ const AppWithStyles = withStyles(appStyles)(
         private readonly cellDrawer: CanvasCellDrawer;
         private readonly gridDrawerFactory: GridDrawerFactory;
         private readonly diagToSvgProvider: DiagToSvgProvider;
+        private readonly appStateHelper: AppStateHelper;
 
         constructor(props: AppProps) {
             super(props);
@@ -139,7 +141,6 @@ const AppWithStyles = withStyles(appStyles)(
                 vertexDrawer,
                 arrowDrawer,
                 this.cellToShapeService);
-            this.toolService.registerToolChangedListener(this);
             this.toolService.registerSelectedShapeChangedListeners(this);
             this.shapeUpdateNotificationService.register(this.cellToShapeService);
             this.shapeUpdateNotificationService.register(this.toolService);
@@ -155,13 +156,15 @@ const AppWithStyles = withStyles(appStyles)(
                 isTextToolButtonSelected: false,
                 isBoxToolButtonSelected: false,
                 isConnectorToolButtonSelected: true,
+                showBoxOptions: false,
+                showConnectorOptions: true,
                 exportDialogOpen: false,
                 diagramMarkup: "",
             };
 
             const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
             this.diagToSvgProvider = new DiagToSvgProvider(diagToSvg);
-            this.handleExportDialogClose = this.handleExportDialogClose.bind(this);
+            this.appStateHelper = new AppStateHelper(this);
             this.gridUpdated = this.gridUpdated.bind(this);
         }
 
@@ -172,20 +175,28 @@ const AppWithStyles = withStyles(appStyles)(
             this.shapeUpdateNotificationService.register(diag);
         }
 
-        shouldShowConnectorOptions(): boolean {
-            return this.toolService.currentTool() instanceof ConnectorCreateTool
-                || this.toolService.currentShape() instanceof ConnectorShape;
-        }
-
-        shouldShowBoxOptions(): boolean {
-            return this.toolService.currentTool() instanceof BoxCreateTool
-                || this.toolService.currentShape() instanceof BoxShape;
-        }
-
         private handleToolChange = (event: React.MouseEvent<HTMLElement>, newTool: Tools) => {
             console.log("handle tool change: " + newTool);
             this.toolService.setCurrentTool(newTool);
-            this.toolChanged(this.toolService.currentTool(), this.toolService.currentTool());
+            const tool = this.toolService.currentTool();
+
+            this.setState({
+                currentTool: tool,
+            });
+
+            if (tool instanceof ConnectorCreateTool) {
+                this.appStateHelper.selectConnectorTool();
+                this.appStateHelper.showConnectorToolOptions(undefined);
+            } else if (tool instanceof TextCreateTool && !(tool instanceof TextEditTool)) {
+                this.appStateHelper.selectTextTool();
+                this.appStateHelper.hideToolOptions();
+            } else if (tool instanceof BoxCreateTool) {
+                this.appStateHelper.selectBoxTool();
+                this.appStateHelper.showBoxToolOptions(undefined);
+            } else if (tool instanceof SelectTool) {
+                this.appStateHelper.selectSelectTool();
+                this.appStateHelper.hideToolOptions();
+            }
         };
 
         gridUpdated(grid: AsciiGrid): void {
@@ -203,10 +214,9 @@ const AppWithStyles = withStyles(appStyles)(
                 this.toolService.selectConnectorUpdateStylesTool(newShape);
             }
 
-            this.setState(
-                {
-                    connectorLineStyle: newLineStyle,
-                });
+            this.setState({
+                connectorLineStyle: newLineStyle,
+            });
         };
 
         private handleConnectorStartTipStyleChange = (event: React.MouseEvent<HTMLElement>, newConnectorTipStyle: ConnectorTipStyle) => {
@@ -291,7 +301,7 @@ const AppWithStyles = withStyles(appStyles)(
                                 </ToggleButtonGroup>
                             </Grid>
                             <Grid item xs={12} sm={6} md={4}>
-                                {this.shouldShowConnectorOptions() &&
+                                {this.state.showConnectorOptions &&
                                 <span>
                                         <IconMenu title="Start"
                                                   selectedIndex={this.state.connectorStartTipStyle}
@@ -312,7 +322,7 @@ const AppWithStyles = withStyles(appStyles)(
                                                   icons={[<Minus/>, <ArrowRight/>]}/>
                                     </span>
                                 }
-                                {this.shouldShowBoxOptions() &&
+                                {this.state.showBoxOptions &&
                                 <IconMenu title="Corner Style"
                                           selectedIndex={this.state.boxCornerStyle}
                                           onChange={this.handleBoxCornerStyleChange}
@@ -354,16 +364,10 @@ const AppWithStyles = withStyles(appStyles)(
                     </Grid>
                     <ExportDialog title="Export"
                                   open={this.state.exportDialogOpen}
-                                  onClose={this.handleExportDialogClose}
+                                  onClose={this.appStateHelper.hideExportDialog}
                                   text={this.state.diagramMarkup}/>
                 </div>
             );
-        }
-
-        private handleExportDialogClose(): void {
-            this.setState({
-                exportDialogOpen: false,
-            });
         }
 
         private handleToolbar = (event: React.MouseEvent<HTMLElement>, newTool: Tools) => {
@@ -379,71 +383,19 @@ const AppWithStyles = withStyles(appStyles)(
             }
         };
 
-        toolChanged(prevTool: Tool, tool: Tool): void {
-            console.log("Update tool: " + tool.constructor.name);
-            this.setState({
-                currentTool: tool,
-            });
-            if (tool instanceof ConnectorCreateTool) {
-                this.setState({
-                    isConnectorToolButtonSelected: true,
-                    isTextToolButtonSelected: false,
-                    isBoxToolButtonSelected: false,
-                    isSelectToolButtonSelected: false,
-                });
-            } else if (tool instanceof TextCreateTool && !(tool instanceof TextEditTool)) {
-                this.setState({
-                    isConnectorToolButtonSelected: false,
-                    isTextToolButtonSelected: true,
-                    isBoxToolButtonSelected: false,
-                    isSelectToolButtonSelected: false,
-                });
-            } else if (tool instanceof BoxCreateTool) {
-                this.setState({
-                    isConnectorToolButtonSelected: false,
-                    isTextToolButtonSelected: false,
-                    isBoxToolButtonSelected: true,
-                    isSelectToolButtonSelected: false,
-                });
-            } else if (tool instanceof SelectTool) {
-                this.setState({
-                    isConnectorToolButtonSelected: false,
-                    isTextToolButtonSelected: false,
-                    isBoxToolButtonSelected: false,
-                    isSelectToolButtonSelected: true,
-                });
-            }
-        }
-
         shapeSelected(newShape: Shape | undefined): void {
             console.log("Update selected shape: " + (newShape ? newShape.constructor.name : newShape));
 
-            let connectorStartTipStyle = this.state.connectorStartTipStyle;
-            let connectorEndTipStyle = this.state.connectorEndTipStyle;
-            let connectorLineStyle = this.state.connectorLineStyle;
+            if (newShape === undefined) {
+                this.appStateHelper.hideToolOptions();
+                return;
+            }
+
             if (newShape && newShape instanceof ConnectorShape) {
-                connectorStartTipStyle = newShape.startTipStyle;
-                connectorEndTipStyle = newShape.endTipStyle;
-                connectorLineStyle = newShape.lineStyle;
+                this.appStateHelper.showConnectorToolOptions(newShape);
+            } else if (newShape && newShape instanceof BoxShape) {
+                this.appStateHelper.showBoxToolOptions(newShape);
             }
-
-            let boxCornerStyle = this.state.boxCornerStyle;
-            if (newShape && newShape instanceof BoxShape) {
-                boxCornerStyle = newShape.cornerStyle;
-            }
-
-            this.setState({
-                connectorLineStyle: connectorLineStyle,
-                connectorStartTipStyle: connectorStartTipStyle,
-                connectorEndTipStyle: connectorEndTipStyle,
-                boxCornerStyle: boxCornerStyle,
-            });
-        }
-
-        private isSelectToolButtonSelected() {
-            console.log("is selected button selected shape: " + (this.toolService.currentShape() ? this.toolService.currentShape()!.constructor.name : this.toolService.currentShape()));
-            return this.toolService.currentTool() instanceof SelectTool
-                || this.toolService.currentShape() !== undefined;
         }
     }
 );

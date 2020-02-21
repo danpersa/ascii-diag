@@ -16,6 +16,8 @@ export class AppState {
     private _isTextToolButtonSelected: boolean;
     private _isBoxToolButtonSelected: boolean;
     private _isConnectorToolButtonSelected: boolean;
+    private _showBoxOptions: boolean;
+    private _showConnectorOptions: boolean;
 
     constructor(currentTool: Tool,
                 connectorLineStyle: LineStyle,
@@ -27,6 +29,8 @@ export class AppState {
                 isTextToolButtonSelected: boolean,
                 isBoxToolButtonSelected: boolean,
                 isConnectorToolButtonSelected: boolean,
+                showBoxOptions: boolean,
+                showConnectorOptions: boolean,
                 exportDialogOpen: boolean = false,
                 diagramMarkup: string = "") {
 
@@ -42,6 +46,8 @@ export class AppState {
         this._isConnectorToolButtonSelected = isConnectorToolButtonSelected;
         this._exportDialogOpen = exportDialogOpen;
         this._diagramMarkup = diagramMarkup;
+        this._showBoxOptions = showBoxOptions;
+        this._showConnectorOptions = showConnectorOptions;
     }
 
     get currentTool(): Tool {
@@ -93,6 +99,14 @@ export class AppState {
         return this._isBoxToolButtonSelected;
     }
 
+    get showBoxOptions(): boolean {
+        return this._showBoxOptions;
+    }
+
+    get showConnectorOptions(): boolean {
+        return this._showConnectorOptions;
+    }
+
     set currentTool(value: Tool) {
         this._currentTool = value;
     }
@@ -139,5 +153,13 @@ export class AppState {
 
     set isBoxToolButtonSelected(value: boolean) {
         this._isBoxToolButtonSelected = value;
+    }
+
+    set showBoxOptions(value: boolean) {
+        this._showBoxOptions = value;
+    }
+
+    set showConnectorOptions(value: boolean) {
+        this._showConnectorOptions = value;
     }
 }
