@@ -1,4 +1,5 @@
 import {Domain} from './cell'
+import Cell = Domain.Cell;
 
 type CellMatrix = Array<Array<Domain.Cell>>;
 
@@ -16,6 +17,45 @@ export default class Grid {
             }
         }
         return new Grid(cellMatrix);
+    }
+
+    static fromString(s: String): Grid {
+        const cellMatrix: CellMatrix = [];
+        let row = 0;
+        let column = 0;
+        let numberOfColumns = this.longestLine(s);
+        cellMatrix.push([]);
+        for (let currentCharIndex = 0; currentCharIndex < s.length; ++currentCharIndex) {
+            let currentChar = s[currentCharIndex];
+            if (currentChar == '\n' || currentCharIndex == s.length - 1) {
+                // add missing columns
+                while (column < numberOfColumns) {
+                    let cell = Cell.Builder.from(row, column++).text('').build();
+                    cellMatrix[row].push(cell);
+                }
+                if (currentCharIndex == s.length - 1) {
+                    break;
+                }
+                cellMatrix.push([]);
+                row++;
+                column = 0;
+            } else {
+                let cell = Cell.Builder.from(row, column++)
+                    .text(currentChar.replace(/\s/g, ""))
+                    .build();
+                cellMatrix[row].push(cell);
+            }
+        }
+
+        return new Grid(cellMatrix);
+    }
+
+    private static longestLine(s: String): number {
+        return s.split('\n')
+            .map(line => line.length)
+            .reduce(((previousValue, currentValue) =>
+                previousValue > currentValue ? previousValue : currentValue));
+
     }
 
     private constructor(cellMatrix: CellMatrix) {
