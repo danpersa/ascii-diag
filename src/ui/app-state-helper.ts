@@ -28,6 +28,7 @@ export default class AppStateHelper {
             connectorStartTipStyle: ConnectorTipStyle.Flat,
             connectorEndTipStyle: ConnectorTipStyle.Flat,
             boxCornerStyle: BoxCornerStyle.Square,
+            boxLineStyle: LineStyle.Continuous,
             grid: AsciiGrid.create(Constants.numberOfRows, Constants.numberOfColumns),
             isSelectToolButtonSelected: false,
             isTextToolButtonSelected: false,
@@ -93,6 +94,7 @@ export default class AppStateHelper {
         if (newShape) {
             this.component.setState({
                 boxCornerStyle: newShape.cornerStyle,
+                boxLineStyle: newShape.lineStyle,
             });
         }
 

@@ -85,13 +85,13 @@ export class ConnectorRenderer implements SvgRenderer {
     private dasharray(shape: ConnectorShape) {
         switch (shape.lineStyle) {
             case LineStyle.Continuous:
-                return '0';
+                return Constants.continuousLineDashPattern;
             case LineStyle.Dashed:
-                return '8,7';
+                return Constants.dashedLineDashPattern;
             case LineStyle.Dotted:
-                return '1,4';
+                return Constants.dottedLineDashPattern;
         }
-        return '0';
+        return Constants.continuousLineDashPattern;
     }
 
     private static tipOffset(tipDirection: ConnectorTipDirection | null): TipOffset {

@@ -1,6 +1,7 @@
 import {Box, BoxCornerStyle} from "./box";
 import {Vertex} from "./vertex";
 import Constants from "../constants";
+import {LineStyle} from "./connector";
 
 export class SelectBox extends Box {
     private readonly _topLeftVertex: Vertex;
@@ -14,7 +15,7 @@ export class SelectBox extends Box {
     }
 
     private constructor(topRow: number, leftColumn: number, bottomRow: number, rightColumn: number) {
-        super(topRow, leftColumn, bottomRow, rightColumn, BoxCornerStyle.Square);
+        super(topRow, leftColumn, bottomRow, rightColumn, BoxCornerStyle.Square, LineStyle.Continuous);
         this._topLeftVertex = Vertex.fromGrid(this.topRow, this.leftColumn);
         this._topRightVertex = Vertex.fromGrid(this.topRow, this.rightColumn + 1);
         this._bottomLeftVertex = Vertex.fromGrid(this.bottomRow + 1, this.leftColumn);

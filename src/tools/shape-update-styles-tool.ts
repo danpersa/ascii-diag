@@ -2,18 +2,18 @@ import {Tool} from "./tool";
 import {ToolService} from "./tool-service";
 import {LayerService} from "../layer-service";
 import {AppState} from "../ui/app-state";
-import {BoxShape} from "../shapes/box-shape";
+import {Shape} from "../shapes/shape";
 
-export class BoxUpdateStylesTool implements Tool {
+export class ShapeUpdateStylesTool<T extends Shape> implements Tool {
 
     private readonly toolService: ToolService;
     private readonly layerService: LayerService;
-    private readonly shape: BoxShape;
+    private readonly shape: T;
     private done = false;
 
     constructor(toolService: ToolService,
                 layerService: LayerService,
-                shape: BoxShape) {
+                shape: T) {
         this.toolService = toolService;
         this.shape = shape;
         this.layerService = layerService;
@@ -29,7 +29,7 @@ export class BoxUpdateStylesTool implements Tool {
         this.done = true;
 
         this.layerService.updateShape(this.shape);
-        this.toolService.selectBoxEditTool(this.shape);
+        this.toolService.selectShapeEditTool(this.shape);
     }
 
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {

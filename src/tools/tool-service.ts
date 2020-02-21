@@ -26,8 +26,7 @@ import {ConnectorModifyTool, ConnectorMoveType} from "./connector-modify-tool";
 import {CellToShapeService} from "../cell-to-shape-service";
 import {Shape} from "../shapes/shape";
 import {ShapeUpdateEvent, ShapeUpdateListener} from "../shape-update-notification-service";
-import {ConnectorUpdateStylesTool} from "./connector-update-styles-tool";
-import {BoxUpdateStylesTool} from "./box-update-styles-tool";
+import {ShapeUpdateStylesTool} from "./shape-update-styles-tool";
 
 export class ToolService implements ShapeUpdateListener {
 
@@ -131,14 +130,26 @@ export class ToolService implements ShapeUpdateListener {
         this.setTool(boxEditTool);
     }
 
-    selectBoxUpdateStylesTool(shape: BoxShape): void {
-        const tool = new BoxUpdateStylesTool(this, this.layerService, shape);
+    selectShapeUpdateStylesTool(shape: Shape): void {
+        const tool = new ShapeUpdateStylesTool(this, this.layerService, shape);
         this.setTool(tool);
     }
 
     selectConnectorEditTool(shape: ConnectorShape): void {
         const connectorEditTool = new ConnectorEditTool(this, this.layerService, this.vertexDrawer, this.connectorVertexFactory, shape);
         this.setTool(connectorEditTool);
+    }
+
+    selectShapeEditTool(shape: Shape): void {
+        if (shape && shape instanceof TextShape) {
+            this.selectTextEditTool(shape);
+        } else if (shape && shape instanceof BoxShape) {
+            this.selectBoxEditTool(shape);
+        } else if (shape && shape instanceof ConnectorShape) {
+            this.selectConnectorEditTool(shape);
+        } else {
+            this.selectSelectTool();
+        }
     }
 
     selectConnectorFlipTool(shape: ConnectorShape): void {
@@ -149,11 +160,6 @@ export class ToolService implements ShapeUpdateListener {
     selectConnectorModifyTool(shape: ConnectorShape, moveType: ConnectorMoveType): void {
         const connectorModifyTool = new ConnectorModifyTool(this, this.layerService, this.vertexDrawer, this.connectorVertexFactory, this.connectorDrawer, shape, moveType);
         this.setTool(connectorModifyTool);
-    }
-
-    selectConnectorUpdateStylesTool(shape: ConnectorShape): void {
-        const tool = new ConnectorUpdateStylesTool(this, this.layerService, shape);
-        this.setTool(tool);
     }
 
     selectTextEditTool(shape: TextShape): void {

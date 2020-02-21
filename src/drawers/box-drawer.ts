@@ -4,6 +4,8 @@ import {Domain} from "./cell";
 import {Drawer} from "./drawer";
 import Grid from "./grid";
 import Cell = Domain.Cell;
+import {Connector, LineStyle} from "./connector";
+import Constants from "../constants";
 
 export interface BoxDrawer extends Drawer<Box> {
 }
@@ -22,15 +24,22 @@ export abstract class AbstractBoxDrawer implements BoxDrawer {
         const topRightCornerSymbol = this.topRightCornerSymbol(box.cornerStyle);
         const bottomLeftCornerSymbol = this.bottomLeftCornerSymbol(box.cornerStyle);
         const bottomRightCornerSymbol = this.bottomRightCornerSymbol(box.cornerStyle);
+        const lineStyleSymbol = this.lineStyleSymbol(box);
 
         // start corner
         let cell = Cell.Builder.from(box.topRow, box.leftColumn).text(topLeftCornerSymbol).build();
         this.drawCell(cell);
 
         // horizontal edge
-        for (let i = minColumn + 1; i < maxColumn; i++) {
-            let cell = Cell.Builder.from(box.topRow, i).text("-").build();
-            this.drawCell(cell);
+        for (let column = minColumn + 1; column < maxColumn; column++) {
+            // draw the line style symbol first
+            if (column == minColumn + 1 && lineStyleSymbol) {
+                let cell = Cell.Builder.from(box.topRow, column).text(lineStyleSymbol).build();
+                this.drawCell(cell);
+            } else {
+                let cell = Cell.Builder.from(box.topRow, column).text("-").build();
+                this.drawCell(cell);
+            }
         }
 
         // left edge
@@ -108,6 +117,17 @@ export abstract class AbstractBoxDrawer implements BoxDrawer {
                 return '/';
         }
         return '+';
+    }
+
+    private lineStyleSymbol(box: Box): string {
+        switch (box.lineStyle) {
+            case LineStyle.Dotted:
+                return Constants.dottedLineSymbol;
+            case LineStyle.Dashed:
+                return Constants.dashedLineSymbol;
+            case LineStyle.Continuous:
+                return Constants.continuousLineSymbol;
+        }
     }
 }
 

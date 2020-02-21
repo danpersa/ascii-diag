@@ -196,7 +196,7 @@ const AppWithStyles = withStyles(appStyles)(
             const shape = this.toolService.currentShape();
             if (shape && shape instanceof ConnectorShape) {
                 const newShape = ConnectorShape.ShapeBuilder.from(shape).lineStyle(newLineStyle).build();
-                this.toolService.selectConnectorUpdateStylesTool(newShape);
+                this.toolService.selectShapeUpdateStylesTool(newShape);
             }
 
             this.setState({
@@ -204,13 +204,28 @@ const AppWithStyles = withStyles(appStyles)(
             });
         };
 
+        private handleBoxLineStyleChange = (event: React.MouseEvent<HTMLElement>, newLineStyle: LineStyle) => {
+            console.log("handle box line style change: " + newLineStyle);
+
+            const shape = this.toolService.currentShape();
+            if (shape && shape instanceof BoxShape) {
+                const newShape = BoxShape.ShapeBuilder.from(shape).lineStyle(newLineStyle).build();
+                this.toolService.selectShapeUpdateStylesTool(newShape);
+            }
+
+            this.setState({
+                boxLineStyle: newLineStyle,
+            });
+        };
+
+
         private handleConnectorStartTipStyleChange = (event: React.MouseEvent<HTMLElement>, newConnectorTipStyle: ConnectorTipStyle) => {
             console.log("handle connector start tip style change: " + newConnectorTipStyle);
 
             const shape = this.toolService.currentShape();
             if (shape && shape instanceof ConnectorShape) {
                 const newShape = ConnectorShape.ShapeBuilder.from(shape).startTipStyle(newConnectorTipStyle).build();
-                this.toolService.selectConnectorUpdateStylesTool(newShape);
+                this.toolService.selectShapeUpdateStylesTool(newShape);
             }
 
             this.setState({
@@ -224,7 +239,7 @@ const AppWithStyles = withStyles(appStyles)(
             const shape = this.toolService.currentShape();
             if (shape && shape instanceof ConnectorShape) {
                 const newShape = ConnectorShape.ShapeBuilder.from(shape).endTipStyle(newConnectorTipStyle).build();
-                this.toolService.selectConnectorUpdateStylesTool(newShape);
+                this.toolService.selectShapeUpdateStylesTool(newShape);
             }
 
             this.setState({
@@ -238,7 +253,7 @@ const AppWithStyles = withStyles(appStyles)(
             const shape = this.toolService.currentShape();
             if (shape && shape instanceof BoxShape) {
                 const newShape = BoxShape.ShapeBuilder.from(shape).cornerStyle(boxCornerStyle).build();
-                this.toolService.selectBoxUpdateStylesTool(newShape);
+                this.toolService.selectShapeUpdateStylesTool(newShape);
             }
 
             this.setState({
@@ -308,11 +323,18 @@ const AppWithStyles = withStyles(appStyles)(
                                     </span>
                                 }
                                 {this.state.showBoxOptions &&
-                                <IconMenu title="Corner Style"
-                                          selectedIndex={this.state.boxCornerStyle}
-                                          onChange={this.handleBoxCornerStyleChange}
-                                          options={["Square Corners", "Rounded Corners"]}
-                                          icons={[<SquareOutline/>, <RoundedCorner/>]}/>
+                                <span>
+                                    <IconMenu title="Line Style"
+                                                  selectedIndex={this.state.boxLineStyle}
+                                                  onChange={this.handleBoxLineStyleChange}
+                                                  options={["continuous", "dashed", "dotted"]}
+                                                  icons={[<Minus/>, <CurrentDc/>, <DotsHorizontal/>]}/>
+                                    <IconMenu title="Corner Style"
+                                              selectedIndex={this.state.boxCornerStyle}
+                                              onChange={this.handleBoxCornerStyleChange}
+                                              options={["Square Corners", "Rounded Corners"]}
+                                              icons={[<SquareOutline/>, <RoundedCorner/>]}/>
+                                    </span>
                                 }
                             </Grid>
                             <Grid item xs={12} sm={6} md={3}>

@@ -75,7 +75,8 @@ export class BoxMoveTool implements Tool {
             this.selectBox.leftColumn,
             this.selectBox.bottomRow,
             this.selectBox.rightColumn,
-            this.shape.cornerStyle);
+            this.shape.cornerStyle,
+            this.shape.lineStyle);
         this.layerService.updateShape(shape);
         this.toolService.selectBoxEditTool(shape);
     }

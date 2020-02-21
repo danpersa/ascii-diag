@@ -9,6 +9,7 @@ export type AppState = {
     connectorStartTipStyle: ConnectorTipStyle,
     connectorEndTipStyle: ConnectorTipStyle,
     boxCornerStyle: BoxCornerStyle,
+    boxLineStyle: LineStyle,
     exportDialogOpen: boolean,
     diagramMarkup: string,
     grid: Grid,

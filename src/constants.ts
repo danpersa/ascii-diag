@@ -1,4 +1,4 @@
-import {ConnectorDirection} from "./drawers/connector";
+import {ConnectorDirection, LineStyle} from "./drawers/connector";
 
 export default class Constants {
     static readonly canvasWidth = 900;
@@ -14,4 +14,13 @@ export default class Constants {
     static readonly vertexRadius = 8;
     static readonly halfVertexRadius = Constants.vertexRadius / 2;
     static readonly connectorStartDirection = ConnectorDirection.Horizontal;
+
+    static readonly continuousLineDashPattern = '0';
+    static readonly dashedLineDashPattern = '8,7';
+    static readonly dottedLineDashPattern = '1,4';
+
+
+    static readonly continuousLineSymbol = '';
+    static readonly dashedLineSymbol = ';';
+    static readonly dottedLineSymbol = ';';
 }

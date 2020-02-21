@@ -5,6 +5,7 @@ import {ConnectorTipDirectionService} from "../connector-tip-direction-service";
 import {Drawer} from "./drawer";
 import Grid from "./grid";
 import Cell = Domain.Cell;
+import Constants from "../constants";
 
 export interface ConnectorDrawer extends Drawer<Connector> {
 }
@@ -135,11 +136,11 @@ export abstract class AbstractConnectorDrawer implements ConnectorDrawer {
     private lineStyleSymbol(connector: Connector): string {
         switch (connector.lineStyle) {
             case LineStyle.Dotted:
-                return ':';
+                return Constants.dottedLineSymbol;
             case LineStyle.Dashed:
-                return ';';
+                return Constants.dashedLineSymbol;
             case LineStyle.Continuous:
-                return '';
+                return Constants.continuousLineSymbol;
         }
     }
 
