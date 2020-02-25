@@ -12,6 +12,7 @@ export type AppState = {
     boxLineStyle: LineStyle,
     exportDialogOpen: boolean,
     diagramMarkup: string,
+    importDialogOpen: boolean,
     grid: Grid,
     isSelectToolButtonSelected: boolean,
     isTextToolButtonSelected: boolean,

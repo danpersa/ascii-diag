@@ -97,7 +97,7 @@ export default class Grid {
     }
 
     toMarkup(): string {
-        let result = "```diag\n";
+        let result = "";
         for (let row = 0; row < this.cellMatrix.length; row++) {
             for (let column = 0; column < this.cellMatrix[row].length; column++) {
                 const cell = this.cellMatrix[row][column];
@@ -109,7 +109,7 @@ export default class Grid {
             }
             result += '\n';
         }
-        result += '\n```';
+        result += '\n';
         return result;
     }
 }

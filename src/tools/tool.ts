@@ -8,6 +8,7 @@ export enum Tools {
     connector = "connector",
     delete = "delete",
     export = "export",
+    import = "import",
 }
 
 export interface ToolChangedListener {

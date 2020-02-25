@@ -16,6 +16,7 @@ import {
     Delete,
     DotsHorizontal,
     Export,
+    Import,
     FormatText,
     Minus,
     RayStartArrow,
@@ -56,6 +57,7 @@ import {ConnectorShape} from "../shapes/connector-shape";
 import {BoxShape} from "../shapes/box-shape";
 import {BoxCornerStyle} from "../drawers/box";
 import ExportDialog from "./export-dialog";
+import ImportDialog from "./import-dialog";
 import AsciiGrid from "../drawers/grid";
 import AppStateHelper from "./app-state-helper";
 
@@ -90,7 +92,6 @@ const padding = {
 };
 
 export interface AppProps extends WithStyles<typeof appStyles> {
-
 }
 
 const AppWithStyles = withStyles(appStyles)(
@@ -325,10 +326,10 @@ const AppWithStyles = withStyles(appStyles)(
                                 {this.state.showBoxOptions &&
                                 <span>
                                     <IconMenu title="Line Style"
-                                                  selectedIndex={this.state.boxLineStyle}
-                                                  onChange={this.handleBoxLineStyleChange}
-                                                  options={["continuous", "dashed", "dotted"]}
-                                                  icons={[<Minus/>, <CurrentDc/>, <DotsHorizontal/>]}/>
+                                              selectedIndex={this.state.boxLineStyle}
+                                              onChange={this.handleBoxLineStyleChange}
+                                              options={["continuous", "dashed", "dotted"]}
+                                              icons={[<Minus/>, <CurrentDc/>, <DotsHorizontal/>]}/>
                                     <IconMenu title="Corner Style"
                                               selectedIndex={this.state.boxCornerStyle}
                                               onChange={this.handleBoxCornerStyleChange}
@@ -344,6 +345,16 @@ const AppWithStyles = withStyles(appStyles)(
                                                    onChange={this.handleToolbar}
                                                    style={margin}>
 
+                                    <ToggleButton value={Tools.import}
+                                                  style={padding}
+                                                  selected={false}>
+                                        <Import/>
+                                    </ToggleButton>
+                                    <ToggleButton value={Tools.export}
+                                                  style={padding}
+                                                  selected={false}>
+                                        <Export/>
+                                    </ToggleButton>
                                     {this.state.showDeleteButton &&
                                     <ToggleButton value={Tools.delete}
                                                   style={padding}
@@ -351,11 +362,7 @@ const AppWithStyles = withStyles(appStyles)(
                                         <Delete/>
                                     </ToggleButton>
                                     }
-                                    <ToggleButton value={Tools.export}
-                                                  style={padding}
-                                                  selected={false}>
-                                        <Export/>
-                                    </ToggleButton>
+
                                 </ToggleButtonGroup>
                             </Grid>
                         </Grid>
@@ -372,10 +379,12 @@ const AppWithStyles = withStyles(appStyles)(
                             </Paper>
                         </Grid>
                     </Grid>
-                    <ExportDialog title="Export"
-                                  open={this.state.exportDialogOpen}
+                    <ExportDialog open={this.state.exportDialogOpen}
                                   onClose={this.appStateHelper.hideExportDialog}
                                   text={this.state.diagramMarkup}/>
+                    <ImportDialog open={this.state.importDialogOpen}
+                                  onClose={this.appStateHelper.hideImportDialog}
+                                  onImport={this.appStateHelper.importDiagram}/>
                 </div>
             );
         }
@@ -388,6 +397,11 @@ const AppWithStyles = withStyles(appStyles)(
                     this.setState({
                         exportDialogOpen: true,
                         diagramMarkup: diagramMarkup,
+                    });
+                    break;
+                case Tools.import:
+                    this.setState({
+                        importDialogOpen: true,
                     });
                     break;
                 case Tools.delete:

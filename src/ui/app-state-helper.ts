@@ -19,6 +19,8 @@ export default class AppStateHelper {
         this.component = component;
         this.toolService = toolService;
         this.hideExportDialog = this.hideExportDialog.bind(this);
+        this.hideImportDialog = this.hideImportDialog.bind(this);
+        this.importDiagram = this.importDiagram.bind(this);
     }
 
     initState() {
@@ -38,6 +40,7 @@ export default class AppStateHelper {
             showConnectorOptions: true,
             showDeleteButton: false,
             exportDialogOpen: false,
+            importDialogOpen: false,
             diagramMarkup: "",
         }
     }
@@ -104,6 +107,19 @@ export default class AppStateHelper {
         this.component.setState({
             exportDialogOpen: false,
         });
+    }
+
+    hideImportDialog(): void {
+        this.component.setState({
+            importDialogOpen: false,
+        });
+    }
+
+    importDiagram(markup: string): void {
+        this.component.setState({
+            importDialogOpen: false,
+        });
+        console.log("We import the diagram with the markup: " + markup);
     }
 
     private unselectTools() {
