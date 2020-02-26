@@ -8,16 +8,23 @@ import {BoxCornerStyle} from "../drawers/box";
 import AsciiGrid from "../drawers/grid";
 import Constants from "../constants";
 import {ToolService} from "../tools/tool-service";
+import AsciiTextParser from "../parser/ascii-text-parser";
+import Grid from "../drawers/grid";
+import {LayerService} from "../layer-service";
 
 
 export default class AppStateHelper {
 
     private readonly component: React.Component<AppProps, AppState>;
     private readonly toolService: ToolService;
+    private readonly layerService: LayerService;
+    private readonly parser: AsciiTextParser;
 
-    constructor(component: React.Component<AppProps, AppState>, toolService: ToolService) {
+    constructor(component: React.Component<AppProps, AppState>, toolService: ToolService, layerService: LayerService, parser: AsciiTextParser) {
         this.component = component;
         this.toolService = toolService;
+        this.layerService = layerService;
+        this.parser = parser;
         this.hideExportDialog = this.hideExportDialog.bind(this);
         this.hideImportDialog = this.hideImportDialog.bind(this);
         this.importDiagram = this.importDiagram.bind(this);
@@ -120,6 +127,11 @@ export default class AppStateHelper {
             importDialogOpen: false,
         });
         console.log("We import the diagram with the markup: " + markup);
+
+        const grid = Grid.fromString(markup);
+        const shapes = this.parser.parse(grid);
+        this.layerService.deleteAllShapes();
+        shapes.forEach(shape => this.layerService.createShape(shape));
     }
 
     private unselectTools() {

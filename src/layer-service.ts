@@ -45,4 +45,10 @@ export class LayerService {
             this.shapeUpdateNotificationService.notify(ShapeUpdateEvent.DELETED, shape);
         }
     }
+
+    deleteAllShapes(): void {
+        while (this.shapes.length > 0) {
+            this.shapes.pop();
+        }
+    }
 }

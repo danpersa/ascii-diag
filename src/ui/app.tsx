@@ -60,6 +60,7 @@ import ExportDialog from "./export-dialog";
 import ImportDialog from "./import-dialog";
 import AsciiGrid from "../drawers/grid";
 import AppStateHelper from "./app-state-helper";
+import AsciiTextParser from "../parser/ascii-text-parser";
 
 const appStyles = (theme: Theme) => createStyles({
     root: {
@@ -120,7 +121,7 @@ const AppWithStyles = withStyles(appStyles)(
 
             this.stateProvider = new StateProvider(this);
 
-            const entityIdService = new ShapeIdService();
+            const shapeIdService = new ShapeIdService();
 
             const arrowTipDirectionService = new ConnectorTipDirectionService();
             this.cellDrawer = new CanvasCellDrawer(this.canvasDivRef);
@@ -131,12 +132,13 @@ const AppWithStyles = withStyles(appStyles)(
             const textDrawer = new CanvasTextDrawer(this.cellDrawer);
             const cursorDrawer = new CanvasCursorDrawer(this.canvasDivRef);
             this.gridDrawerFactory = new GridDrawerFactory(arrowTipDirectionService);
+            const parser = new AsciiTextParser(shapeIdService);
 
             this.toolService = new ToolService(
                 this.layerService,
                 selectBoxDrawer,
                 boxDrawer,
-                entityIdService,
+                shapeIdService,
                 textDrawer,
                 cursorDrawer,
                 vertexDrawer,
@@ -145,7 +147,7 @@ const AppWithStyles = withStyles(appStyles)(
             this.toolService.registerSelectedShapeChangedListeners(this);
             this.shapeUpdateNotificationService.register(this.cellToShapeService);
             this.shapeUpdateNotificationService.register(this.toolService);
-            this.appStateHelper = new AppStateHelper(this, this.toolService);
+            this.appStateHelper = new AppStateHelper(this, this.toolService, this.layerService, parser);
             this.appStateHelper.initState();
 
             const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);

@@ -1,8 +1,10 @@
 import Grid from "../drawers/grid";
 import AsciiTextParser from "./ascii-text-parser";
 import {BoxShape} from "../shapes/box-shape";
+import {ShapeIdService} from "../shapes/shape-id-service";
 
-const parser = new AsciiTextParser();
+const shapeIdService = new ShapeIdService();
+const parser = new AsciiTextParser(shapeIdService);
 
 describe('parse', () => {
     beforeEach(() => {

@@ -5,6 +5,7 @@ import {Box, BoxCornerStyle} from "../drawers/box";
 import {LineStyle} from "../drawers/connector";
 import Cell = Domain.Cell;
 import {BoxShape} from "../shapes/box-shape";
+import {ShapeIdService} from "../shapes/shape-id-service";
 
 enum EdgeType {
     Horizontal, Vertical
@@ -120,7 +121,10 @@ class ParallelEdgePair {
 }
 
 export default class AsciiTextParser {
-    constructor() {
+    private readonly shapeIdService: ShapeIdService;
+
+    constructor(shapeIdService: ShapeIdService) {
+        this.shapeIdService = shapeIdService;
     }
 
     parse(grid: Grid): Array<Shape> {
@@ -244,7 +248,7 @@ export default class AsciiTextParser {
 
         // we look for all edges which were not used to create boxes
 
-        const shapes: Array<Shape> = boxes.map(box => new BoxShape(1, box.topEdge.start.row,
+        const shapes: Array<Shape> = boxes.map(box => new BoxShape(this.shapeIdService.nextId(), box.topEdge.start.row,
             box.topEdge.start.column, box.bottomEdge.start.row, box.bottomEdge.end.column,
             BoxCornerStyle.Square, LineStyle.Continuous));
 
