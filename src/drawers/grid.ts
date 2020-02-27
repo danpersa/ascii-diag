@@ -112,4 +112,19 @@ export default class Grid {
         result += '\n';
         return result;
     }
+
+    difference(gridWithBoxes: Grid) {
+        const diffGrid = Grid.create(this.rows(), this.columns());
+        for (let row = 0; row < this.cellMatrix.length; row++) {
+            for (let column = 0; column < this.cellMatrix[row].length; column++) {
+                const cell = this.cellMatrix[row][column];
+                if (cell.text &&
+                    ((gridWithBoxes.cell(row, column).text && cell.text !== gridWithBoxes.cell(row, column).text) ||
+                        !gridWithBoxes.cell(row, column).text)) {
+                    diffGrid.switchCell(cell);
+                }
+            }
+        }
+        return diffGrid;
+    }
 }

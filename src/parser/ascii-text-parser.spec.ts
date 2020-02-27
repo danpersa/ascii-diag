@@ -2,181 +2,45 @@ import Grid from "../drawers/grid";
 import AsciiTextParser from "./ascii-text-parser";
 import {BoxShape} from "../shapes/box-shape";
 import {ShapeIdService} from "../shapes/shape-id-service";
+import {expectBoxToBe} from "./box-parser.spec";
+import {ConnectorShape} from "../shapes/connector-shape";
+import {expectConnectorToBe} from "./connector-parser.spec";
+import {ConnectorDirection} from "../drawers/connector";
 
 const shapeIdService = new ShapeIdService();
 const parser = new AsciiTextParser(shapeIdService);
 
 describe('parse', () => {
-    beforeEach(() => {
-    });
 
-    it('should parse a text with a box', () => {
+    it('should parse a diagram with boxes and connectors', () => {
         const grid = Grid.fromString(
             `
-            +---+
-            |   |
-            +---+
-
+            +---+     +----+
+            |   |-----|    |
+            +---+     |    |
+               |      |    |
+               +------|    |
+                      +----+
             `
         );
         const result = parser.parse(grid);
-        expect(result.length).toBe(1);
-        expect(result[0]).toBeInstanceOf(BoxShape);
-        const box1 = result[0] as BoxShape;
-        expectBoxToBe(box1, 1, 3, 12, 16);
-    });
-
-    it('should parse a text with two boxes', () => {
-        const grid = Grid.fromString(
-            `
-            +---+  +----+
-            |   |  |    |
-            +---+  |    |
-                   +----+
-            `
-        );
-        const result = parser.parse(grid);
-        expect(result.length).toBe(2);
+        expect(result.length).toBe(4);
         expect(result[0]).toBeInstanceOf(BoxShape);
         const box1 = result[0] as BoxShape;
         expectBoxToBe(box1, 1, 3, 12, 16);
 
+        expect(result[1]).toBeInstanceOf(BoxShape);
         const box2 = result[1] as BoxShape;
-        expectBoxToBe(box2, 1, 4, 19, 24);
+        expectBoxToBe(box2, 1, 6, 22, 27);
+
+        expect(result[2]).toBeInstanceOf(ConnectorShape);
+        const connector1 = result[2] as ConnectorShape;
+        expectConnectorToBe(connector1, 2, 17, 2, 21);
+        expect(connector1.startDirection).toBe(ConnectorDirection.Horizontal);
+
+        expect(result[3]).toBeInstanceOf(ConnectorShape);
+        const connector2 = result[3] as ConnectorShape;
+        expectConnectorToBe(connector2, 5, 21, 4, 15);
+        expect(connector2.startDirection).toBe(ConnectorDirection.Vertical);
     });
-
-    it('should parse a text with two boxes sharing an edge', () => {
-        const grid = Grid.fromString(
-            `
-            +----+
-            |    |
-            +-+--+
-              |  |
-              +--+ 
-            `
-        );
-        const result = parser.parse(grid);
-        expect(result.length).toBe(2);
-        expect(result[0]).toBeInstanceOf(BoxShape);
-        const box1 = result[0] as BoxShape;
-        expectBoxToBe(box1, 1, 3, 12, 17);
-
-        const box2 = result[1] as BoxShape;
-        expectBoxToBe(box2, 3, 5, 14, 17);
-    });
-
-    it('should parse a text with two boxes one containing the other', () => {
-        const grid = Grid.fromString(
-            `
-            +------+
-            |  +-+ |
-            |  | | |
-            |  +-+ |
-            +------+ 
-            `
-        );
-        const result = parser.parse(grid);
-        expect(result.length).toBe(2);
-        expect(result[0]).toBeInstanceOf(BoxShape);
-        const box1 = result[0] as BoxShape;
-        expectBoxToBe(box1, 1, 5, 12, 19);
-
-        const box2 = result[1] as BoxShape;
-        expectBoxToBe(box2, 2, 4, 15, 17);
-    });
-
-    it('should parse a text with two boxes one containing the other and sharing a corner', () => {
-        const grid = Grid.fromString(
-            `
-            +---+--+
-            |   |  |
-            |   |  |
-            +---+  |
-            +------+
-            `
-        );
-        const result = parser.parse(grid);
-        expect(result.length).toBe(2);
-        expect(result[0]).toBeInstanceOf(BoxShape);
-        const box1 = result[0] as BoxShape;
-        expectBoxToBe(box1, 1, 4, 12, 16);
-
-        const box2 = result[1] as BoxShape;
-        expectBoxToBe(box2, 1, 5, 12, 19);
-    });
-
-    it('should parse a text with three boxes sharing some edges', () => {
-        const grid = Grid.fromString(
-            `
-            +----+
-            |    |
-            |    +--+
-            ++---+  |
-             |   +--+
-             +---+ 
-            `
-        );
-        const result = parser.parse(grid);
-        expect(result.length).toBe(3);
-        expect(result[0]).toBeInstanceOf(BoxShape);
-        const box1 = result[0] as BoxShape;
-        expectBoxToBe(box1, 1, 4, 12, 17);
-
-        const box2 = result[1] as BoxShape;
-        expectBoxToBe(box2, 3, 5, 17, 20);
-
-        const box3 = result[2] as BoxShape;
-        expectBoxToBe(box3, 4, 6, 13, 17);
-    });
-
-    it('should parse a text with two boxes sharing a whole edge', () => {
-        const grid = Grid.fromString(
-            `
-            +----+
-            |    |
-            +----+
-            |    |
-            +----+ 
-            `
-        );
-        // TODO make this pass, right now returns 3 boxes, one containing the union of the first two
-    });
-
-    it('should parse a text with more boxes and connectors', () => {
-        const grid = Grid.fromString(
-            `
-            +---+  +----+---+
-            |   |--|    +---+
-            +---+  |    |
-              |    |    |
-              +----|    |
-                   +----+
-            `
-        );
-        const result = parser.parse(grid);
-        expect(result.length).toBe(3);
-        expect(result[0]).toBeInstanceOf(BoxShape);
-        const box1 = result[0] as BoxShape;
-        expectBoxToBe(box1, 1, 3, 12, 16);
-
-        const box2 = result[1] as BoxShape;
-        expectBoxToBe(box2, 1, 6, 19, 24);
-
-        const box3 = result[2] as BoxShape;
-        expectBoxToBe(box3, 1, 2, 24, 28);
-    });
-
-    it('should parse a text with a box with rounded corners', () => {
-    });
-
-    it('should parse a text with a box with dashed lines', () => {
-    });
-
 });
-
-function expectBoxToBe(box: BoxShape, topRow: number, bottomRow: number, leftColumn: number, rightColumn: number) {
-    expect(box.topRow).toBe(topRow);
-    expect(box.bottomRow).toBe(bottomRow);
-    expect(box.leftColumn).toBe(leftColumn);
-    expect(box.rightColumn).toBe(rightColumn);
-}
