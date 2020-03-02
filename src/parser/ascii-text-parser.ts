@@ -1,45 +1,53 @@
 import {Shape} from "../shapes/shape";
 import Grid from "../drawers/grid";
 import {Domain} from "../drawers/cell";
-import {BoxCornerStyle} from "../drawers/box";
-import {ConnectorDirection, LineStyle} from "../drawers/connector";
 import {BoxShape} from "../shapes/box-shape";
 import {ShapeIdService} from "../shapes/shape-id-service";
 import {GridBoxDrawer} from "../drawers/box-drawer";
-import {ConnectorShape} from "../shapes/connector-shape";
-import Cell = Domain.Cell;
 import BoxParser from "./box-parser";
 import ConnectorParser from "./connector-parser";
+import TextParser from "./text-parser";
+import {GridTextDrawer} from "../drawers/text-drawer";
+import {TextShape} from "../shapes/text-shape";
 
 
 export default class AsciiTextParser {
     private readonly shapeIdService: ShapeIdService;
     private readonly boxParser: BoxParser;
     private readonly connectorParser: ConnectorParser;
+    private readonly textParser: TextParser;
 
     constructor(shapeIdService: ShapeIdService) {
         this.shapeIdService = shapeIdService;
         this.boxParser = new BoxParser(shapeIdService);
         this.connectorParser = new ConnectorParser(shapeIdService);
+        this.textParser = new TextParser(shapeIdService);
     }
 
     parse(grid: Grid): Array<Shape> {
+        const texts = this.textParser.parse(grid);
+
+
         const boxes = this.boxParser.parse(grid);
 
-        // create a grid containing only the boxes
-        const gridWithBoxes = Grid.create(grid.rows(), grid.columns());
-        const gridBoxDrawer = new GridBoxDrawer(gridWithBoxes);
+        // create a grid containing only the boxes and texts
+        const gridWithTextsAndBoxes = Grid.create(grid.rows(), grid.columns());
+        const gridBoxDrawer = new GridBoxDrawer(gridWithTextsAndBoxes);
+        const gridTextDrawer = new GridTextDrawer(gridWithTextsAndBoxes);
+
+        texts.forEach(text => gridTextDrawer.draw(text as TextShape));
         boxes.forEach(box => gridBoxDrawer.draw(box as BoxShape));
 
-        //console.log("Here is the grid with boxes:\n" + gridWithBoxes.toMarkup());
+
+        //console.log("Here is the grid with boxes:\n" + gridWithTextsAndBoxes.toMarkup());
 
         // remove the boxes from the original grid
-        const gridWithoutBoxes = grid.difference(gridWithBoxes);
+        const gridWithoutTextsAndBoxes = grid.difference(gridWithTextsAndBoxes);
 
-        console.log("Here is the grid without boxes:\n" + gridWithoutBoxes.toMarkup());
+        //console.log("Here is the grid without texts and boxes:\n" + gridWithoutTextsAndBoxes.toMarkup());
 
-        const connectors: Array<Shape> = this.connectorParser.parse(gridWithoutBoxes);
+        const connectors: Array<Shape> = this.connectorParser.parse(gridWithoutTextsAndBoxes);
 
-        return boxes.concat(connectors);
+        return texts.concat(boxes).concat(connectors);
     }
 }
