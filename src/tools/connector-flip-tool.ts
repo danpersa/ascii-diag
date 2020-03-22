@@ -3,7 +3,7 @@ import {ToolService} from "./tool-service";
 import {VertexDrawer} from "../drawers/vertex-drawer";
 import {ConnectorShape} from "../shapes/connector-shape";
 import {Vertex} from "../drawers/vertex";
-import {ConnectorDirection} from "../drawers/connector";
+import {ConnectorDirection, GridPoint, isEdgedConnector} from "../drawers/connector";
 import {LayerService} from "../layer-service";
 import {ConnectorVertexFactory} from "./connector-vertex-factory";
 import {AppState} from "../ui/app-state";
@@ -25,7 +25,7 @@ export class ConnectorFlipTool implements Tool {
         this.shape = shape;
         this.layerService = layerService;
         this.connectorVertexFactory = connectorVertexFactory;
-        this.flipVertex = connectorVertexFactory.createFlipVertex(shape);
+        this.flipVertex = connectorVertexFactory.createFlipVertex(shape.connectorType);
     }
 
     mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
@@ -42,14 +42,33 @@ export class ConnectorFlipTool implements Tool {
     }
 
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
-        const newConnectorDirection = this.shape.startDirection === ConnectorDirection.Horizontal ? ConnectorDirection.Vertical : ConnectorDirection.Horizontal;
-
-        const shape = ConnectorShape.ShapeBuilder.from(this.shape)
-            .startDirection(newConnectorDirection)
-            .build();
+        const shape = this.getFlipedConnector();
 
         this.layerService.updateShape(shape);
         this.toolService.selectConnectorEditTool(shape);
+    }
+
+    private getFlipedConnector(): ConnectorShape {
+        const connectorType = this.shape.connectorType;
+        if (!isEdgedConnector(connectorType)) {
+            return this.shape;
+        }
+
+        const newIntersectionPoint: GridPoint = {
+            row: connectorType.verticalEdge.start.row,
+            column: connectorType.horizontalEdge.start.column
+        };
+
+        const newConnectorType = {
+            horizontalEdge: {start: connectorType.verticalEdge.start, end: newIntersectionPoint},
+            intersectionPoint: newIntersectionPoint,
+            verticalEdge: {start: connectorType.horizontalEdge.start, end: newIntersectionPoint}
+        };
+
+        return ConnectorShape.ShapeBuilder.from(this.shape)
+            .connectorType(newConnectorType)
+            .intersectionPoint(newIntersectionPoint)
+            .build();
     }
 
     keyDown(key: string, appState: Readonly<AppState>): void {

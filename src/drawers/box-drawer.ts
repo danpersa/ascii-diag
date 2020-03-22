@@ -3,9 +3,9 @@ import {CellDrawer} from "./cell-drawer";
 import {Domain} from "./cell";
 import {Drawer} from "./drawer";
 import Grid from "./grid";
-import Cell = Domain.Cell;
-import {Connector, LineStyle} from "./connector";
+import {LineStyle} from "./connector";
 import Constants from "../constants";
+import Cell = Domain.Cell;
 
 export interface BoxDrawer extends Drawer<Box> {
 }

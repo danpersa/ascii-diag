@@ -4,10 +4,8 @@ import {BoxShape} from "../shapes/box-shape";
 import {ShapeIdService} from "../shapes/shape-id-service";
 import {expectBoxToBe} from "./box-parser.spec";
 import {ConnectorShape} from "../shapes/connector-shape";
-import {expectConnectorToBe} from "./connector-parser.spec";
-import {ConnectorDirection} from "../drawers/connector";
-import {TextShape} from "../shapes/text-shape";
 import {expectTextToBe} from "./text-parser.spec";
+import {expectConnectorToHaveHorizontalEdge, expectConnectorToHaveVerticalEdge} from "./connector-parser.spec";
 
 const shapeIdService = new ShapeIdService();
 const parser = new AsciiTextParser(shapeIdService);
@@ -37,13 +35,13 @@ describe('parse', () => {
 
         expect(result[2]).toBeInstanceOf(ConnectorShape);
         const connector1 = result[2] as ConnectorShape;
-        expectConnectorToBe(connector1, 2, 17, 2, 21);
-        expect(connector1.startDirection).toBe(ConnectorDirection.Horizontal);
+
+        expectConnectorToHaveHorizontalEdge(connector1, 2, 17, 2, 21);
 
         expect(result[3]).toBeInstanceOf(ConnectorShape);
         const connector2 = result[3] as ConnectorShape;
-        expectConnectorToBe(connector2, 5, 21, 4, 15);
-        expect(connector2.startDirection).toBe(ConnectorDirection.Vertical);
+        expectConnectorToHaveHorizontalEdge(connector2, 5, 21, 5, 15);
+        expectConnectorToHaveVerticalEdge(connector2, 4, 15, 5, 15);
     });
 
     it('should parse a diagram with boxes, texts and connectors', () => {
@@ -75,7 +73,10 @@ describe('parse', () => {
         expectBoxToBe(result[5], 9, 13, 30, 36);
 
 
-        expectConnectorToBe(result[6], 11, 13, 6, 19);
-        expectConnectorToBe(result[7], 11, 29, 6, 22);
+        expectConnectorToHaveHorizontalEdge(result[6], 11, 13, 11, 19);
+        expectConnectorToHaveVerticalEdge(result[6], 6, 19, 11, 19);
+
+        expectConnectorToHaveHorizontalEdge(result[7], 11, 29, 11, 22);
+        expectConnectorToHaveVerticalEdge(result[7], 6, 22, 11, 22);
     })
 });

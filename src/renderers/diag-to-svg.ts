@@ -4,19 +4,17 @@ import Constants from "../constants";
 import {RefObject} from "react";
 import {LayerService} from "../layer-service";
 import {SvgRendererService} from "./svg-renderer";
-import {ConnectorTipDirectionService} from "../connector-tip-direction-service";
 
 export class DiagToSvg {
     private readonly layerService: LayerService;
     private readonly ref: RefObject<HTMLDivElement>;
     private readonly svgRendererService: SvgRendererService;
 
-    constructor(ref: RefObject<HTMLDivElement>,
-                layerService: LayerService,
-                connectorTipDirectionService: ConnectorTipDirectionService) {
+    constructor(ref: React.RefObject<HTMLDivElement>,
+                layerService: LayerService) {
         this.ref = ref;
         this.layerService = layerService;
-        this.svgRendererService = new SvgRendererService(connectorTipDirectionService);
+        this.svgRendererService = new SvgRendererService();
     }
 
     render(): void {

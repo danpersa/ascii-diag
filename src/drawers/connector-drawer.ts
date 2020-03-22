@@ -1,136 +1,108 @@
 import {CellDrawer} from "./cell-drawer";
-import {Connector, ConnectorDirection, ConnectorTipDirection, ConnectorTipStyle, LineStyle} from "./connector";
+import {Connector, ConnectorTipDirection, ConnectorTipStyle, LineStyle} from "./connector";
 import {Domain} from "./cell";
-import {ConnectorTipDirectionService} from "../connector-tip-direction-service";
 import {Drawer} from "./drawer";
 import Grid from "./grid";
-import Cell = Domain.Cell;
 import Constants from "../constants";
+import Cell = Domain.Cell;
 
 export interface ConnectorDrawer extends Drawer<Connector> {
 }
 
 export abstract class AbstractConnectorDrawer implements ConnectorDrawer {
 
-    private readonly connectorTipDirectionService: ConnectorTipDirectionService;
-
-    constructor(connectorTipDirectionService: ConnectorTipDirectionService) {
-        this.connectorTipDirectionService = connectorTipDirectionService;
+    constructor() {
     }
 
     abstract drawCell(cell: Cell): void;
 
     draw(connector: Connector): void {
-        const startTipSymbol = this.startTipSymbol(connector);
-        const lineStyleSymbol = this.lineStyleSymbol(connector);
-        let cell = Cell.Builder.from(connector.startRow, connector.startColumn)
-            .text(startTipSymbol)
+        this.drawHorizontalEdge(connector);
+        this.drawVerticalEdge(connector);
+        this.drawIntersectionPoint(connector);
+    }
+
+    private drawIntersectionPoint(connector: Connector) {
+        if (connector.intersectionPoint === null) {
+            return;
+        }
+        let cell = Cell.Builder.from(connector.intersectionPoint.row, connector.intersectionPoint.column)
+            .text('+')
             .build();
         this.drawCell(cell);
+    }
 
-        const minColumn = Math.min(connector.startColumn, connector.endColumn);
-        const maxColumn = Math.max(connector.startColumn, connector.endColumn);
-        const minRow = Math.min(connector.startRow, connector.endRow);
-        const maxRow = Math.max(connector.startRow, connector.endRow);
-        const endTipSymbol = this.endTipSymbol(connector);
-
-        if (connector.startDirection === ConnectorDirection.Horizontal) {
-            for (let column = minColumn + 1; column < maxColumn; ++column) {
-                // draw the line style symbol first
-                if (column == minColumn + 1 && lineStyleSymbol) {
-                    const cell = Cell.Builder.from(connector.startRow, column).text(lineStyleSymbol).build();
-                    this.drawCell(cell);
-                } else {
-                    const cell = Cell.Builder.from(connector.startRow, column).text("-").build();
-                    this.drawCell(cell);
+    private drawHorizontalEdge(connector: Connector) {
+        if (connector.horizontalEdge === null) {
+            return;
+        }
+        const lineStyleSymbol = this.lineStyleSymbol(connector);
+        const row = connector.horizontalEdge.start.row;
+        const startColumn = connector.horizontalEdge.start.column;
+        const endColumn = connector.horizontalEdge.end.column;
+        const minColumn = Math.min(startColumn, endColumn);
+        const maxColumn = Math.max(startColumn, endColumn);
+        //console.log("Min column: " + minColumn + " maxColumn: " + maxColumn);
+        for (let column = minColumn; column <= maxColumn; ++column) {
+            if (column === minColumn) {
+                if (connector.intersectionPoint && connector.intersectionPoint.column === column) {
+                    continue;
                 }
-            }
-            if (connector.startRow == connector.endRow) {
-                if (endTipSymbol) {
-                    const cell = Cell.Builder.from(connector.startRow, connector.endColumn).text(endTipSymbol).build();
-                    this.drawCell(cell);
+                const tipSymbol = this.tipSymbol(ConnectorTipDirection.West, connector.horizontalTipStyle);
+                const cell = Cell.Builder.from(row, column).text(tipSymbol).build();
+                this.drawCell(cell);
+            } else if (column === maxColumn) {
+                if (connector.intersectionPoint && connector.intersectionPoint.column === column) {
+                    continue;
                 }
+                const tipSymbol = this.tipSymbol(ConnectorTipDirection.East, connector.horizontalTipStyle);
+                const cell = Cell.Builder.from(row, column).text(tipSymbol).build();
+                this.drawCell(cell);
+            } else if (column === minColumn + 1 && lineStyleSymbol) {
+                const cell = Cell.Builder.from(row, column).text(lineStyleSymbol).build();
+                this.drawCell(cell);
             } else {
-                // if this is not a vertical connector
-                if (connector.startColumn != connector.endColumn) {
-                    const cell = Cell.Builder.from(connector.startRow, connector.endColumn).text("+").build();
-                    this.drawCell(cell);
-                    for (let row = minRow + 1; row < maxRow; ++row) {
-                        const cell = Cell.Builder.from(row, connector.endColumn).text("|").build();
-                        this.drawCell(cell);
-                    }
-                } else {
-                    for (let row = minRow + 1; row < maxRow; ++row) {
-                        // draw the line style symbol first
-                        if (row == minRow + 1 && lineStyleSymbol) {
-                            const cell = Cell.Builder.from(row, connector.endColumn).text(lineStyleSymbol).build();
-                            this.drawCell(cell);
-                        } else {
-                            const cell = Cell.Builder.from(row, connector.endColumn).text("|").build();
-                            this.drawCell(cell);
-                        }
-                    }
-                }
-                if (endTipSymbol) {
-                    const cell = Cell.Builder.from(connector.endRow, connector.endColumn).text(endTipSymbol).build();
-                    this.drawCell(cell);
-                }
-            }
-        } else if (connector.startDirection === ConnectorDirection.Vertical) {
-            for (let row = minRow + 1; row < maxRow; ++row) {
-                // draw the line style symbol first
-                if (row == minRow + 1 && lineStyleSymbol) {
-                    const cell = Cell.Builder.from(row, connector.startColumn).text(lineStyleSymbol).build();
-                    this.drawCell(cell);
-                } else {
-                    const cell = Cell.Builder.from(row, connector.startColumn).text("|").build();
-                    this.drawCell(cell);
-                }
-
-            }
-            if (connector.startColumn == connector.endColumn) {
-                if (endTipSymbol) {
-                    const cell = Cell.Builder.from(connector.endRow, connector.endColumn).text(endTipSymbol).build();
-                    this.drawCell(cell);
-                }
-            } else {
-                // if it's not horizontal
-                if (connector.startRow != connector.endRow) {
-                    const cell = Cell.Builder.from(connector.endRow, connector.startColumn).text("+").build();
-                    this.drawCell(cell);
-                    for (let column = minColumn + 1; column < maxColumn; ++column) {
-                        const cell = Cell.Builder.from(connector.endRow, column).text("-").build();
-                        this.drawCell(cell);
-                    }
-                } else {
-                    for (let column = minColumn + 1; column < maxColumn; ++column) {
-                        // draw the line style symbol first
-                        if (column == minColumn + 1) {
-                            const cell = Cell.Builder.from(connector.endRow, column).text(lineStyleSymbol).build();
-                            this.drawCell(cell);
-                        } else {
-                            const cell = Cell.Builder.from(connector.endRow, column).text("-").build();
-                            this.drawCell(cell);
-                        }
-                    }
-                }
-
-                if (endTipSymbol) {
-                    const cell = Cell.Builder.from(connector.endRow, connector.endColumn).text(endTipSymbol).build();
-                    this.drawCell(cell);
-                }
+                const cell = Cell.Builder.from(row, column).text("-").build();
+                this.drawCell(cell);
             }
         }
     }
 
-    private endTipSymbol(connector: Connector): string {
-        const tipDirection = this.connectorTipDirectionService.endTipDirection(connector);
-        return this.tipSymbol(tipDirection, connector.endTipStyle);
-    }
-
-    private startTipSymbol(connector: Connector): string {
-        const tipDirection = this.connectorTipDirectionService.startTipDirection(connector);
-        return this.tipSymbol(tipDirection, connector.startTipStyle);
+    private drawVerticalEdge(connector: Connector) {
+        if (connector.verticalEdge === null) {
+            return;
+        }
+        const lineStyleSymbol = this.lineStyleSymbol(connector);
+        const column = connector.verticalEdge.start.column;
+        const startRow = connector.verticalEdge.start.row;
+        const endRow = connector.verticalEdge.end.row;
+        const minRow = Math.min(startRow, endRow);
+        const maxRow = Math.max(startRow, endRow);
+        //console.log("Min row: " + minRow + " maxRow: " + maxRow + " startColumn: " + column + " endColumn: " + connector.verticalEdge.end.column);
+        for (let row = minRow; row <= maxRow; ++row) {
+            // draw the line style symbol first
+            if (row === minRow) {
+                if (connector.intersectionPoint && connector.intersectionPoint.row === row) {
+                    continue;
+                }
+                const tipSymbol = this.tipSymbol(ConnectorTipDirection.North, connector.verticalTipStyle);
+                const cell = Cell.Builder.from(row, column).text(tipSymbol).build();
+                this.drawCell(cell);
+            } else if (row === maxRow) {
+                if (connector.intersectionPoint && connector.intersectionPoint.row === row) {
+                    continue;
+                }
+                const tipSymbol = this.tipSymbol(ConnectorTipDirection.South, connector.verticalTipStyle);
+                const cell = Cell.Builder.from(row, column).text(tipSymbol).build();
+                this.drawCell(cell);
+            } else if (row == minRow + 1 && lineStyleSymbol) {
+                const cell = Cell.Builder.from(row, column).text(lineStyleSymbol).build();
+                this.drawCell(cell);
+            } else {
+                const cell = Cell.Builder.from(row, column).text("|").build();
+                this.drawCell(cell);
+            }
+        }
     }
 
     private lineStyleSymbol(connector: Connector): string {
@@ -163,8 +135,8 @@ export class CanvasConnectorDrawer extends AbstractConnectorDrawer {
 
     private cellDrawer: CellDrawer;
 
-    constructor(cellDrawer: CellDrawer, connectorTipDirectionService: ConnectorTipDirectionService) {
-        super(connectorTipDirectionService);
+    constructor(cellDrawer: CellDrawer) {
+        super();
         this.cellDrawer = cellDrawer;
     }
 
@@ -188,8 +160,8 @@ export class ArrayConnectorDrawer extends AbstractConnectorDrawer {
 export class GridConnectorDrawer extends AbstractConnectorDrawer {
     private readonly grid: Grid;
 
-    constructor(connectorTipDirectionService: ConnectorTipDirectionService, grid: Grid) {
-        super(connectorTipDirectionService);
+    constructor(grid: Grid) {
+        super();
         this.grid = grid;
     }
 

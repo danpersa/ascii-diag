@@ -7,13 +7,10 @@ import {ConnectorShape} from "../shapes/connector-shape";
 import {GridConnectorDrawer} from "./connector-drawer";
 import {Shape} from "../shapes/shape";
 import Grid from "./grid";
-import {ConnectorTipDirectionService} from "../connector-tip-direction-service";
 
 export class GridDrawerFactory {
-    private readonly connectorTipDirectionService: ConnectorTipDirectionService;
 
-    constructor(connectorTipDirectionService: ConnectorTipDirectionService) {
-        this.connectorTipDirectionService = connectorTipDirectionService;
+    constructor() {
     }
 
     create<T extends Shape>(shape: T, grid: Grid): Drawer<T> {
@@ -22,7 +19,7 @@ export class GridDrawerFactory {
         } else if (shape && shape instanceof BoxShape) {
             return new GridBoxDrawer(grid) as any as Drawer<T>;
         } else if (shape && shape instanceof ConnectorShape) {
-            return new GridConnectorDrawer(this.connectorTipDirectionService, grid) as any as Drawer<T>;
+            return new GridConnectorDrawer(grid) as any as Drawer<T>;
         } else {
             throw new Error("No drawer for shape");
         }

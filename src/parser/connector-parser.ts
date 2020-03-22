@@ -1,7 +1,6 @@
 import Grid from "../drawers/grid";
 import {Shape} from "../shapes/shape";
 import {ConnectorShape} from "../shapes/connector-shape";
-import {ConnectorDirection} from "../drawers/connector";
 import {ShapeIdService} from "../shapes/shape-id-service";
 import ShapeParser from "./parser";
 
@@ -13,6 +12,11 @@ type ConnectorPoint = {
 }
 
 type ConnectorEdge = {
+    start: ConnectorPoint,
+    end: ConnectorPoint
+}
+
+type PartialConnectorEdge = {
     start: ConnectorPoint | null,
     end: ConnectorPoint | null
 }
@@ -40,29 +44,31 @@ export default class ConnectorParser implements ShapeParser {
         let connectors = new Array<Shape>();
         horizontalEdges.forEach(horizontalEdge => {
             if (!this.hasConnection(horizontalEdge)) {
-                this.addConnectorEdge(horizontalEdge, connectors);
+                this.addHorizontalConnectorEdge(horizontalEdge, connectors);
             } else {
-                const horizontalEdgeConnectionPoint = this.connectionPoint(horizontalEdge);
-                const horizontalEdgeNoConnectionPoint = this.noConnectionPoint(horizontalEdge);
+                const intersectionPoint = this.connectionPoint(horizontalEdge);
+                const horizontalEdgeStartPoint = this.noConnectionPoint(horizontalEdge);
                 const verticalEdge = verticalEdges.find((verticalEdge: ConnectorEdge) => {
                     if (!this.hasConnection(verticalEdge)) {
                         return false;
                     }
-                    const verticalEdgeConnectionPoint = this.connectionPoint(verticalEdge);
-                    return horizontalEdgeConnectionPoint.row == verticalEdgeConnectionPoint.row &&
-                        horizontalEdgeConnectionPoint.column == verticalEdgeConnectionPoint.column;
+                    const verticalEdgeIntersectionPoint = this.connectionPoint(verticalEdge);
+                    return intersectionPoint.row == verticalEdgeIntersectionPoint.row &&
+                        intersectionPoint.column == verticalEdgeIntersectionPoint.column;
                 });
 
                 if (verticalEdge) {
-                    const verticalEdgeNoConnectionPoint = this.noConnectionPoint(verticalEdge);
+                    const verticalEdgeStartPoint = this.noConnectionPoint(verticalEdge);
+                    const connectorType = {
+                        horizontalEdge: {start: horizontalEdgeStartPoint, end: intersectionPoint},
+                        intersectionPoint: intersectionPoint,
+                        verticalEdge: {start: verticalEdgeStartPoint, end: intersectionPoint}
+                    };
 
-                    let direction = this.getConnectorDirection(horizontalEdgeNoConnectionPoint, verticalEdgeNoConnectionPoint);
+                    const shape = ConnectorShape.createShape(this.shapeIdService.nextId(),
+                        connectorType);
 
-                    const connector = new ConnectorShape(this.shapeIdService.nextId(),
-                        horizontalEdgeNoConnectionPoint.row, horizontalEdgeNoConnectionPoint.column,
-                        verticalEdgeNoConnectionPoint.row, verticalEdgeNoConnectionPoint.column,
-                        direction);
-                    connectors.push(connector)
+                    connectors.push(shape);
                 }
             }
         });
@@ -70,26 +76,32 @@ export default class ConnectorParser implements ShapeParser {
         // we add the vertical edges without connectors
         verticalEdges.forEach(verticalEdge => {
             if (!this.hasConnection(verticalEdge)) {
-                this.addConnectorEdge(verticalEdge, connectors);
+                this.addVerticalConnectorEdge(verticalEdge, connectors);
             }
         });
 
         return connectors;
     }
 
-    private getConnectorDirection(horizontalEdgeNoConnectionPoint: ConnectorPoint, verticalEdgeNoConnectionPoint: ConnectorPoint) {
-        if (horizontalEdgeNoConnectionPoint.column <= verticalEdgeNoConnectionPoint.column) {
-            return ConnectorDirection.Horizontal;
-        }
-        return ConnectorDirection.Vertical;
+    private addHorizontalConnectorEdge(horizontalEdge: ConnectorEdge, connectors: Shape[]) {
+        const connectorType = {
+            horizontalEdge: {start: horizontalEdge.start, end: horizontalEdge.end},
+            verticalEdge: null,
+            intersectionPoint: null
+        };
+        const shape = ConnectorShape.createShape(this.shapeIdService.nextId(), connectorType);
+        connectors.push(shape);
     }
 
-    private addConnectorEdge(verticalEdge: ConnectorEdge, connectors: Shape[]) {
-        const connector = new ConnectorShape(this.shapeIdService.nextId(),
-            verticalEdge.start!.row, verticalEdge.start!.column,
-            verticalEdge.end!.row, verticalEdge.end!.column,
-            ConnectorDirection.Horizontal);
-        connectors.push(connector);
+    private addVerticalConnectorEdge(verticalEdge: ConnectorEdge, connectors: Shape[]) {
+        const connectorType = {
+            horizontalEdge: null,
+            verticalEdge: {start: verticalEdge.start, end: verticalEdge.end},
+            intersectionPoint: null
+        };
+
+        const shape = ConnectorShape.createShape(this.shapeIdService.nextId(), connectorType);
+        connectors.push(shape);
     }
 
     private noConnectionPoint(edge: ConnectorEdge): ConnectorPoint {
@@ -112,7 +124,7 @@ export default class ConnectorParser implements ShapeParser {
 
     private parseHorizontalEdges(grid: Grid) {
         let edges = new Array<ConnectorEdge>();
-        let edge: ConnectorEdge = {start: null, end: null};
+        let edge: PartialConnectorEdge = {start: null, end: null};
         for (let row = 0; row < grid.rows(); row++) {
             edge = this.pushEdge(edge, edges);
             for (let column = 0; column < grid.columns(); column++) {
@@ -133,15 +145,15 @@ export default class ConnectorParser implements ShapeParser {
         return edges;
     }
 
-    private pushEdge(edge: ConnectorEdge, edges: ConnectorEdge[]) {
-        if (edge.start !== null) {
-            edges.push(edge);
-            edge = {start: null, end: null};
+    private pushEdge(edge: PartialConnectorEdge, edges: ConnectorEdge[]) {
+        if (edge.start !== null && edge.end !== null) {
+            edges.push({start: edge.start, end: edge.end});
+            return {start: null, end: null};
         }
         return edge;
     }
 
-    private initConnectorEdge(edge: ConnectorEdge, row: number, column: number, hasConnection: boolean) {
+    private initConnectorEdge(edge: PartialConnectorEdge, row: number, column: number, hasConnection: boolean) {
         if (edge.start === null) {
             edge.start = {row: row, column: column, hasConnection: hasConnection};
             edge.end = {row: row, column: column, hasConnection: hasConnection};
@@ -152,7 +164,7 @@ export default class ConnectorParser implements ShapeParser {
 
     private parseVerticalEdges(grid: Grid) {
         let edges = new Array<ConnectorEdge>();
-        let edge: ConnectorEdge = {start: null, end: null};
+        let edge: PartialConnectorEdge = {start: null, end: null};
         for (let column = 0; column < grid.columns(); column++) {
             edge = this.pushEdge(edge, edges);
             for (let row = 0; row < grid.rows(); row++) {

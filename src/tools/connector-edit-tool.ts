@@ -16,8 +16,8 @@ export class ConnectorEditTool implements Tool {
 
     private readonly shape: ConnectorShape;
     private readonly flipVertex: Vertex | null;
-    private readonly startConnectorVertex: Vertex;
-    private readonly endConnectorVertex: Vertex;
+    private readonly horizontalConnectorVertex: Vertex;
+    private readonly verticalConnectorVertex: Vertex;
 
     constructor(toolService: ToolService, layerService: LayerService,
                 vertexDrawer: VertexDrawer,
@@ -26,9 +26,9 @@ export class ConnectorEditTool implements Tool {
         this.layerService = layerService;
         this.vertexDrawer = vertexDrawer;
         this.shape = shape;
-        this.flipVertex = connectorVertexFactory.createFlipVertex(shape);
-        this.startConnectorVertex = connectorVertexFactory.createStartVertex(shape);
-        this.endConnectorVertex = connectorVertexFactory.createEndVertex(shape);
+        this.flipVertex = connectorVertexFactory.createFlipVertex(shape.connectorType);
+        this.horizontalConnectorVertex = connectorVertexFactory.createHorizontalVertex(shape);
+        this.verticalConnectorVertex = connectorVertexFactory.createVerticalVertex(shape);
     }
 
     mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
@@ -36,10 +36,10 @@ export class ConnectorEditTool implements Tool {
 
         if (this.flipVertex && this.flipVertex.containsPoint(x, y)) {
             this.toolService.selectConnectorFlipTool(this.shape)
-        } else if (this.startConnectorVertex.containsPoint(x, y)) {
-            this.toolService.selectConnectorModifyTool(this.shape, ConnectorMoveType.StartMove);
-        } else if (this.endConnectorVertex.containsPoint(x, y)) {
-            this.toolService.selectConnectorModifyTool(this.shape, ConnectorMoveType.EndMove);
+        } else if (this.horizontalConnectorVertex.containsPoint(x, y)) {
+            this.toolService.selectConnectorModifyTool(this.shape, ConnectorMoveType.HorizontalEdgeMove);
+        } else if (this.verticalConnectorVertex.containsPoint(x, y)) {
+            this.toolService.selectConnectorModifyTool(this.shape, ConnectorMoveType.VerticalEdgeMove);
         } else {
             this.toolService.selectShapeFor(row, column);
         }
@@ -49,8 +49,8 @@ export class ConnectorEditTool implements Tool {
         if (this.flipVertex) {
             this.vertexDrawer.draw(this.flipVertex);
         }
-        this.vertexDrawer.draw(this.startConnectorVertex);
-        this.vertexDrawer.draw(this.endConnectorVertex);
+        this.vertexDrawer.draw(this.horizontalConnectorVertex);
+        this.vertexDrawer.draw(this.verticalConnectorVertex);
     }
 
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
@@ -72,7 +72,7 @@ export class ConnectorEditTool implements Tool {
     mouseMove(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         if (this.flipVertex && this.flipVertex.containsPoint(x, y)) {
             document.body.style.cursor = 'pointer';
-        } else if (this.startConnectorVertex.containsPoint(x, y) || this.endConnectorVertex.containsPoint(x, y)) {
+        } else if (this.horizontalConnectorVertex.containsPoint(x, y) || this.verticalConnectorVertex.containsPoint(x, y)) {
             document.body.style.cursor = 'move';
         }
     }

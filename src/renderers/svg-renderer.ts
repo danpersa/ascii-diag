@@ -6,7 +6,6 @@ import {TextShape} from "../shapes/text-shape";
 import {ConnectorRenderer} from "./connector-renderer";
 import {BoxRenderer} from "./box-renderer";
 import {TextRenderer} from "./text-renderer";
-import {ConnectorTipDirectionService} from "../connector-tip-direction-service";
 
 export interface SvgRenderer {
 
@@ -19,8 +18,8 @@ export class SvgRendererService {
     private readonly connectorRenderer: SvgRenderer;
     private readonly textRenderer: SvgRenderer;
 
-    constructor(connectorTipDirectionService: ConnectorTipDirectionService) {
-        this.connectorRenderer = new ConnectorRenderer(connectorTipDirectionService);
+    constructor() {
+        this.connectorRenderer = new ConnectorRenderer();
         this.boxRenderer = new BoxRenderer();
         this.textRenderer = new TextRenderer();
     }

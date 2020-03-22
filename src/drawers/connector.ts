@@ -23,151 +23,186 @@ export enum LineStyle {
     Dotted
 }
 
+export type GridPoint = {
+    row: number,
+    column: number
+}
+
+export type GridEdge = {
+    start: GridPoint,
+    // end is the common grid point
+    end: GridPoint
+}
+
+export interface VerticalConnector {
+    verticalEdge: GridEdge;
+    horizontalEdge: null;
+    intersectionPoint: null;
+}
+
+export interface HorizontalConnector {
+    verticalEdge: null;
+    horizontalEdge: GridEdge;
+    intersectionPoint: null;
+}
+
+export interface PointConnector {
+    verticalEdge: null;
+    horizontalEdge: null;
+    intersectionPoint: GridPoint;
+}
+
+export interface EdgedConnector {
+    verticalEdge: GridEdge;
+    horizontalEdge: GridEdge;
+    intersectionPoint: GridPoint;
+}
+
+export function isIntersectedConnector(object: ConnectorType): object is IntersectedConnector {
+    return object.intersectionPoint !== null;
+}
+
+export function isVerticalConnector(object: ConnectorType): object is VerticalConnector {
+    return object.verticalEdge !== null && object.horizontalEdge === null;
+}
+
+export function isHorizontalConnector(object: ConnectorType): object is HorizontalConnector {
+    return object.horizontalEdge !== null && object.verticalEdge === null;
+}
+
+export function isEdgedConnector(object: ConnectorType): object is EdgedConnector {
+    return object.horizontalEdge !== null && object.verticalEdge !== null;
+}
+
+export function isPointConnector(object: ConnectorType): object is PointConnector {
+    return object.horizontalEdge === null && object.verticalEdge === null && object.intersectionPoint !== null;
+}
+
+export type IntersectedConnector = PointConnector | EdgedConnector
+
+export type ConnectorType = VerticalConnector | HorizontalConnector | PointConnector | EdgedConnector
+
+export function createConnectorType(horizontalEdgeStartPoint: GridPoint,
+                                    intersectionPoint: GridPoint,
+                                    verticalEdgeStartPoint: GridPoint): ConnectorType {
+    // the connector is only a point
+    if (horizontalEdgeStartPoint.row === verticalEdgeStartPoint.row && horizontalEdgeStartPoint.column === verticalEdgeStartPoint.column) {
+        return {horizontalEdge: null, verticalEdge: null, intersectionPoint: intersectionPoint};
+    } else if (horizontalEdgeStartPoint.row === verticalEdgeStartPoint.row) {
+        // the connector is only horizontal
+        const horizontalEdge: GridEdge = {start: horizontalEdgeStartPoint, end: verticalEdgeStartPoint};
+        return {horizontalEdge: horizontalEdge, verticalEdge: null, intersectionPoint: null};
+    } else if (horizontalEdgeStartPoint.column === verticalEdgeStartPoint.column) {
+        // the connector is only vertical
+        const verticalEdge: GridEdge = {start: verticalEdgeStartPoint, end: horizontalEdgeStartPoint};
+        return {horizontalEdge: null, verticalEdge: verticalEdge, intersectionPoint: null};
+    } else {
+        const horizontalEdge: GridEdge = {start: horizontalEdgeStartPoint, end: intersectionPoint};
+        const verticalEdge: GridEdge = {start: verticalEdgeStartPoint, end: intersectionPoint};
+        return {horizontalEdge: horizontalEdge, verticalEdge: verticalEdge, intersectionPoint: intersectionPoint};
+    }
+}
+
 export class Connector {
-    protected readonly _startRow: number;
-    protected readonly _startColumn: number;
-    protected readonly _endRow: number;
-    protected readonly _endColumn: number;
-    protected readonly _startDirection: ConnectorDirection;
+    private readonly _connectorType: ConnectorType;
     private readonly _lineStyle: LineStyle;
-    private readonly _startTipStyle: ConnectorTipStyle;
-    private readonly _endTipStyle: ConnectorTipStyle;
+    private readonly _horizontalTipStyle: ConnectorTipStyle;
+    private readonly _verticalTipStyle: ConnectorTipStyle;
 
-    constructor(startRow: number, startColumn: number, endRow: number, endColumn: number, startDirection: ConnectorDirection,
+    static createByStartPoints(horizontalEdgeStartPoint: GridPoint,
+                               intersectionPoint: GridPoint,
+                               verticalEdgeStartPoint: GridPoint,
+                               lineStyle: LineStyle = LineStyle.Continuous,
+                               horizontalTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat,
+                               verticalTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat): Connector {
+        const connectorType = createConnectorType(horizontalEdgeStartPoint, intersectionPoint, verticalEdgeStartPoint);
+        return new Connector(connectorType, lineStyle, horizontalTipStyle, verticalTipStyle);
+    }
+
+    constructor(connectorType: ConnectorType,
                 lineStyle: LineStyle = LineStyle.Continuous,
-                startTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat,
-                endTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat) {
-        this._startRow = startRow;
-        this._startColumn = startColumn;
-        this._endRow = endRow;
-        this._endColumn = endColumn;
-        this._startDirection = startDirection;
+                horizontalTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat,
+                verticalTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat) {
+        this._connectorType = connectorType;
         this._lineStyle = lineStyle;
-        this._startTipStyle = startTipStyle;
-        this._endTipStyle = endTipStyle;
+        this._horizontalTipStyle = horizontalTipStyle;
+        this._verticalTipStyle = verticalTipStyle;
     }
 
-    get startRow(): number {
-        return this._startRow;
+    get verticalEdge(): GridEdge | null {
+        return this._connectorType.verticalEdge;
     }
 
-    get startColumn(): number {
-        return this._startColumn;
+    get horizontalEdge(): GridEdge | null {
+        return this._connectorType.horizontalEdge;
     }
 
-    get endRow(): number {
-        return this._endRow;
+    get intersectionPoint(): GridPoint | null {
+        return this._connectorType.intersectionPoint;
     }
 
-    get endColumn(): number {
-        return this._endColumn;
-    }
-
-    get startDirection(): ConnectorDirection {
-        return this._startDirection;
+    get connectorType(): ConnectorType {
+        return this._connectorType;
     }
 
     get lineStyle(): LineStyle {
         return this._lineStyle;
     }
 
-    get startTipStyle(): ConnectorTipStyle {
-        return this._startTipStyle;
+    get horizontalTipStyle(): ConnectorTipStyle {
+        return this._horizontalTipStyle;
     }
 
-    get endTipStyle(): ConnectorTipStyle {
-        return this._endTipStyle;
+    get verticalTipStyle(): ConnectorTipStyle {
+        return this._verticalTipStyle;
     }
 }
 
 export namespace Connector {
 
     export class Builder {
-        protected _startRow: number;
-        protected _startColumn: number;
-        protected _endRow: number;
-        protected _endColumn: number;
-        protected _startDirection: ConnectorDirection;
+        protected _connectorType: ConnectorType;
         protected _lineStyle: LineStyle;
-        protected _startTipStyle: ConnectorTipStyle;
-        protected _endTipStyle: ConnectorTipStyle;
+        protected _horizontalTipStyle: ConnectorTipStyle;
+        protected _verticalTipStyle: ConnectorTipStyle;
 
-        protected constructor(startRow: number,
-                              startColumn: number,
-                              endRow: number,
-                              endColumn: number,
-                              startDirection: ConnectorDirection,
+        protected constructor(connectorType: ConnectorType,
                               lineStyle: LineStyle,
-                              startTipStyle: ConnectorTipStyle,
-                              endTipStyle: ConnectorTipStyle) {
-            this._startRow = startRow;
-            this._startColumn = startColumn;
-            this._endRow = endRow;
-            this._endColumn = endColumn;
-            this._startDirection = startDirection;
+                              horizontalTipStyle: ConnectorTipStyle,
+                              verticalTipStyle: ConnectorTipStyle) {
+            this._connectorType = connectorType;
             this._lineStyle = lineStyle;
-            this._startTipStyle = startTipStyle;
-            this._endTipStyle = endTipStyle;
+            this._horizontalTipStyle = horizontalTipStyle;
+            this._verticalTipStyle = verticalTipStyle;
         }
 
         static from(connector: Connector): Builder {
             return new Builder(
-                connector.startRow,
-                connector.startColumn,
-                connector.endRow,
-                connector.endColumn,
-                connector.startDirection,
+                connector.connectorType,
                 connector.lineStyle,
-                connector.startTipStyle,
-                connector.endTipStyle);
+                connector.horizontalTipStyle,
+                connector.verticalTipStyle);
         }
 
         static fromShape(shape: ConnectorShape): Builder {
             return new Builder(
-                shape.startRow,
-                shape.startColumn,
-                shape.endRow,
-                shape.endColumn,
-                shape.startDirection,
+                shape.connectorType,
                 shape.lineStyle,
-                shape.startTipStyle,
-                shape.endTipStyle);
+                shape.horizontalTipStyle,
+                shape.verticalTipStyle);
         }
 
         build(): Connector {
+
             return new Connector(
-                this._startRow,
-                this._startColumn,
-                this._endRow,
-                this._endColumn,
-                this._startDirection,
+                this._connectorType,
                 this._lineStyle,
-                this._startTipStyle,
-                this._endTipStyle);
+                this._horizontalTipStyle,
+                this._verticalTipStyle);
         }
 
-        startRow(value: number) {
-            this._startRow = value;
-            return this;
-        }
-
-        startColumn(value: number) {
-            this._startColumn = value;
-            return this;
-        }
-
-        endRow(value: number) {
-            this._endRow = value;
-            return this;
-        }
-
-        endColumn(value: number) {
-            this._endColumn = value;
-            return this;
-        }
-
-        startDirection(value: ConnectorDirection) {
-            this._startDirection = value;
+        connectorType(value: ConnectorType) {
+            this._connectorType = value;
             return this;
         }
 
@@ -176,13 +211,13 @@ export namespace Connector {
             return this;
         }
 
-        startTipStyle(value: ConnectorTipStyle) {
-            this._startTipStyle = value;
+        horizontalTipStyle(value: ConnectorTipStyle) {
+            this._horizontalTipStyle = value;
             return this;
         }
 
-        endTipStyle(value: ConnectorTipStyle) {
-            this._endTipStyle = value;
+        verticalTipStyle(value: ConnectorTipStyle) {
+            this._verticalTipStyle = value;
             return this;
         }
     }

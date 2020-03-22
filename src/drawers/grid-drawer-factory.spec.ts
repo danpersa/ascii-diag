@@ -1,7 +1,6 @@
 import {GridDrawerFactory} from "./drawer-factory";
-import {ConnectorTipDirectionServiceMock} from "./__mocks__/connector-tip-direction-service-mock";
 import Grid from "./grid";
-import {ConnectorDirection, LineStyle} from "./connector";
+import {LineStyle} from "./connector";
 import {ConnectorShape} from "../shapes/connector-shape";
 import {GridConnectorDrawer} from "./connector-drawer";
 import {TextShape} from "../shapes/text-shape";
@@ -16,14 +15,15 @@ let grid: Grid;
 describe('create', () => {
 
     beforeEach(() => {
-        const connectorTipDirectionServiceMock = new ConnectorTipDirectionServiceMock();
         grid = Grid.create(3, 3);
-        gridDrawerFactory = new GridDrawerFactory(connectorTipDirectionServiceMock);
+        gridDrawerFactory = new GridDrawerFactory();
     });
 
     it('should create a drawer for an connector shape', () => {
-        const connector = new ConnectorShape(1, 1, 1, 2, 2,
-            ConnectorDirection.Horizontal);
+        const connector = ConnectorShape.createShapeByStartPoints(1,
+            {row: 0, column: 0},
+            {row: 0, column: 0},
+            {row: 0, column: 0});
         const drawer = gridDrawerFactory.create(connector, grid);
         expect(drawer instanceof GridConnectorDrawer).toBe(true);
     });
