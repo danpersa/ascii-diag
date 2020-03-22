@@ -34,8 +34,8 @@ export default class AppStateHelper {
         this.component.state = {
             currentTool: this.toolService.currentTool(),
             connectorLineStyle: LineStyle.Continuous,
-            connectorStartTipStyle: ConnectorTipStyle.Flat,
-            connectorEndTipStyle: ConnectorTipStyle.Flat,
+            connectorHorizontalTipStyle: ConnectorTipStyle.Flat,
+            connectorVerticalTipStyle: ConnectorTipStyle.Flat,
             boxCornerStyle: BoxCornerStyle.Square,
             boxLineStyle: LineStyle.Continuous,
             grid: AsciiGrid.create(Constants.numberOfRows, Constants.numberOfColumns),
@@ -89,8 +89,8 @@ export default class AppStateHelper {
         if (newShape) {
             this.component.setState({
                 connectorLineStyle: newShape.lineStyle,
-                connectorStartTipStyle: newShape.startTipStyle,
-                connectorEndTipStyle: newShape.endTipStyle,
+                connectorHorizontalTipStyle: newShape.horizontalTipStyle,
+                connectorVerticalTipStyle: newShape.verticalTipStyle,
             })
         }
     }

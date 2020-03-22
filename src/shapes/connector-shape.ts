@@ -1,23 +1,38 @@
 import {Shape} from "./shape";
-import {Connector, ConnectorDirection, ConnectorTipStyle, LineStyle} from "../drawers/connector";
+import {Connector, ConnectorTipStyle, ConnectorType, GridPoint, LineStyle} from "../drawers/connector";
 
 export class ConnectorShape extends Connector implements Shape {
 
     private readonly _id: number;
     private _editing: boolean = false;
 
+    static createShape(id: number,
+                       connectorType: ConnectorType,
+                       lineStyle: LineStyle = LineStyle.Continuous,
+                       horizontalTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat,
+                       verticalTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat): ConnectorShape {
+        return new ConnectorShape(id, connectorType, lineStyle, horizontalTipStyle, verticalTipStyle);
+    }
+
+    static createShapeByStartPoints(id: number,
+                                    horizontalEdgeStartPoint: GridPoint,
+                                    intersectionPoint: GridPoint,
+                                    verticalEdgeStartPoint: GridPoint,
+                                    lineStyle: LineStyle = LineStyle.Continuous,
+                                    horizontalTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat,
+                                    verticalTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat): ConnectorShape {
+        const connector = Connector.createByStartPoints(horizontalEdgeStartPoint, intersectionPoint, verticalEdgeStartPoint, lineStyle, horizontalTipStyle, verticalTipStyle);
+        return new ConnectorShape(id, connector.connectorType, lineStyle, horizontalTipStyle, verticalTipStyle);
+    }
+
     constructor(id: number,
-                startRow: number,
-                startColumn: number,
-                endRow: number,
-                endColumn: number,
-                startDirection: ConnectorDirection,
+                connectorType: ConnectorType,
                 lineStyle: LineStyle = LineStyle.Continuous,
-                startTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat,
-                endTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat,
+                horizontalTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat,
+                verticalTipStyle: ConnectorTipStyle = ConnectorTipStyle.Flat,
                 editing: boolean = false) {
 
-        super(startRow, startColumn, endRow, endColumn, startDirection, lineStyle, startTipStyle, endTipStyle);
+        super(connectorType, lineStyle, horizontalTipStyle, verticalTipStyle);
         this._id = id;
         this._editing = editing;
     }
@@ -45,16 +60,12 @@ export namespace ConnectorShape {
         protected _editing: boolean = false;
 
         protected constructor(id: number,
-                              startRow: number,
-                              startColumn: number,
-                              endRow: number,
-                              endColumn: number,
-                              startDirection: ConnectorDirection,
+                              connectorType: ConnectorType,
                               lineStyle: LineStyle,
-                              startTipStyle: ConnectorTipStyle,
-                              endTipStyle: ConnectorTipStyle,
+                              horizontalTipStyle: ConnectorTipStyle,
+                              verticalTipStyle: ConnectorTipStyle,
                               editing: boolean = false) {
-            super(startRow, startColumn, endRow, endColumn, startDirection, lineStyle, startTipStyle, endTipStyle);
+            super(connectorType, lineStyle, horizontalTipStyle, verticalTipStyle);
             this._id = id;
             this._editing = editing;
         }
@@ -62,29 +73,22 @@ export namespace ConnectorShape {
         static from(connectorShape: ConnectorShape): ShapeBuilder {
             return new ShapeBuilder(
                 connectorShape.id(),
-                connectorShape.startRow,
-                connectorShape.startColumn,
-                connectorShape.endRow,
-                connectorShape.endColumn,
-                connectorShape.startDirection,
+                connectorShape.connectorType,
                 connectorShape.lineStyle,
-                connectorShape.startTipStyle,
-                connectorShape.endTipStyle,
+                connectorShape.horizontalTipStyle,
+                connectorShape.verticalTipStyle,
                 connectorShape.editing());
         }
 
         build(): ConnectorShape {
             return new ConnectorShape(
                 this._id,
-                this._startRow,
-                this._startColumn,
-                this._endRow,
-                this._endColumn,
-                this._startDirection,
+                this._connectorType,
                 this._lineStyle,
-                this._startTipStyle,
-                this._endTipStyle,
-                this._editing);
+                this._horizontalTipStyle,
+                this._verticalTipStyle,
+                this._editing
+            );
         }
 
         id(value: number) {

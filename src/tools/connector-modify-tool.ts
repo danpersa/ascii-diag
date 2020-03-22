@@ -3,15 +3,15 @@ import {ToolService} from "./tool-service";
 import {VertexDrawer} from "../drawers/vertex-drawer";
 import {ConnectorShape} from "../shapes/connector-shape";
 import {Vertex} from "../drawers/vertex";
-import {Connector} from "../drawers/connector";
+import {Connector, GridEdge, GridPoint} from "../drawers/connector";
 import {LayerService} from "../layer-service";
 import {ConnectorVertexFactory} from "./connector-vertex-factory";
 import {ConnectorDrawer} from "../drawers/connector-drawer";
 import {AppState} from "../ui/app-state";
 
 export enum ConnectorMoveType {
-    StartMove,
-    EndMove
+    HorizontalEdgeMove,
+    VerticalEdgeMove
 }
 
 export class ConnectorModifyTool implements Tool {
@@ -25,8 +25,8 @@ export class ConnectorModifyTool implements Tool {
 
     private readonly shape: ConnectorShape;
     private readonly moveType: ConnectorMoveType;
-    private startConnectorVertex: Vertex;
-    private endConnectorVertex: Vertex;
+    private horizontalEdgeVertex: Vertex;
+    private verticalEdgeVertex: Vertex;
     private connector: Connector;
 
     constructor(toolService: ToolService, layerService: LayerService, vertexDrawer: VertexDrawer,
@@ -39,8 +39,8 @@ export class ConnectorModifyTool implements Tool {
         this.connectorVertexFactory = connectorVertexFactory;
         this.connectorDrawer = connectorDrawer;
         this.moveType = moveType;
-        this.startConnectorVertex = connectorVertexFactory.createStartVertex(shape);
-        this.endConnectorVertex = connectorVertexFactory.createEndVertex(shape);
+        this.horizontalEdgeVertex = connectorVertexFactory.createHorizontalVertex(shape);
+        this.verticalEdgeVertex = connectorVertexFactory.createVerticalVertex(shape);
         this.connector = Connector.Builder.fromShape(this.shape).build();
         this.shape.startEditing();
     }
@@ -50,62 +50,66 @@ export class ConnectorModifyTool implements Tool {
 
     render() {
         this.connectorDrawer.draw(this.connector);
-        if (this.moveType == ConnectorMoveType.StartMove) {
-            this.vertexDrawer.draw(this.startConnectorVertex);
+        if (this.moveType == ConnectorMoveType.HorizontalEdgeMove) {
+            this.vertexDrawer.draw(this.horizontalEdgeVertex);
         } else {
-            this.vertexDrawer.draw(this.endConnectorVertex);
+            this.vertexDrawer.draw(this.verticalEdgeVertex);
         }
     }
 
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         document.body.style.cursor = 'move';
-        if (this.moveType === ConnectorMoveType.StartMove) {
-            this.connector = Connector.Builder.fromShape(this.shape)
-                .startRow(row)
-                .startColumn(column)
-                .build();
-
-            this.startConnectorVertex = this.connectorVertexFactory.createStartVertex(this.connector);
+        if (this.moveType === ConnectorMoveType.HorizontalEdgeMove) {
+            const horizontalEdgeStartPoint: GridPoint = {row: row, column: column};
+            const verticalEdgeStartPoint = this.verticalEdgeStartPoint();
+            const intersectionPoint: GridPoint = {
+                row: horizontalEdgeStartPoint.row,
+                column: verticalEdgeStartPoint.column
+            };
+            this.connector = Connector.createByStartPoints(horizontalEdgeStartPoint, intersectionPoint, verticalEdgeStartPoint,
+                this.shape.lineStyle,
+                this.shape.horizontalTipStyle,
+                this.shape.verticalTipStyle);
+            this.horizontalEdgeVertex = this.connectorVertexFactory.createHorizontalVertex(this.connector);
         } else {
-            this.connector = Connector.Builder.fromShape(this.shape)
-                .endRow(row)
-                .endColumn(column)
-                .build();
+            const verticalEdgeStartPoint: GridPoint = {row: row, column: column};
+            const horizontalEdgeStartPoint = this.horizontalEdgeStartPoint();
+            const intersectionPoint: GridPoint = {
+                row: horizontalEdgeStartPoint.row,
+                column: verticalEdgeStartPoint.column
+            };
+            this.connector = Connector.createByStartPoints(horizontalEdgeStartPoint, intersectionPoint, verticalEdgeStartPoint,
+                this.shape.lineStyle,
+                this.shape.horizontalTipStyle,
+                this.shape.verticalTipStyle);
+            this.verticalEdgeVertex = this.connectorVertexFactory.createVerticalVertex(this.connector);
+        }
+    }
 
-            this.endConnectorVertex = this.connectorVertexFactory.createEndVertex(this.connector);
+    private verticalEdgeStartPoint(): GridPoint {
+        if (this.shape.verticalEdge !== null) {
+            return this.shape.verticalEdge.start;
+        } else if (this.shape.horizontalEdge !== null) {
+            return this.shape.horizontalEdge.end;
+        } else {
+            return this.shape.intersectionPoint!;
+        }
+    }
+
+    private horizontalEdgeStartPoint(): GridPoint {
+        if (this.shape.horizontalEdge !== null) {
+            return this.shape.horizontalEdge.start;
+        } else if (this.shape.verticalEdge !== null) {
+            return this.shape.verticalEdge.end;
+        } else {
+            return this.shape.intersectionPoint!;
         }
     }
 
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
-        if (this.moveType === ConnectorMoveType.StartMove) {
-            const shape = new ConnectorShape(
-                this.shape.id(),
-                this.connector.startRow,
-                this.connector.startColumn,
-                this.shape.endRow,
-                this.shape.endColumn,
-                this.shape.startDirection,
-                this.shape.lineStyle,
-                this.shape.startTipStyle,
-                this.shape.endTipStyle
-            );
-            this.layerService.updateShape(shape);
-            this.toolService.selectConnectorEditTool(shape);
-        } else {
-            const shape = new ConnectorShape(
-                this.shape.id(),
-                this.shape.startRow,
-                this.shape.startColumn,
-                this.connector.endRow,
-                this.connector.endColumn,
-                this.shape.startDirection,
-                this.shape.lineStyle,
-                this.shape.startTipStyle,
-                this.shape.endTipStyle
-            );
-            this.layerService.updateShape(shape);
-            this.toolService.selectConnectorEditTool(shape);
-        }
+        const shape = new ConnectorShape(this.shape.id(), this.connector.connectorType, this.shape.lineStyle, this.shape.horizontalTipStyle, this.shape.verticalTipStyle);
+        this.layerService.updateShape(shape);
+        this.toolService.selectConnectorEditTool(shape);
         this.shape.endEditing();
     }
 

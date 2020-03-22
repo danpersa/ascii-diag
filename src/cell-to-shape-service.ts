@@ -6,7 +6,6 @@ import {BoxShape} from "./shapes/box-shape";
 import {ArrayBoxDrawer} from "./drawers/box-drawer";
 import {ConnectorShape} from "./shapes/connector-shape";
 import {ArrayConnectorDrawer} from "./drawers/connector-drawer";
-import {ConnectorTipDirectionService} from "./connector-tip-direction-service";
 import {Domain} from "./drawers/cell";
 import {LayerService} from "./layer-service";
 import Cell = Domain.Cell;
@@ -14,15 +13,12 @@ import Cell = Domain.Cell;
 export class CellToShapeService implements ShapeUpdateListener {
 
     private readonly shapeMatrix: Array<Array<Shape | undefined>> = [];
-    private readonly connectorTipDirectionService: ConnectorTipDirectionService;
     private readonly layerService: LayerService;
     private readonly rows: number;
     private readonly columns: number;
 
     constructor(rows: number, columns: number,
-                connectorTipDirectionService: ConnectorTipDirectionService,
                 layerService: LayerService) {
-        this.connectorTipDirectionService = connectorTipDirectionService;
         this.layerService = layerService;
         this.rows = rows;
         this.columns = columns;
@@ -65,7 +61,7 @@ export class CellToShapeService implements ShapeUpdateListener {
             boxDrawer.draw(shape);
             this.addShapeToMatrix(boxDrawer.cells, shape);
         } else if (shape && shape instanceof ConnectorShape) {
-            const connectorDrawer = new ArrayConnectorDrawer(this.connectorTipDirectionService);
+            const connectorDrawer = new ArrayConnectorDrawer();
             connectorDrawer.draw(shape);
             this.addShapeToMatrix(connectorDrawer.cells, shape);
         } else {

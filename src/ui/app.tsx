@@ -16,8 +16,8 @@ import {
     Delete,
     DotsHorizontal,
     Export,
-    Import,
     FormatText,
+    Import,
     Minus,
     RayStartArrow,
     RoundedCorner,
@@ -30,7 +30,6 @@ import {SelectedShapeChangedListener, Tools} from "../tools/tool";
 import Constants from "../constants";
 import {ShapeUpdateNotificationService} from "../shape-update-notification-service";
 import {CellToShapeService} from "../cell-to-shape-service";
-import {ConnectorTipDirectionService} from "../connector-tip-direction-service";
 import IconMenu from "./icon-menu";
 import {ConnectorTipStyle, LineStyle} from "../drawers/connector";
 import {AppState} from "./app-state";
@@ -103,7 +102,6 @@ const AppWithStyles = withStyles(appStyles)(
         private readonly layerService: LayerService;
         private readonly shapeUpdateNotificationService: ShapeUpdateNotificationService;
         private readonly cellToShapeService: CellToShapeService;
-        private readonly arrowTipDirectionService: ConnectorTipDirectionService;
         private readonly stateProvider: StateProvider;
         private readonly toolService: ToolService;
         private readonly cellDrawer: CanvasCellDrawer;
@@ -115,23 +113,20 @@ const AppWithStyles = withStyles(appStyles)(
             super(props);
             this.shapeUpdateNotificationService = new ShapeUpdateNotificationService();
             this.layerService = new LayerService(this.shapeUpdateNotificationService);
-            this.arrowTipDirectionService = new ConnectorTipDirectionService();
-            this.cellToShapeService = new CellToShapeService(Constants.numberOfRows, Constants.numberOfColumns,
-                this.arrowTipDirectionService, this.layerService);
+            this.cellToShapeService = new CellToShapeService(Constants.numberOfRows, Constants.numberOfColumns, this.layerService);
 
             this.stateProvider = new StateProvider(this);
 
             const shapeIdService = new ShapeIdService();
 
-            const arrowTipDirectionService = new ConnectorTipDirectionService();
             this.cellDrawer = new CanvasCellDrawer(this.canvasDivRef);
             const vertexDrawer = new CanvasVertexDrawer(this.canvasDivRef);
             const selectBoxDrawer = new CanvasSelectBoxDrawer(this.canvasDivRef, vertexDrawer);
             const boxDrawer = new CanvasBoxDrawer(this.cellDrawer);
-            const arrowDrawer = new CanvasConnectorDrawer(this.cellDrawer, arrowTipDirectionService);
+            const arrowDrawer = new CanvasConnectorDrawer(this.cellDrawer);
             const textDrawer = new CanvasTextDrawer(this.cellDrawer);
             const cursorDrawer = new CanvasCursorDrawer(this.canvasDivRef);
-            this.gridDrawerFactory = new GridDrawerFactory(arrowTipDirectionService);
+            this.gridDrawerFactory = new GridDrawerFactory();
             const parser = new AsciiTextParser(shapeIdService);
 
             this.toolService = new ToolService(
@@ -150,7 +145,7 @@ const AppWithStyles = withStyles(appStyles)(
             this.appStateHelper = new AppStateHelper(this, this.toolService, this.layerService, parser);
             this.appStateHelper.initState();
 
-            const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
+            const diagToSvg = new DiagToSvg(this.svgDivRef, this.layerService);
             this.diagToSvgProvider = new DiagToSvgProvider(diagToSvg);
 
             this.gridUpdated = this.gridUpdated.bind(this);
@@ -222,31 +217,31 @@ const AppWithStyles = withStyles(appStyles)(
         };
 
 
-        private handleConnectorStartTipStyleChange = (event: React.MouseEvent<HTMLElement>, newConnectorTipStyle: ConnectorTipStyle) => {
+        private handleConnectorHorizontalTipStyleChange = (event: React.MouseEvent<HTMLElement>, newConnectorTipStyle: ConnectorTipStyle) => {
             console.log("handle connector start tip style change: " + newConnectorTipStyle);
 
             const shape = this.toolService.currentShape();
             if (shape && shape instanceof ConnectorShape) {
-                const newShape = ConnectorShape.ShapeBuilder.from(shape).startTipStyle(newConnectorTipStyle).build();
+                const newShape = ConnectorShape.ShapeBuilder.from(shape).horizontalTipStyle(newConnectorTipStyle).build();
                 this.toolService.selectShapeUpdateStylesTool(newShape);
             }
 
             this.setState({
-                connectorStartTipStyle: newConnectorTipStyle,
+                connectorHorizontalTipStyle: newConnectorTipStyle,
             });
         };
 
-        private handleConnectorEndTipStyleChange = (event: React.MouseEvent<HTMLElement>, newConnectorTipStyle: ConnectorTipStyle) => {
+        private handleConnectorVerticalTipStyleChange = (event: React.MouseEvent<HTMLElement>, newConnectorTipStyle: ConnectorTipStyle) => {
             console.log("handle connector end tip style change: " + newConnectorTipStyle);
 
             const shape = this.toolService.currentShape();
             if (shape && shape instanceof ConnectorShape) {
-                const newShape = ConnectorShape.ShapeBuilder.from(shape).endTipStyle(newConnectorTipStyle).build();
+                const newShape = ConnectorShape.ShapeBuilder.from(shape).verticalTipStyle(newConnectorTipStyle).build();
                 this.toolService.selectShapeUpdateStylesTool(newShape);
             }
 
             this.setState({
-                connectorEndTipStyle: newConnectorTipStyle,
+                connectorVerticalTipStyle: newConnectorTipStyle,
             });
         };
 
@@ -265,7 +260,7 @@ const AppWithStyles = withStyles(appStyles)(
         };
 
         render() {
-            new DiagToSvg(this.svgDivRef, this.layerService, this.arrowTipDirectionService);
+            new DiagToSvg(this.svgDivRef, this.layerService);
 
             return (
                 <div className={this.props.classes.root}>
@@ -307,8 +302,8 @@ const AppWithStyles = withStyles(appStyles)(
                                 {this.state.showConnectorOptions &&
                                 <span>
                                         <IconMenu title="Start"
-                                                  selectedIndex={this.state.connectorStartTipStyle}
-                                                  onChange={this.handleConnectorStartTipStyleChange}
+                                                  selectedIndex={this.state.connectorHorizontalTipStyle}
+                                                  onChange={this.handleConnectorHorizontalTipStyleChange}
                                                   options={["Flat", "Arrow"]}
                                                   icons={[<Minus/>, <ArrowLeft/>]}/>
 
@@ -319,8 +314,8 @@ const AppWithStyles = withStyles(appStyles)(
                                                   icons={[<Minus/>, <CurrentDc/>, <DotsHorizontal/>]}/>
 
                                         <IconMenu title="End"
-                                                  selectedIndex={this.state.connectorEndTipStyle}
-                                                  onChange={this.handleConnectorEndTipStyleChange}
+                                                  selectedIndex={this.state.connectorVerticalTipStyle}
+                                                  onChange={this.handleConnectorVerticalTipStyleChange}
                                                   options={["Flat", "Arrow"]}
                                                   icons={[<Minus/>, <ArrowRight/>]}/>
                                     </span>

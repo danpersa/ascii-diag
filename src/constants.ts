@@ -22,5 +22,5 @@ export default class Constants {
 
     static readonly continuousLineSymbol = '';
     static readonly dashedLineSymbol = ';';
-    static readonly dottedLineSymbol = ';';
+    static readonly dottedLineSymbol = ':';
 }

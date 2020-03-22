@@ -6,8 +6,8 @@ import Grid from "../drawers/grid";
 export type AppState = {
     currentTool: Tool,
     connectorLineStyle: LineStyle,
-    connectorStartTipStyle: ConnectorTipStyle,
-    connectorEndTipStyle: ConnectorTipStyle,
+    connectorHorizontalTipStyle: ConnectorTipStyle,
+    connectorVerticalTipStyle: ConnectorTipStyle,
     boxCornerStyle: BoxCornerStyle,
     boxLineStyle: LineStyle,
     exportDialogOpen: boolean,

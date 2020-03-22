@@ -2,9 +2,8 @@ import {Tool} from "./tool";
 import {LayerService} from "../layer-service";
 import {ConnectorDrawer} from "../drawers/connector-drawer";
 import {ShapeIdService} from "../shapes/shape-id-service";
-import {Connector} from "../drawers/connector";
+import {Connector, GridPoint} from "../drawers/connector";
 import {ConnectorShape} from "../shapes/connector-shape";
-import Constants from "../constants";
 import {AppState} from "../ui/app-state";
 
 export class ConnectorCreateTool implements Tool {
@@ -27,41 +26,45 @@ export class ConnectorCreateTool implements Tool {
     mouseDown(row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
         this.startRow = row;
         this.startColumn = column;
-        this.connector = new Connector(row,
-            column,
-            row,
-            column,
-            Constants.connectorStartDirection,
-            appState.connectorLineStyle,
-            appState.connectorStartTipStyle,
-            appState.connectorEndTipStyle);
-        console.log("End tip style: " + this.connector.endTipStyle);
+
+        const horizontalEdgeStartPoint: GridPoint = {row: row, column: column};
+        const verticalEdgeStartPoint = {row: row, column: column};
+        const intersectionPoint: GridPoint = {
+            row: horizontalEdgeStartPoint.row,
+            column: verticalEdgeStartPoint.column
+        };
+
+        this.connector = Connector.createByStartPoints(horizontalEdgeStartPoint, intersectionPoint, verticalEdgeStartPoint,
+            appState.connectorLineStyle, appState.connectorHorizontalTipStyle, appState.connectorVerticalTipStyle);
+        console.log("End tip style: " + this.connector.verticalTipStyle);
     }
 
     drag(startRow: number, startColumn: number, row: number, column: number, x: number, y: number, appState: Readonly<AppState>): void {
-        this.connector = new Connector(startRow,
-            startColumn,
-            row,
-            column,
-            Constants.connectorStartDirection,
-            appState.connectorLineStyle,
-            appState.connectorStartTipStyle,
-            appState.connectorEndTipStyle);
+        const horizontalEdgeStartPoint: GridPoint = {row: startRow, column: startColumn};
+        const verticalEdgeStartPoint = {row: row, column: column};
+        const intersectionPoint: GridPoint = {
+            row: horizontalEdgeStartPoint.row,
+            column: verticalEdgeStartPoint.column
+        };
+
+        this.connector = Connector.createByStartPoints(horizontalEdgeStartPoint, intersectionPoint, verticalEdgeStartPoint,
+            appState.connectorLineStyle, appState.connectorHorizontalTipStyle, appState.connectorVerticalTipStyle);
     }
 
     mouseUp(row: number, column: number, appState: Readonly<AppState>): void {
         this.endRow = row;
         this.endColumn = column;
-        const shape = new ConnectorShape(
-            this.shapeIdService.nextId(),
-            this.startRow,
-            this.startColumn,
-            this.endRow,
-            this.endColumn,
-            Constants.connectorStartDirection,
-            appState.connectorLineStyle,
-            appState.connectorStartTipStyle,
-            appState.connectorEndTipStyle);
+
+        const horizontalEdgeStartPoint: GridPoint = {row: this.startRow, column: this.startColumn};
+        const verticalEdgeStartPoint = {row: this.endRow, column: this.endColumn};
+        const intersectionPoint: GridPoint = {
+            row: horizontalEdgeStartPoint.row,
+            column: verticalEdgeStartPoint.column
+        };
+
+        const shape = ConnectorShape.createShapeByStartPoints(this.shapeIdService.nextId(),
+            horizontalEdgeStartPoint, intersectionPoint, verticalEdgeStartPoint,
+            appState.connectorLineStyle, appState.connectorHorizontalTipStyle, appState.connectorVerticalTipStyle);
         this.layerService.createShape(shape);
         this.connector = null;
     }
