@@ -41,7 +41,7 @@ export default withStyles(appStyles)(
         render() {
             return (
                 <div>
-                    <Dialog open={this.props.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                    <Dialog open={this.props.open} onClose={this.handleClose} aria-labelledby="form-dialog-title" maxWidth="md" fullWidth={true}>
                         <DialogTitle id="form-dialog-title">Export Diagram</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
