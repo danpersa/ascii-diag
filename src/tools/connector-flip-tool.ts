@@ -67,7 +67,6 @@ export class ConnectorFlipTool implements Tool {
 
         return ConnectorShape.ShapeBuilder.from(this.shape)
             .connectorType(newConnectorType)
-            .intersectionPoint(newIntersectionPoint)
             .build();
     }
 
