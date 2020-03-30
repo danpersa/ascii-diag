@@ -5,12 +5,10 @@
   "author": "Dan Persa",
   "dependencies": {
     "@material-ui/core": "^4.1.1",
-    "@material-ui/icons": "^4.2.0",
     "@material-ui/lab": "^4.0.0-alpha.16",
     "@svgdotjs/svg.js": "3.0.12",
     "@types/react": "^16.8.20",
     "@types/react-dom": "^16.8.4",
-    "mdi-material-ui": "^6.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },

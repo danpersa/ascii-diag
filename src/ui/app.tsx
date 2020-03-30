@@ -7,22 +7,6 @@ import Paper from "@material-ui/core/Paper";
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import DiagCanvas from "./diag-canvas";
-import CursorDefault from "mdi-material-ui/CursorDefault";
-import {
-    ArrowLeft,
-    ArrowRight,
-    CheckboxBlankOutline,
-    CurrentDc,
-    Delete,
-    DotsHorizontal,
-    Export,
-    FormatText,
-    Import,
-    Minus,
-    RayStartArrow,
-    RoundedCorner,
-    SquareOutline
-} from "mdi-material-ui";
 import SvgCanvas from "./svg-diag";
 import {LayerService} from "../layer-service";
 import {DiagToSvg} from "../renderers/diag-to-svg";
@@ -282,19 +266,19 @@ const AppWithStyles = withStyles(appStyles)(
                                                    style={margin}>
                                     <ToggleButton value={Tools.select} style={padding}
                                                   selected={this.state.isSelectToolButtonSelected}>
-                                        <CursorDefault/>
+                                        <i className="gg-arrow-top-right"/>
                                     </ToggleButton>
                                     <ToggleButton value={Tools.text} style={padding}
                                                   selected={this.state.isTextToolButtonSelected}>
-                                        <FormatText/>
+                                        <i className="gg-format-text"/>
                                     </ToggleButton>
                                     <ToggleButton value={Tools.box} style={padding}
                                                   selected={this.state.isBoxToolButtonSelected}>
-                                        <CheckboxBlankOutline/>
+                                        <i className="gg-shape-square"/>
                                     </ToggleButton>
                                     <ToggleButton value={Tools.connector} style={padding}
                                                   selected={this.state.isConnectorToolButtonSelected}>
-                                        <RayStartArrow/>
+                                        <i className="gg-arrow-long-right-e"/>
                                     </ToggleButton>
                                 </ToggleButtonGroup>
                             </Grid>
@@ -305,19 +289,23 @@ const AppWithStyles = withStyles(appStyles)(
                                                   selectedIndex={this.state.connectorHorizontalTipStyle}
                                                   onChange={this.handleConnectorHorizontalTipStyleChange}
                                                   options={["Flat", "Arrow"]}
-                                                  icons={[<Minus/>, <ArrowLeft/>]}/>
+                                                  icons={[<i className="gg-border-style-solid"/>,
+                                                      <i className="gg-arrow-long-left"/>]}/>
 
                                         <IconMenu title="Line Style"
                                                   selectedIndex={this.state.connectorLineStyle}
                                                   onChange={this.handleConnectorLineStyleChange}
                                                   options={["continuous", "dashed", "dotted"]}
-                                                  icons={[<Minus/>, <CurrentDc/>, <DotsHorizontal/>]}/>
+                                                  icons={[<i className="gg-border-style-solid"/>,
+                                                      <i className="gg-border-style-dashed"/>,
+                                                      <i className="gg-border-style-dotted"/>]}/>
 
                                         <IconMenu title="End"
                                                   selectedIndex={this.state.connectorVerticalTipStyle}
                                                   onChange={this.handleConnectorVerticalTipStyleChange}
                                                   options={["Flat", "Arrow"]}
-                                                  icons={[<Minus/>, <ArrowRight/>]}/>
+                                                  icons={[<i className="gg-border-style-solid"/>,
+                                                      <i className="gg-arrow-long-right"/>]}/>
                                     </span>
                                 }
                                 {this.state.showBoxOptions &&
@@ -326,12 +314,15 @@ const AppWithStyles = withStyles(appStyles)(
                                               selectedIndex={this.state.boxLineStyle}
                                               onChange={this.handleBoxLineStyleChange}
                                               options={["continuous", "dashed", "dotted"]}
-                                              icons={[<Minus/>, <CurrentDc/>, <DotsHorizontal/>]}/>
+                                              icons={[<i className="gg-border-style-solid"/>,
+                                                  <i className="gg-border-style-dashed"/>,
+                                                  <i className="gg-border-style-dotted"/>]}/>
                                     <IconMenu title="Corner Style"
                                               selectedIndex={this.state.boxCornerStyle}
                                               onChange={this.handleBoxCornerStyleChange}
                                               options={["Square Corners", "Rounded Corners"]}
-                                              icons={[<SquareOutline/>, <RoundedCorner/>]}/>
+                                              icons={[<i className="gg-shape-square"/>,
+                                                  <i className="gg-shape-circle"/>]}/>
                                     </span>
                                 }
                             </Grid>
@@ -345,18 +336,18 @@ const AppWithStyles = withStyles(appStyles)(
                                     <ToggleButton value={Tools.import}
                                                   style={padding}
                                                   selected={false}>
-                                        <Import/>
+                                        <i className="gg-import"/>
                                     </ToggleButton>
                                     <ToggleButton value={Tools.export}
                                                   style={padding}
                                                   selected={false}>
-                                        <Export/>
+                                        <i className="gg-export"/>
                                     </ToggleButton>
                                     {this.state.showDeleteButton &&
                                     <ToggleButton value={Tools.delete}
                                                   style={padding}
                                                   selected={false}>
-                                        <Delete/>
+                                        <i className="gg-trash"/>
                                     </ToggleButton>
                                     }
 
