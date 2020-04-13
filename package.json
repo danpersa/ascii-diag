@@ -7,7 +7,9 @@
   },
   "scripts": {
     "start": "parcel src/index.html --open",
-    "test": "jest",
+    "test": "npm run test-renderer && npm run test-editor",
+    "test-renderer": "cd packages/ascii-diag-renderer && npm test",
+    "test-editor": "cd packages/ascii-diag-editor && npm test",
     "build": "parcel build src/index.html --no-minify",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch"

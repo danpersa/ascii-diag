@@ -1,4 +1,4 @@
-import AsciiTextParser from "./ascii-text-parser";
+import {AsciiTextParser} from "./ascii-text-parser";
 import {expectBoxToBe} from "./box-parser.spec";
 import {expectTextToBe} from "./text-parser.spec";
 import {expectConnectorToHaveHorizontalEdge, expectConnectorToHaveVerticalEdge} from "./connector-parser.spec";
