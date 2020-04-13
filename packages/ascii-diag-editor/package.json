@@ -5,7 +5,8 @@
   "main": "src/index.html",
   "scripts": {
     "start": "parcel src/index.html --open",
-    "test": "jest",
+    "pretest": "npm install",
+    "test": "npx jest",
     "build": "parcel build src/index.html",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",

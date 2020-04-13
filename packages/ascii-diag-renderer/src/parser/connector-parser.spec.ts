@@ -91,7 +91,7 @@ describe('#parse', () => {
     });
 });
 
-export function expectConnectorToHaveHorizontalEdge(shape: Shape, startRow: number, startColumn: number, endRow: number, endColumn: number) {
+export function expectConnectorToHaveHorizontalEdge(shape: Shape, startRow: number, startColumn: number, endRow: number, endColumn: number): void {
     expect(shape).toBeInstanceOf(ConnectorShape);
     const connectorShape = shape as ConnectorShape;
     expect(connectorShape.connectorType.horizontalEdge).toBeDefined();
@@ -102,7 +102,7 @@ export function expectConnectorToHaveHorizontalEdge(shape: Shape, startRow: numb
     ;
 }
 
-export function expectConnectorToHaveVerticalEdge(shape: Shape, startRow: number, startColumn: number, endRow: number, endColumn: number) {
+export function expectConnectorToHaveVerticalEdge(shape: Shape, startRow: number, startColumn: number, endRow: number, endColumn: number): void {
     expect(shape).toBeInstanceOf(ConnectorShape);
     const connectorShape = shape as ConnectorShape;
     expect(connectorShape.connectorType.verticalEdge).toBeDefined();
