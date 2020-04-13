@@ -1,16 +1,21 @@
 {
-  "name": "ascii-diag",
-  "version": "0.0.1",
+  "name": "ascii-diag-renderer",
+  "version": "0.0.3",
   "author": "Dan Persa",
-  "dependencies": {
-    "@svgdotjs/svg.js": "3.0.16"
-  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "start": "parcel src/index.html --open",
     "test": "jest",
-    "build": "parcel build src/index.html --no-minify",
+    "build": "tsc && parcel build src/index.ts",
+    "prepublish": "tsc",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch"
+  },
+  "dependencies": {
+    "@svgdotjs/svg.js": "3.0.16"
   },
   "devDependencies": {
     "@types/jest": "^24.0.24",
