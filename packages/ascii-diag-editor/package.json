@@ -20,7 +20,7 @@
     "@svgdotjs/svg.js": "3.0.16",
     "@types/react": "^16.9.43",
     "@types/react-dom": "^16.9.8",
-    "ascii-diag-renderer": "0.0.3",
+    "ascii-diag-renderer": "0.0.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
