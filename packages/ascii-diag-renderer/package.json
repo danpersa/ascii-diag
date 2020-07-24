@@ -10,7 +10,7 @@
   "scripts": {
     "test": "npx jest",
     "build": "tsc && parcel build src/index.ts",
-    "prepublish": "tsc",
+    "prepare": "tsc",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch"
   },
