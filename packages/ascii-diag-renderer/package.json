@@ -2,6 +2,7 @@
   "name": "ascii-diag-renderer",
   "version": "0.0.3",
   "author": "Dan Persa",
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -22,10 +23,10 @@
     "gh-pages": "^1.2.0",
     "jest": "^24.9.0",
     "jest-canvas-mock": "^2.2.0",
-    "lerna": "^3.20.2",
+    "lerna": "^3.22.1",
     "parcel-bundler": "^1.12.4",
     "ts-jest": "^24.3.0",
-    "typescript": "^3.5.2"
+    "typescript": "^3.9.7"
   },
   "repository": {
     "type": "git",
