@@ -1,4 +1,4 @@
-import {Constants, Grid, Shape, ShapeIdService} from 'ascii-diag-renderer';
+import {Constants, Grid, Shape, ShapeIdService} from "ascii-diag-renderer";
 import {ToolService} from "./tools/tool-service";
 import {CanvasGridDrawer, GridDrawer} from "./drawers/grid-drawer";
 import {LayerService} from "./layer-service";
